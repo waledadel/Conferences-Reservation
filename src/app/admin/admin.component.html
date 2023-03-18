@@ -1,0 +1,40 @@
+<mat-toolbar color="primary">
+    <button mat-icon-button (click)="drawer.toggle()" matTooltip="Menu">
+        <mat-icon>menu</mat-icon>
+    </button>
+    <span>{{'common.conferencesReservation' | translate}}</span>
+    <span class="toolbar-item-spacer"></span>
+    <button mat-icon-button matTooltip="Logout" (click)="logout()">
+        <mat-icon>exit_to_app</mat-icon>
+    </button>
+</mat-toolbar>
+
+<mat-drawer-container class="app-container" autosize>
+    <mat-drawer #drawer class="app-sidenav" mode="side">
+        <mat-nav-list>
+            <ng-container *ngFor="let item of model.menu">
+                <a [routerLink]="item.url" [routerLinkActiveOptions]="{exact:true}" routerLinkActive="active-link" class="menu-item-link">
+                    <mat-list-item>
+                        <mat-icon>{{item.icon}}</mat-icon>
+                        <span class="px-2">{{item.text | translate}} </span>
+                    </mat-list-item>
+                </a>
+            </ng-container>
+            <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <mat-icon>language</mat-icon>
+                        <span class="px-2">{{'common.language' | translate}}</span>
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+                    <div class="p-3 lang-item" [class.active-lang]="model.arabic === model.selectedLanguage" (click)="changeLanguage(model.arabic)">{{'languages.arabic' | translate}}</div>
+                    <div class="p-3 lang-item" [class.active-lang]="model.english === model.selectedLanguage" (click)="changeLanguage(model.english)">{{'languages.english' | translate}}</div>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </mat-nav-list>
+    </mat-drawer>
+    <router-outlet>
+        <w-loading [detectRoutingOngoing]="true"></w-loading>
+    </router-outlet>
+</mat-drawer-container>

@@ -1,0 +1,42 @@
+{
+    "common": {
+        "dashboard": "Dashboard",
+        "language": "Language",
+        "users": "Users",
+        "conferencesReservation": "Conferences Reservation",
+        "arName": "Arabic Name",
+        "enName": "English Name"
+    },
+    "languages": {
+        "arabic": "العربية",
+        "english": "English"
+    },
+    "menu": {
+        "major": "Major subscriptions",
+        "all": "All subscribers",
+        "rooms": "Rooms",
+        "buses": "Buses",
+        "statistics": "Statistics",
+        "settings": "Settings"
+    },
+    "room": {
+        "add": "Add Room",
+        "building": "Building",
+        "floor": "Room Floor Number",
+        "name": "Room Name",
+        "type": "Room Type",
+        "rest": "The Rest"
+    },
+    "bus": {
+        "add": "Add Bus",
+        "update": "Update Bus"
+    },
+    "notifications": {
+        "createdSuccessfully": "Created Successfully",
+        "updatedSuccessfully": "Updated Successfully",
+        "removedSuccessfully": "Removed Successfully"
+    },
+    "validations": {
+        "requiredField": "This field is required"
+    }
+}

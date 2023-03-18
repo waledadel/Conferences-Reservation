@@ -1,0 +1,41 @@
+{
+    "common": {
+        "dashboard": "الملخص",
+        "language": "اللغة",
+        "users": "المستخدمين",
+        "conferencesReservation": "موقع حجز المؤتمرات",
+        "arName": "الاسم باللغة العربية",
+        "enName": "الاسم باللغة الإنجليزية"
+    },
+    "languages": {
+        "arabic": "العربية",
+        "english": "English"
+    },
+    "menu": {
+        "major": "الاشتراكات الرئيسية",
+        "all": "كل المشتركين",
+        "rooms": "الغرف",
+        "buses": "الإتوبيسات",
+        "statistics": "إحصائيات",
+        "settings": "إعدادات"
+    },
+    "room": {
+        "add": "إضافة غرفة",
+        "building": "المبني",
+        "floor": "رقم دور الغرفة",
+        "name": "اسم الغرفة",
+        "type": "نوع الغرفة",
+        "rest": "الباقي"
+    },
+    "bus": {
+        "add": "إضافة أتوبيس"
+    },
+    "notifications": {
+        "createdSuccessfully": "تمت الإضافة بنجاح",
+        "updatedSuccessfully": "تم التحديث بنجاح",
+        "removedSuccessfully": "تم الحذف بنجاح"
+    },
+    "validations": {
+        "requiredField": "هذا الحقل مطلوب"
+    }
+}

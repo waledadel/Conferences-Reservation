@@ -1,0 +1,49 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "outDir": "./dist/out-tsc",
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "sourceMap": true,
+    "declaration": false,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "es2020",
+    "lib": [
+      "es2020",
+      "dom"
+    ],
+    "noImplicitAny": true,
+    "skipLibCheck": true,
+    "noUnusedLocals": true,
+    "allowSyntheticDefaultImports": true,
+    "emitDecoratorMetadata": true,
+    "useDefineForClassFields": false,
+    "paths": {
+      "@app/models": ["app/shared/models"],
+      "@app/constants": ["app/shared/constants"],
+      "@app/admin": ["app/shared/constants"],
+      "@app/services": ["app/shared/services"],
+      "@app/validators": ["app/shared/validators"],
+      "@app/components": ["app/shared/components"],
+    }
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true,
+    "fullTemplateTypeCheck": true,
+    "strictAttributeTypes": true, // https://angular.io/guide/template-typecheck
+    "strictInputTypes": true
+  }
+}

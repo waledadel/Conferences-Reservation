@@ -1,0 +1,12 @@
+<div class="container-fluid py-3">
+    <div class="row mx-0">
+        <ng-container *ngFor="let card of cards">
+            <div class="col-lg-2 col-md-4 col-6 card-col" (click)="navigateToPage(card.route)">
+                <div class="text-center bg-white w-100 justify-content-center align-items-center flex-column card-content p-3 d-flex">
+                    <div class="card-value font-weight-bold">{{card.value}}</div>
+                    <div class="card-title font-size-md-20">{{card.label }}</div>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+</div>

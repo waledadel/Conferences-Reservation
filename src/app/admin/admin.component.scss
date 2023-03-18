@@ -1,0 +1,53 @@
+.toolbar-item-spacer {
+    flex: 1 1 auto;
+}
+
+.app-container {
+    height: calc(100% - 64px);
+    margin: 0;
+}  
+.app-sidenav {
+    width: 230px;
+}
+.app-sidenav-content {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-item-link {
+    text-decoration: none;
+}
+
+
+.active-link {
+    .mat-mdc-list-item {
+        background-color: #3f51b5;
+    }
+    ::ng-deep {
+        .mat-mdc-list-item-unscoped-content {
+            color: #fff !important;
+        }
+    }
+}
+
+
+::ng-deep {
+    .mat-mdc-list-item-unscoped-content {
+        display: flex !important;
+    }
+}
+
+.lang-item {
+    cursor: pointer;
+}
+
+.active-lang {
+    background-color: #3f51b5;
+    color: #fff;
+}
+
+.mat-expansion-panel-header {
+    padding-inline-start: 16px;
+}
