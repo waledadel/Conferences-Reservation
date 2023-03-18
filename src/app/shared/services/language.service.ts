@@ -13,13 +13,17 @@ export class LanguageService {
   readonly html: HTMLElement;
   private currentLanguage: string;
 
+  get isArabic(): boolean {
+    return this.storageService.getItem(Constants.Languages.languageKey) === Constants.Languages.ar;
+  }
+
   constructor(
     private translateService: TranslationService,
     private storageService: StorageService,
     @Inject(DOCUMENT) private document: Document
   ) {
     this.html = this.document.getElementsByTagName('html')[0];
-    this.currentLanguage = localStorage.getItem(Constants.Languages.languageKey) || Constants.Languages.ar;
+    this.currentLanguage = this.storageService.getItem(Constants.Languages.languageKey) || Constants.Languages.ar;
   }
 
   initAppLanguage(): void {

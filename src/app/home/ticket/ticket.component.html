@@ -1,0 +1,90 @@
+<div class="container pt-4 pb-3">
+    <form [formGroup]="model.form" #categoryForm="ngForm" novalidate class="row" (ngSubmit)="save()">
+        <div formArrayName="adults">
+            <div *ngFor="let adult of model.adults.controls; let i=index">
+                <div [formGroupName]="i">
+                    <mat-form-field class="col-md-6 col-12">
+                        <mat-label>{{'home.arabicFullName' | translate}}</mat-label>
+                        <input type="text" matInput formControlName="name">
+                        <mat-error *ngIf="adult.get('name')!.hasError('required')">
+                            {{'validations.requiredField' | translate}}
+                        </mat-error>
+                        <mat-error *ngIf="adult.get('name')!.hasError('pattern')">
+                            {{'validations.arabicLettersOnly' | translate}}
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="col-md-6 col-12">
+                        <mat-label>{{'home.englishMobileNumber' | translate}}</mat-label>
+                        <input type="text" matInput formControlName="mobile">
+                        <mat-error *ngIf="adult.get('mobile')!.hasError('required')">
+                            {{'validations.requiredField' | translate}}
+                        </mat-error>
+                        <mat-error *ngIf="adult.get('mobile')!.hasError('pattern')">
+                            {{'validations.mobileNumber' | translate}}
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="col-md-6 col-12">
+                        <mat-label>{{'home.transportation' | translate}}</mat-label>
+                        <mat-select formControlName="transportation">
+                            <ng-container *ngFor="let item of model.busList">
+                                <mat-option [value]="item.id">{{ model.isArabic ? item.arName : item.enName}}</mat-option>
+                            </ng-container>
+                        </mat-select>
+                        <mat-error *ngIf="adult.get('transportation')!.hasError('required')">
+                            {{'validations.requiredField' | translate}}
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="col-md-6 col-12">
+                        <mat-label>{{'address.title' | translate}}</mat-label>
+                        <mat-select formControlName="address">
+                            <ng-container *ngFor="let item of model.addressList">
+                                <mat-option [value]="item.id">{{ model.isArabic ? item.arName : item.enName}}</mat-option>
+                            </ng-container>
+                        </mat-select>
+                        <mat-error *ngIf="adult.get('address')!.hasError('required')">
+                            {{'validations.requiredField' | translate}}
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="col-md-6 col-12">
+                        <mat-label>{{'common.birthDate' | translate}}</mat-label>
+                        <input matInput [matDatepicker]="picker" formControlName="birthDate" [max]="model.maxDate" [min]="model.minDate"
+                        (dateChange)="onBirthDateChange($event, i)">
+                        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                        <mat-error *ngIf="adult.get('birthDate')!.hasError('required')">
+                            {{'validations.requiredField' | translate}}
+                        </mat-error>
+                    </mat-form-field>
+                    <div class="d-flex px-3 pb-3">
+                        <div class="col-6">
+                            <label>{{'common.gender' | translate}}:</label>
+                            <mat-radio-group aria-label="Select an option" formControlName="gender">
+                                <mat-radio-button [value]="model.gender.male" color="primary">{{'common.male' | translate}}</mat-radio-button>
+                                <mat-radio-button [value]="model.gender.female" color="primary">{{'common.female' | translate}}</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                        <div class="col-6">
+                            <label>{{'common.socialStatus' | translate}}:</label>
+                            <mat-radio-group aria-label="Select an option" formControlName="status">
+                                <mat-radio-button [value]="model.socialStatus.single" color="primary">{{'common.single' | translate}}</mat-radio-button>
+                                <mat-radio-button [value]="model.socialStatus.married" color="primary">{{'common.married' | translate}}</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                    </div>
+                    <mat-form-field class="col-12">
+                        <mat-label>{{'common.notes' | translate}}</mat-label>
+                        <textarea type="text" matInput formControlName="userNotes"></textarea>
+                        <mat-error *ngIf="adult.get('userNotes')!.hasError('required')">
+                            {{'validations.requiredField' | translate}}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 d-flex justify-content-center">
+            <button mat-flat-button type="submit" color="primary">
+                {{'common.addBooking' | translate}}
+            </button>
+        </div>
+    </form>
+</div>

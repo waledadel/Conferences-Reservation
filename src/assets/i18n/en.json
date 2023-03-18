@@ -5,7 +5,16 @@
         "users": "Users",
         "conferencesReservation": "Conferences Reservation",
         "arName": "Arabic Name",
-        "enName": "English Name"
+        "enName": "English Name",
+        "birthDate": "BirthDate",
+        "gender": "Gender",
+        "male": "Male",
+        "female": "Female",
+        "socialStatus": "Social Status",
+        "married": "Married",
+        "single": "Single",
+        "notes": "Notes",
+        "addBooking": "Add Booking"
     },
     "languages": {
         "arabic": "العربية",
@@ -17,7 +26,8 @@
         "rooms": "Rooms",
         "buses": "Buses",
         "statistics": "Statistics",
-        "settings": "Settings"
+        "settings": "Settings",
+        "address": "Address"
     },
     "room": {
         "add": "Add Room",
@@ -31,12 +41,27 @@
         "add": "Add Bus",
         "update": "Update Bus"
     },
+    "address": {
+        "add": "Add Address",
+        "update": "Update Address",
+        "title": "Address"
+    },
     "notifications": {
         "createdSuccessfully": "Created Successfully",
         "updatedSuccessfully": "Updated Successfully",
-        "removedSuccessfully": "Removed Successfully"
+        "removedSuccessfully": "Removed Successfully",
+        "bookedSuccessfully": "Booked Successfully"
     },
     "validations": {
-        "requiredField": "This field is required"
+        "requiredField": "This field is required",
+        "arabicLettersOnly": "This field must be arabic letters only",
+        "mobileNumber": "Mobile number must be 11 digits and start with 01(0,1,2,5)"
+    },
+    "home": {
+        "individualBooking": "Individual booking",
+        "groupBooking": "Group booking",
+        "arabicFullName": "The full name is in Arabic",
+        "englishMobileNumber": "Mobile number in English",
+        "transportation": "Transportation to the conference"
     }
 }

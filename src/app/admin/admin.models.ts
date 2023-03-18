@@ -32,6 +32,11 @@ export class AdminModel {
       url:  Constants.Routes.buses
     },
     {
+      icon: 'location_on',
+      text: 'menu.address',
+      url:  Constants.Routes.address
+    },
+    {
       icon: 'bar_chart',
       text: 'menu.statistics',
       url:  Constants.Routes.statistics

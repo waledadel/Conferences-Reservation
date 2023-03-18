@@ -4,12 +4,10 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { Constants } from '@app/constants';
 import { IBus } from '@app/models';
-import { NotifyService, BaseService, TranslationService } from '@app/services';
+import { NotifyService, TranslationService, FireStoreService } from '@app/services';
 
 @Component({
-  selector: 'app-manage-bus',
-  templateUrl: './manage-bus.component.html',
-  styleUrls: ['./manage-bus.component.scss']
+  templateUrl: './manage-bus.component.html'
 })
 export class ManageBusComponent implements OnInit {
   form: FormGroup;
@@ -17,7 +15,7 @@ export class ManageBusComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<ManageBusComponent>,
     private formBuilder: FormBuilder,
-    private baseService: BaseService,
+    private fireStoreService: FireStoreService,
     private notifyService: NotifyService,
     private translationService: TranslationService,
     @Inject(MAT_DIALOG_DATA) public data: IBus
@@ -42,8 +40,8 @@ export class ManageBusComponent implements OnInit {
     }
   }
 
-  close(): void {
-    this.dialogRef.close();
+  close(fireRefresh = false): void {
+    this.dialogRef.close({fireRefresh});
   }
 
   private patchForm(): void {
@@ -57,15 +55,15 @@ export class ManageBusComponent implements OnInit {
   }
 
   private add(): void {
-    this.baseService.create<IBus>(Constants.RealtimeDatabase.buses, this.form.value).then(() => {
-      this.close();
+    this.fireStoreService.addDoc<IBus>(Constants.RealtimeDatabase.buses, this.form.value).subscribe(() => {
+      this.close(true);
       this.notifyService.showNotifier(this.translationService.instant('notifications.createdSuccessfully'));
     });
   }
 
   private update(): void {
-    this.baseService.update<IBus>(Constants.RealtimeDatabase.buses, this.data.id, this.form.value).then(() => {
-      this.close();
+    this.fireStoreService.updateDoc(`${Constants.RealtimeDatabase.buses}/${this.data.id}`, this.form.value).subscribe(() => {
+      this.close(true);
       this.notifyService.showNotifier(this.translationService.instant('notifications.updatedSuccessfully'));
     });
   }

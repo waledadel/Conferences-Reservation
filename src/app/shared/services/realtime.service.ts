@@ -8,7 +8,7 @@ import { IUser } from '@app/models';
 @Injectable({
   providedIn: 'root'
 })
-export class BaseService {
+export class RealtimeService {
 
   constructor(private db: AngularFireDatabase) {}
 

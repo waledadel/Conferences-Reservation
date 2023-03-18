@@ -4,13 +4,11 @@ import { MatTableDataSource } from '@angular/material/table';
 
 import { Constants } from '@app/constants';
 import { IBus } from '@app/models';
-import { NotifyService, DialogService, BaseService, TranslationService } from '@app/services';
-import { ConfirmDeleteComponent } from '@app/components';
+import { NotifyService, DialogService, TranslationService, FireStoreService, LanguageService } from '@app/services';
 import { ManageBusComponent } from '../manage-bus/manage-bus.component';
 
 @Component({
-  templateUrl: './buses.component.html',
-  styleUrls: ['./buses.component.scss']
+  templateUrl: './buses.component.html'
 })
 export class BusesComponent implements OnInit, AfterViewInit {
 
@@ -19,10 +17,11 @@ export class BusesComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator = {} as MatPaginator;
   
   constructor(
-    private baseService: BaseService,
+    private fireStoreService: FireStoreService,
     private dialogService: DialogService,
     private notifyService: NotifyService,
-    private translationService: TranslationService
+    private translationService: TranslationService,
+    private languageService: LanguageService,
   ) {}
 
   ngOnInit(): void {
@@ -34,17 +33,28 @@ export class BusesComponent implements OnInit, AfterViewInit {
   }
 
   add(): void {
-    this.dialogService.openAddEditDialog(ManageBusComponent, 'lg', false);
+    this.dialogService.openAddEditDialog(ManageBusComponent, 'lg', false).afterClosed()
+    .subscribe((res: {fireRefresh: boolean}) => {
+      if (res.fireRefresh) {
+        this.getBuses();
+      }
+    });
   }
 
   update(item: IBus): void {
-    this.dialogService.openAddEditDialog(ManageBusComponent, 'lg', true, item);
+    this.dialogService.openAddEditDialog(ManageBusComponent, 'lg', true, item).afterClosed()
+    .subscribe((res: {fireRefresh: boolean}) => {
+      if (res.fireRefresh) {
+        this.getBuses();
+      }
+    });
   }
 
   delete(item: IBus): void {
-    this.dialogService.openDeleteDialog(ConfirmDeleteComponent, 'xs', item).afterClosed().subscribe((res: {remove: boolean}) => {
-      if (res && res.remove) {
-        this.baseService.delete(Constants.RealtimeDatabase.buses, item.id).then(() => {
+    this.dialogService.openConfirmDeleteDialog(this.languageService.isArabic ? item.arName : item.enName).afterClosed().subscribe((res: {confirmDelete: boolean}) => {
+      if (res && res.confirmDelete) {
+        this.fireStoreService.delete(`${Constants.RealtimeDatabase.buses}/${item.id}`).subscribe(() => {
+          this.getBuses();
           this.notifyService.showNotifier(this.translationService.instant('notifications.createdSuccessfully'));
         });
       }
@@ -52,7 +62,7 @@ export class BusesComponent implements OnInit, AfterViewInit {
   }
 
   private getBuses(): void {
-    this.baseService.getAll<IBus>(Constants.RealtimeDatabase.buses).subscribe(data => {
+    this.fireStoreService.getAll<IBus>(Constants.RealtimeDatabase.buses).subscribe(data => {
       this.dataSource.data = data;
     });
   }

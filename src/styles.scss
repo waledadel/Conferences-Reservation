@@ -154,3 +154,14 @@ button:focus {
   background: rgb(166, 168, 168) !important;
   border-radius: 5px;
 }
+
+
+.mat-mdc-tab,
+.mat-mdc-floating-label,
+.mdc-button {
+  --mdc-typography-button-letter-spacing: 0;
+}
+
+.mdc-text-field--filled:not(.mdc-text-field--disabled) {
+  background-color: #ecefef;
+}

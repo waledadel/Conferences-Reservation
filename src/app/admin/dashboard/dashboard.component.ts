@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-// import { Constants } from '@app/constants';
 import { IDashboardCard  } from '@app/models';
-import { BaseService } from '@app/services';
+import { FireStoreService } from '@app/services';
 
 
 @Component({
@@ -12,7 +11,7 @@ import { BaseService } from '@app/services';
 })
 export class DashboardComponent implements OnInit {
 
-  constructor(public baseService: BaseService, private router: Router) {}
+  constructor(public fireStoreService: FireStoreService, private router: Router) {}
 
   cards: IDashboardCard[] = [
     {

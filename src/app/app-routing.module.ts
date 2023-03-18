@@ -14,13 +14,17 @@ const routes: Routes = [
     canActivate: [AutoLoginGuard]
   },
   {
+    path: Constants.Routes.home,
+    loadChildren: () => import('./home/home.module').then(mod => mod.HomeModule),
+  },
+  {
     path: Constants.Routes.secure,
     loadChildren: () => import('./admin/admin.module').then(mod => mod.AdminModule),
     canActivate: [AuthGuard]
   },
   {
     path: '',
-    redirectTo: `/${Constants.Routes.login}`,
+    redirectTo: `/${Constants.Routes.home}`,
     pathMatch: 'full'
   },
   {

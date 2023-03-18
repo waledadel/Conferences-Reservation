@@ -5,7 +5,16 @@
         "users": "المستخدمين",
         "conferencesReservation": "موقع حجز المؤتمرات",
         "arName": "الاسم باللغة العربية",
-        "enName": "الاسم باللغة الإنجليزية"
+        "enName": "الاسم باللغة الإنجليزية",
+        "birthDate": "تاريخ الميلاد",
+        "gender": "النوع",
+        "male": "ذكر",
+        "female": "أنثي",
+        "socialStatus": "الحالة الإجتماعية",
+        "married": "متزوج",
+        "single": "أعزب",
+        "notes": "ملاحظات",
+        "addBooking": "إضافة حجز"
     },
     "languages": {
         "arabic": "العربية",
@@ -17,7 +26,8 @@
         "rooms": "الغرف",
         "buses": "الإتوبيسات",
         "statistics": "إحصائيات",
-        "settings": "إعدادات"
+        "settings": "إعدادات",
+        "address": "العنوان"
     },
     "room": {
         "add": "إضافة غرفة",
@@ -28,14 +38,30 @@
         "rest": "الباقي"
     },
     "bus": {
-        "add": "إضافة أتوبيس"
+        "add": "إضافة أتوبيس",
+        "update": "تعديل الأتوبيس"
+    },
+    "address": {
+        "add": "إضافة عنوان",
+        "update": "تعديل العنوان",
+        "title": "العنوان"
     },
     "notifications": {
         "createdSuccessfully": "تمت الإضافة بنجاح",
         "updatedSuccessfully": "تم التحديث بنجاح",
-        "removedSuccessfully": "تم الحذف بنجاح"
+        "removedSuccessfully": "تم الحذف بنجاح",
+        "bookedSuccessfully": "تم الحجز بنجاح"
     },
     "validations": {
-        "requiredField": "هذا الحقل مطلوب"
+        "requiredField": "هذا الحقل مطلوب",
+        "arabicLettersOnly": "يجب أن يكون هذا الحقل بأحرف عربية فقط",
+        "mobileNumber": "يجب أن يتكون رقم الهاتف المحمول من 11 رقمًا وأن يبدأ بـ 01 (0،1،2،5)"
+    },
+    "home": {
+        "individualBooking": "حجز فرد",
+        "groupBooking": "حجز مجموعة",
+        "arabicFullName": "الاسم ثلاثي كامل باللغة العربية",
+        "englishMobileNumber": "رقم الموبايل باللغة الإنجليزية",
+        "transportation": "المواصلات للمؤتمر"
     }
 }

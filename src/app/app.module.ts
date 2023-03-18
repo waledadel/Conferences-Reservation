@@ -1,16 +1,13 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
-import { AngularFireModule } from '@angular/fire/compat';
-import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
-import { environment } from 'environments/environment';
 import { TranslationModule } from './shared/translation/translation.module';
-import { HttpClientModule } from '@angular/common/http';
+import { FirebaseModule } from './shared/modules/firebase.module';
 
 @NgModule({
   declarations: [
@@ -18,13 +15,12 @@ import { HttpClientModule } from '@angular/common/http';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
     BrowserAnimationsModule,
-    SharedModule,
-    AngularFireModule.initializeApp(environment.firebaseConfig),
-    AngularFireDatabaseModule,
+    AppRoutingModule,
     HttpClientModule,
     TranslationModule.forRoot(),
+    FirebaseModule,
+    SharedModule,
   ],
   bootstrap: [AppComponent]
 })

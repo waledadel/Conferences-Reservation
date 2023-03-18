@@ -4,8 +4,7 @@ import { MatTableDataSource } from '@angular/material/table';
 
 import { Constants } from '@app/constants';
 import { IUser } from '@app/models';
-import { NotifyService, DialogService, BaseService } from '@app/services';
-import { ConfirmDeleteComponent } from '@app/components';
+import { NotifyService, DialogService, FireStoreService } from '@app/services';
 
 @Component({
   templateUrl: './users.component.html'
@@ -17,7 +16,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator = {} as MatPaginator;
   
   constructor(
-    private baseService: BaseService,
+    private fireStoreService: FireStoreService,
     private dialogService: DialogService,
     private notifyService: NotifyService
   ) {}
@@ -30,10 +29,10 @@ export class UsersComponent implements OnInit, AfterViewInit {
     this.dataSource.paginator = this.paginator;
   }
 
-  delete(user: IUser): void {
-    this.dialogService.openDeleteDialog(ConfirmDeleteComponent, 'xs', user).afterClosed().subscribe((res: {remove: boolean}) => {
-      if (res && res.remove) {
-        this.baseService.delete(Constants.RealtimeDatabase.users, user.id).then(() => {
+  delete(item: IUser): void {
+    this.dialogService.openConfirmDeleteDialog(item.userName).afterClosed().subscribe((res: {confirmDelete: boolean}) => {
+      if (res && res.confirmDelete) {
+        this.fireStoreService.delete(`${Constants.RealtimeDatabase.users}/${item.id}`).subscribe(() => {
           this.notifyService.showNotifier('User Deleted Successfully');
         });
       }
@@ -41,8 +40,8 @@ export class UsersComponent implements OnInit, AfterViewInit {
   }
 
   private getAllUsers(): void {
-    this.baseService.getAll<IUser>(Constants.RealtimeDatabase.users).subscribe(data => {
-      this.dataSource.data = data;
+    this.fireStoreService.getAll(Constants.RealtimeDatabase.users).subscribe(data => {
+      // this.dataSource.data = data;
     });
   }
 }

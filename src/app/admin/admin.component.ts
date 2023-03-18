@@ -25,7 +25,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.initModel();
     const language = this.storageService.getItem(Constants.Languages.languageKey);
-    console.log('language', language);
     if (language != null) {
       this.model.selectedLanguage = language;
     }

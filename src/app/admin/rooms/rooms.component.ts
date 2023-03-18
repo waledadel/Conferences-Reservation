@@ -4,8 +4,7 @@ import { MatTableDataSource } from '@angular/material/table';
 
 import { Constants } from '@app/constants';
 import { IRoom } from '@app/models';
-import { NotifyService, DialogService, BaseService, TranslationService } from '@app/services';
-import { ConfirmDeleteComponent } from '@app/components';
+import { NotifyService, DialogService, TranslationService, FireStoreService } from '@app/services';
 import { ManageRoomsComponent } from '../manage-rooms/manage-rooms.component';
 
 @Component({
@@ -19,7 +18,7 @@ export class RoomsComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator = {} as MatPaginator;
   
   constructor(
-    private baseService: BaseService,
+    private fireStoreService: FireStoreService,
     private dialogService: DialogService,
     private notifyService: NotifyService,
     private translationService: TranslationService
@@ -42,18 +41,18 @@ export class RoomsComponent implements OnInit, AfterViewInit {
   }
 
   delete(item: IRoom): void {
-    this.dialogService.openDeleteDialog(ConfirmDeleteComponent, 'xs', item).afterClosed().subscribe((res: {remove: boolean}) => {
+    this.dialogService.openConfirmDeleteDialog(item.name).afterClosed().subscribe((res: {remove: boolean}) => {
       if (res && res.remove) {
-        this.baseService.delete(Constants.RealtimeDatabase.rooms, item.id).then(() => {
+        // this.fireStoreService.delete(Constants.RealtimeDatabase.rooms, item.id).then(() => {
           this.notifyService.showNotifier(this.translationService.instant('notifications.createdSuccessfully'));
-        });
+        // });
       }
     });
   }
 
   private getRooms(): void {
-    this.baseService.getAll<IRoom>(Constants.RealtimeDatabase.rooms).subscribe(data => {
-      this.dataSource.data = data;
+    this.fireStoreService.getAll(Constants.RealtimeDatabase.rooms).subscribe(data => {
+      // this.dataSource.data = data;
     });
   }
 }

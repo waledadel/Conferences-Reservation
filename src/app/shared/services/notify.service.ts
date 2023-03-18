@@ -15,7 +15,7 @@ export class NotifyService {
 
   showNotifier(message: string, type: ISnackBarColor = 'success'): void {
     this.snackBar.open(message, '', {
-      duration: 2000,
+      duration: 3000,
       panelClass: [`snackbar-${type}`],
       horizontalPosition: this.horizontalPosition,
       verticalPosition: this.verticalPosition,

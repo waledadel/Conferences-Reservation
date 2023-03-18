@@ -1,12 +1,11 @@
 export namespace Constants {
     export class RealtimeDatabase {
-        public static readonly categories = 'categories';
-        public static readonly stations = 'stations';
-        public static readonly trains = 'trains';
         public static readonly users = 'users';
         public static readonly orders = 'orders';
         public static readonly rooms = 'rooms';
         public static readonly buses = 'buses';
+        public static readonly address = 'address';
+        public static readonly tickets = 'tickets';
     }
 
     export class PageDirection {
@@ -29,8 +28,14 @@ export namespace Constants {
         public static readonly all = 'all';
         public static readonly rooms = 'rooms';
         public static readonly buses = 'buses';
+        public static readonly address = 'address';
         public static readonly statistics = 'statistics';
         public static readonly settings = 'settings';
         public static readonly users = 'users';
+    }
+
+    export class Regex {
+        public static readonly arabicLetters = /[\u0600-\u06FF\s]/;
+        public static readonly mobileNumber = /^01[0125][0-9]{8}$/;
     }
 }

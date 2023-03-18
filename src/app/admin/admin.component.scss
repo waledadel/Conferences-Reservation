@@ -51,3 +51,16 @@
 .mat-expansion-panel-header {
     padding-inline-start: 16px;
 }
+
+.mat-expansion-panel {
+    box-shadow: none !important;
+}
+
+
+::ng-deep {
+    .mat-expansion-panel-content {
+        .mat-expansion-panel-body {
+            padding: 0 !important;
+        }
+    }
+}

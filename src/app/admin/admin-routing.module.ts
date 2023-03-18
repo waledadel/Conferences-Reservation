@@ -11,6 +11,7 @@ import { BusesComponent } from './buses/buses.component';
 import { SettingsComponent } from './settings/settings.component';
 import { StatisticsComponent } from './statistics/statistics.component';
 import { UsersComponent } from './users/users.component';
+import { AddressComponent } from './address/address.component';
 
 const routes: Routes = [
   {
@@ -36,6 +37,10 @@ const routes: Routes = [
       {
         path: Constants.Routes.buses,
         component: BusesComponent
+      },
+      {
+        path: Constants.Routes.address,
+        component: AddressComponent
       },
       {
         path: Constants.Routes.settings,
