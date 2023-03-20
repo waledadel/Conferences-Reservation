@@ -14,7 +14,19 @@
         "married": "Married",
         "single": "Single",
         "notes": "Notes",
-        "addBooking": "Add Booking"
+        "addBooking": "Add Booking",
+        "addChild": "Add Child",
+        "AddAdult": "Add Adult",
+        "childInfo": "Children from 4 years old to under 12 years old",
+        "adultInfo": "Adults over 12 years old",
+        "individualNo": "Individual No",
+        "childNo": "Child No",
+        "yes": "Yes",
+        "no": "No",
+        "needChildBed": "Do you want a separate bed for the child?",
+        "confirmDelete": "Confirm Delete",
+        "sureToDelete": "Are you sure you want to delete this item ?",
+        "cancel": "Cancel"
     },
     "languages": {
         "arabic": "العربية",

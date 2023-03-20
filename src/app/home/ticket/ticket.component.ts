@@ -1,12 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { FormGroup, Validators, FormBuilder, FormGroupDirective } from '@angular/forms';
 import { Timestamp } from 'firebase/firestore';
 
 import { Constants } from '@app/constants';
 import { TicketModel } from './ticket.models';
-import { Gender, SocialStatus, TicketStatus, TicketType, ITicket } from '@app/models';
-import { FireStoreService, NotifyService, StorageService, TranslationService } from '@app/services';
+import { Gender, SocialStatus, TicketStatus, TicketType, ITicket, IAddress, IBus } from '@app/models';
+import { DialogService, FireStoreService, NotifyService, StorageService, TranslationService } from '@app/services';
 
 @Component({
   selector: 'app-ticket',
@@ -27,26 +26,57 @@ export class TicketComponent implements OnInit {
     private fireStoreService: FireStoreService,
     private notifyService: NotifyService,
     private storageService: StorageService,
-    private translationService: TranslationService
-    ) {
-      this.model = new TicketModel();
-      this.model.form = this.initFormModels();
+    private translationService: TranslationService,
+    private dialogService: DialogService
+  ) {
+    this.model = new TicketModel();
+    this.model.form = this.initFormModels();
   }
 
   ngOnInit(): void {
     this.model.isArabic = this.storageService.getItem(Constants.Languages.languageKey) === Constants.Languages.ar;
-    console.log('isArabic', this.model.isArabic);
-    if (this.type === TicketType.individual) {
-      this.addAdult();
-    console.log('form', this.model.form.value);
-
+    this.addAdult();
+    if (this.type === TicketType.group) {
+      this.addChild();
     }
     this.getAddressList();
     this.getBusList();
-    // this.patchForm();
+  }
+ 
+  addAdult(): void {
+    this.model.adults.push(this.newAdult());
   }
 
-  newAdult(): FormGroup {
+  removeAdult(index: number): void {
+    const individualNo = this.translationService.instant('common.individualNo');
+    this.dialogService.openConfirmDeleteDialog(this.translationService.instant(`${individualNo}: ${index+1}`)).afterClosed().subscribe((res: {confirmDelete: boolean}) => {
+      if (res && res.confirmDelete) {
+        this.model.adults.removeAt(index);
+      }
+    });
+  }
+
+  addChild(): void {
+    this.model.children.push(this.newChild());
+  }
+
+  removeChild(index: number): void {
+    const individualNo = this.translationService.instant('common.childNo');
+    this.dialogService.openConfirmDeleteDialog(this.translationService.instant(`${individualNo}: ${index+1}`)).afterClosed().subscribe((res: {confirmDelete: boolean}) => {
+      if (res && res.confirmDelete) {
+        this.model.children.removeAt(index);
+      }
+    });
+  }
+
+  save(form: FormGroupDirective): void {
+    if (this.model.form.valid) {
+      this.add();
+      form.reset();
+    }
+  }
+
+  private newAdult(): FormGroup {
     return this.formBuilder.group({
       name: ['', [Validators.required, Validators.pattern(Constants.Regex.arabicLetters)]],
       mobile: ['', [Validators.required, Validators.pattern(Constants.Regex.mobileNumber)]],
@@ -57,39 +87,17 @@ export class TicketComponent implements OnInit {
       status: [SocialStatus.single, Validators.required],
       userNotes: [''],
       isMajor: [this.isMajor],
-    })
-  }
- 
-  addAdult(): void {
-    this.model.adults.push(this.newAdult());
+    });
   }
 
-  removeAdult(index: number): void {
-    this.model.adults.removeAt(index);
-  }
-
-  onBirthDateChange(event: MatDatepickerInputEvent<Date>, index: number): void {
-    console.log('date', event.value, index);
-    if (event.value != null) {
-      // this.model.adults.at(index).patchValue({
-      //   birthDate: Timestamp.fromDate(event.value)
-      // });
-      // console.log('form value', this.model.form.value);
-    }
-  }
-
-  save(): void {
-    this.add();
-    console.log('form', this.model.form.value);
-    if (this.model.form.valid) {
-      this.add();
-      this.model.form.reset();
-      // if (this.data) {
-      //   this.update();
-      // } else {
-      //   this.add();
-      // }
-    }
+  private newChild(): FormGroup {
+    return this.formBuilder.group({
+      name: ['', [Validators.required, Validators.pattern(Constants.Regex.arabicLetters)]],
+      transportation: ['', Validators.required],
+      birthDate: ['', Validators.required],
+      gender: [Gender.male, Validators.required],
+      needBed: [true, Validators.required]
+    });
   }
 
   private add(): void {
@@ -99,22 +107,15 @@ export class TicketComponent implements OnInit {
     });
   }
 
-  // private update(): void {
-  //   this.baseService.update<ITrain>(Constants.RealtimeDatabase.trains, this.data.id, this.form.value).then(() => {
-  //     this.notifyService.showNotifier('Train Updated Successfully');
-  //   });
-  // }
-
   private getAddressList(): void {
-    this.fireStoreService.getAll(Constants.RealtimeDatabase.address).subscribe(data => {
-      console.log('data', data);
-      // this.model.addressList = data;
+    this.fireStoreService.getAll<IAddress>(Constants.RealtimeDatabase.address).subscribe(data => {
+      this.model.addressList = data;
     });
   }
 
   private getBusList(): void {
-    this.fireStoreService.getAll(Constants.RealtimeDatabase.buses).subscribe(data => {
-      // this.model.busList = data;
+    this.fireStoreService.getAll<IBus>(Constants.RealtimeDatabase.buses).subscribe(data => {
+      this.model.busList = data;
     });
   }
 

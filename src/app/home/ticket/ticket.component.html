@@ -1,9 +1,18 @@
-<div class="container pt-4 pb-3">
-    <form [formGroup]="model.form" #categoryForm="ngForm" novalidate class="row" (ngSubmit)="save()">
-        <div formArrayName="adults">
-            <div *ngFor="let adult of model.adults.controls; let i=index">
+<div class="row mx-0 pb-4" [class.pt-4]="type === model.ticketType.individual">
+    <form [formGroup]="model.form" #categoryForm="ngForm" novalidate class="col-12" (ngSubmit)="save(categoryForm)">
+        <ng-container formArrayName="adults">
+            <div *ngFor="let adult of model.adults.controls; let i=index" class="rounded adult-section col-12" [ngClass]="type === model.ticketType.group ? 'mt-3' : 'pt-3'">
+                <div *ngIf="type === model.ticketType.group" class="d-flex w-100 align-items-center justify-content-between">
+                    <div class="d-flex align-items-center px-3">
+                        {{'common.individualNo' | translate}}: 
+                        <div class="d-flex justify-content-center align-items-center text-light count mx-2">{{i + 1}}</div>
+                    </div>
+                    <button type="button" mat-icon-button color="warn" (click)="removeAdult(i)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </div>
                 <div [formGroupName]="i">
-                    <mat-form-field class="col-md-6 col-12">
+                    <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
                         <mat-label>{{'home.arabicFullName' | translate}}</mat-label>
                         <input type="text" matInput formControlName="name">
                         <mat-error *ngIf="adult.get('name')!.hasError('required')">
@@ -13,7 +22,7 @@
                             {{'validations.arabicLettersOnly' | translate}}
                         </mat-error>
                     </mat-form-field>
-                    <mat-form-field class="col-md-6 col-12">
+                    <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
                         <mat-label>{{'home.englishMobileNumber' | translate}}</mat-label>
                         <input type="text" matInput formControlName="mobile">
                         <mat-error *ngIf="adult.get('mobile')!.hasError('required')">
@@ -23,7 +32,7 @@
                             {{'validations.mobileNumber' | translate}}
                         </mat-error>
                     </mat-form-field>
-                    <mat-form-field class="col-md-6 col-12">
+                    <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
                         <mat-label>{{'home.transportation' | translate}}</mat-label>
                         <mat-select formControlName="transportation">
                             <ng-container *ngFor="let item of model.busList">
@@ -34,7 +43,7 @@
                             {{'validations.requiredField' | translate}}
                         </mat-error>
                     </mat-form-field>
-                    <mat-form-field class="col-md-6 col-12">
+                    <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
                         <mat-label>{{'address.title' | translate}}</mat-label>
                         <mat-select formControlName="address">
                             <ng-container *ngFor="let item of model.addressList">
@@ -45,33 +54,32 @@
                             {{'validations.requiredField' | translate}}
                         </mat-error>
                     </mat-form-field>
-                    <mat-form-field class="col-md-6 col-12">
+                    <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
                         <mat-label>{{'common.birthDate' | translate}}</mat-label>
-                        <input matInput [matDatepicker]="picker" formControlName="birthDate" [max]="model.maxDate" [min]="model.minDate"
-                        (dateChange)="onBirthDateChange($event, i)">
+                        <input matInput [matDatepicker]="picker" formControlName="birthDate" [max]="model.maxDate" [min]="model.adultMinDate">
                         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                         <mat-datepicker #picker></mat-datepicker>
                         <mat-error *ngIf="adult.get('birthDate')!.hasError('required')">
                             {{'validations.requiredField' | translate}}
                         </mat-error>
                     </mat-form-field>
-                    <div class="d-flex px-3 pb-3">
-                        <div class="col-6">
+                    <div class="d-flex flex-md-row flex-column pb-3 px-md-2 px-0">
+                        <div class="col-md-6 col-12 px-0">
                             <label>{{'common.gender' | translate}}:</label>
-                            <mat-radio-group aria-label="Select an option" formControlName="gender">
+                            <mat-radio-group formControlName="gender" class="d-flex">
                                 <mat-radio-button [value]="model.gender.male" color="primary">{{'common.male' | translate}}</mat-radio-button>
                                 <mat-radio-button [value]="model.gender.female" color="primary">{{'common.female' | translate}}</mat-radio-button>
                             </mat-radio-group>
                         </div>
-                        <div class="col-6">
+                        <div class="col-md-6 col-12 px-0">
                             <label>{{'common.socialStatus' | translate}}:</label>
-                            <mat-radio-group aria-label="Select an option" formControlName="status">
+                            <mat-radio-group formControlName="status" class="d-flex">
                                 <mat-radio-button [value]="model.socialStatus.single" color="primary">{{'common.single' | translate}}</mat-radio-button>
                                 <mat-radio-button [value]="model.socialStatus.married" color="primary">{{'common.married' | translate}}</mat-radio-button>
                             </mat-radio-group>
                         </div>
                     </div>
-                    <mat-form-field class="col-12">
+                    <mat-form-field class="col-12 px-md-2 px-0">
                         <mat-label>{{'common.notes' | translate}}</mat-label>
                         <textarea type="text" matInput formControlName="userNotes"></textarea>
                         <mat-error *ngIf="adult.get('userNotes')!.hasError('required')">
@@ -80,8 +88,77 @@
                     </mat-form-field>
                 </div>
             </div>
+        </ng-container>
+
+        <ng-container *ngIf="model.children.controls.length > 0">
+            <ng-container formArrayName="children">
+                <div *ngFor="let child of model.children.controls; let i=index" class="rounded child-section col-12" [ngClass]="type === model.ticketType.group ? 'mt-3' : 'pt-3'">
+                    <div *ngIf="type === model.ticketType.group" class="d-flex w-100 align-items-center justify-content-between">
+                        <div class="d-flex align-items-center px-3">
+                            {{'common.childNo' | translate}}: 
+                            <div class="d-flex justify-content-center align-items-center text-light count mx-2">{{i + 1}}</div>
+                        </div>
+                        <button type="button" mat-icon-button color="warn" (click)="removeChild(i)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </div>
+                    <div [formGroupName]="i">
+                        <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
+                            <mat-label>{{'home.arabicFullName' | translate}}</mat-label>
+                            <input type="text" matInput formControlName="name">
+                            <mat-error *ngIf="child.get('name')!.hasError('required')">
+                                {{'validations.requiredField' | translate}}
+                            </mat-error>
+                            <mat-error *ngIf="child.get('name')!.hasError('pattern')">
+                                {{'validations.arabicLettersOnly' | translate}}
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
+                            <mat-label>{{'home.transportation' | translate}}</mat-label>
+                            <mat-select formControlName="transportation">
+                                <ng-container *ngFor="let item of model.busList">
+                                    <mat-option [value]="item.id">{{ model.isArabic ? item.arName : item.enName}}</mat-option>
+                                </ng-container>
+                            </mat-select>
+                            <mat-error *ngIf="child.get('transportation')!.hasError('required')">
+                                {{'validations.requiredField' | translate}}
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
+                            <mat-label>{{'common.birthDate' | translate}}</mat-label>
+                            <input matInput [matDatepicker]="picker" formControlName="birthDate" [max]="model.maxDate" [min]="model.childMinDate">
+                            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+                            <mat-error *ngIf="child.get('birthDate')!.hasError('required')">
+                                {{'validations.requiredField' | translate}}
+                            </mat-error>
+                        </mat-form-field>
+                        <div class="d-flex pb-3 flex-md-row flex-column px-md-2 px-0">
+                            <div class="col-md-6 col-12 px-0">
+                                <label>{{'common.gender' | translate}}:</label>
+                                <mat-radio-group formControlName="gender" class="d-flex">
+                                    <mat-radio-button [value]="model.gender.male" color="primary">{{'common.male' | translate}}</mat-radio-button>
+                                    <mat-radio-button [value]="model.gender.female" color="primary">{{'common.female' | translate}}</mat-radio-button>
+                                </mat-radio-group>
+                            </div>
+                            <div class="col-md-6 col-12 px-0">
+                                <label>{{'common.needChildBed' | translate}}</label>
+                                <mat-radio-group formControlName="needBed" class="d-flex">
+                                    <mat-radio-button [value]="true" color="primary">{{'common.yes' | translate}}</mat-radio-button>
+                                    <mat-radio-button [value]="false" color="primary">{{'common.no' | translate}}</mat-radio-button>
+                                </mat-radio-group>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+        </ng-container>
+
+        <div *ngIf="type === model.ticketType.group" class="mt-3">
+            <button type="button" mat-stroked-button color="primary" (click)="addAdult()">{{'common.AddAdult' | translate}}</button>
+            <button type="button" mat-stroked-button color="primary" (click)="addChild()" class="child-btn">{{'common.addChild' | translate}}</button>
         </div>
-        <div class="col-12 d-flex justify-content-center">
+        <div *ngIf="model.adults.controls.length > 0 || model.children.controls.length > 0" class="col-12 pt-3 px-md-2 px-0 d-flex justify-content-end">
             <button mat-flat-button type="submit" color="primary">
                 {{'common.addBooking' | translate}}
             </button>

@@ -14,7 +14,19 @@
         "married": "متزوج",
         "single": "أعزب",
         "notes": "ملاحظات",
-        "addBooking": "إضافة حجز"
+        "addBooking": "إضافة حجز",
+        "addChild": "إضافة طفل",
+        "AddAdult": "إضافة فرد",
+        "childInfo": "الأطفال من سن 4 سنوات إلي سن أقل من 12 سنة",
+        "adultInfo": "البالغين من فوق 12 سنة",
+        "individualNo": "فرد رقم",
+        "childNo": "طفل رقم",
+        "yes": "نعم",
+        "no": "لا",
+        "needChildBed": "هل تريد سرير منفصل للطفل ؟",
+        "confirmDelete": "تأكيد الحذف",
+        "sureToDelete": "هل أنت متأكد أنك تريد حذف هذا العنصر ؟",
+        "cancel": "إلغاء"
     },
     "languages": {
         "arabic": "العربية",

@@ -1,6 +1,6 @@
 import { FormArray, FormGroup } from '@angular/forms';
 
-import { Gender, IAddress, IBus, SocialStatus } from '@app/models';
+import { Gender, IAddress, IBus, SocialStatus, TicketType } from '@app/models';
 
 export class TicketModel {
     form: FormGroup;
@@ -8,9 +8,11 @@ export class TicketModel {
     busList: Array<IBus> = [];
     isArabic: boolean = true;
     maxDate: Date;
-    minDate: Date;
+    adultMinDate: Date;
+    childMinDate: Date;
     gender = Gender;
     socialStatus = SocialStatus;
+    ticketType = TicketType;
   
     get adults(): FormArray {
       return this.form.get('adults') as FormArray;
@@ -24,6 +26,7 @@ export class TicketModel {
         this.form = {} as FormGroup;
         const now = new Date();
         this.maxDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-        this.minDate = new Date(now.getFullYear() - 90, now.getMonth(), now.getDate());
+        this.adultMinDate = new Date(now.getFullYear() - 90, now.getMonth(), now.getDate());
+        this.childMinDate = new Date(now.getFullYear() - 12, now.getMonth(), now.getDate());
     }
 }
