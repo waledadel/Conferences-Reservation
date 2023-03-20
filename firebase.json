@@ -1,3 +1,16 @@
 {
-
+  "hosting": {
+    "public": "dist/conferences-reservation",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
 }
