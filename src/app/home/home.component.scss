@@ -6,7 +6,7 @@
     }    
     ::ng-deep {
         .mat-mdc-tab-body-content {
-            height: 566px !important;
+            max-height: calc(100vh - 145px) !important;
         }
     }
 }
@@ -14,10 +14,9 @@
 @media(max-width: 959px) {
     ::ng-deep {
         .mat-mdc-tab-body-content {
-            height: 525px !important;
+            max-height: calc(100vh - 110px) !important;
         }
     }
-    
 }
 
 
