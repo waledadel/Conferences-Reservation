@@ -18,7 +18,7 @@ export class TicketComponent implements OnInit {
   model: TicketModel;
 
   get isMajor(): boolean {
-    return this.type === TicketType.group;
+    return this.type === TicketType.individual || (this.type === TicketType.group && this.model.adults.length < 1);
   }
 
   constructor(
@@ -36,9 +36,6 @@ export class TicketComponent implements OnInit {
   ngOnInit(): void {
     this.model.isArabic = this.storageService.getItem(Constants.Languages.languageKey) === Constants.Languages.ar;
     this.addAdult();
-    if (this.type === TicketType.group) {
-      this.addChild();
-    }
     this.getAddressList();
     this.getBusList();
   }
@@ -49,7 +46,7 @@ export class TicketComponent implements OnInit {
 
   removeAdult(index: number): void {
     const individualNo = this.translationService.instant('common.individualNo');
-    this.dialogService.openConfirmDeleteDialog(this.translationService.instant(`${individualNo}: ${index+1}`)).afterClosed().subscribe((res: {confirmDelete: boolean}) => {
+    this.dialogService.openConfirmDeleteDialog(this.translationService.instant(`${individualNo}: ${index}`)).afterClosed().subscribe((res: {confirmDelete: boolean}) => {
       if (res && res.confirmDelete) {
         this.model.adults.removeAt(index);
       }
@@ -70,6 +67,7 @@ export class TicketComponent implements OnInit {
   }
 
   save(form: FormGroupDirective): void {
+    console.log('save', this.model.form.value);
     if (this.model.form.valid) {
       this.add();
       form.reset();

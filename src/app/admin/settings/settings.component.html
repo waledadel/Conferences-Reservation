@@ -1,1 +1,57 @@
-<p>settings works!</p>
+<div class="container-fluid d-flex justify-content-center py-4">
+    <form [formGroup]="model.form" #categoryForm="ngForm" novalidate class="col-md-9 py-4 col-12 px-md-2 px-0 container-border" (ngSubmit)="save(categoryForm)">
+        <mat-form-field class="col-12 px-md-2 px-0">
+            <mat-label>{{'settings.title' | translate}}</mat-label>
+            <textarea type="text" matInput formControlName="title" rows="2"></textarea>
+            <mat-error *ngIf="model.form.get('title')!.hasError('required')">
+                {{'validations.requiredField' | translate}}
+            </mat-error>
+        </mat-form-field>
+        <div class="row mx-0">
+            <mat-form-field class="col-md-4 col-12 px-md-2 px-0">
+                <mat-label>{{'settings.generalAlerts' | translate}}</mat-label>
+                <textarea type="text" matInput formControlName="generalAlerts" rows="8"></textarea>
+                <mat-error *ngIf="model.form.get('generalAlerts')!.hasError('required')">
+                    {{'validations.requiredField' | translate}}
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field class="col-md-4 col-12 px-md-2 px-0">
+                <mat-label>{{'settings.priceDetails' | translate}}</mat-label>
+                <textarea type="text" matInput formControlName="priceDetails" rows="8"></textarea>
+                <mat-error *ngIf="model.form.get('priceDetails')!.hasError('required')">
+                    {{'validations.requiredField' | translate}}
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field class="col-md-4 col-12 px-md-2 px-0">
+                <mat-label>{{'settings.importantDates' | translate}}</mat-label>
+                <textarea type="text" matInput formControlName="importantDates" rows="8"></textarea>
+                <mat-error *ngIf="model.form.get('importantDates')!.hasError('required')">
+                    {{'validations.requiredField' | translate}}
+                </mat-error>
+            </mat-form-field>
+        </div>
+        <mat-form-field class="col-md-4 col-12 px-md-2 px-0">
+            <mat-label>{{'settings.firstReservationDate' | translate}}</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="firstReservationDate" [min]="model.minDate">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error *ngIf="model.form.get('firstReservationDate')!.hasError('required')">
+                {{'validations.requiredField' | translate}}
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field class="col-md-4 col-12 px-md-2 px-0">
+            <mat-label>{{'settings.lastReservationDate' | translate}}</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="lastReservationDate" [min]="model.minDate">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error *ngIf="model.form.get('lastReservationDate')!.hasError('required')">
+                {{'validations.requiredField' | translate}}
+            </mat-error>
+        </mat-form-field>
+        <div class="col-12 pt-3 px-md-2 px-0 d-flex justify-content-end">
+            <button mat-flat-button type="submit" color="primary">
+                {{'common.save' | translate}}
+            </button>
+        </div>
+    </form>
+</div>

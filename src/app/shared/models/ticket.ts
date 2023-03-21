@@ -43,7 +43,8 @@ export enum TicketStatus {
 
 export enum SocialStatus {
     single = 1,
-    married = 2
+    married = 2,
+    widower = 3
 }
 
 export enum TicketType {

@@ -1,17 +1,20 @@
 <div class="row mx-0 pb-4" [class.pt-4]="type === model.ticketType.individual">
     <form [formGroup]="model.form" #categoryForm="ngForm" novalidate class="col-12" (ngSubmit)="save(categoryForm)">
         <ng-container formArrayName="adults">
-            <div *ngFor="let adult of model.adults.controls; let i=index" class="rounded adult-section col-12" [ngClass]="type === model.ticketType.group ? 'mt-3' : 'pt-3'">
-                <div *ngIf="type === model.ticketType.group" class="d-flex w-100 align-items-center justify-content-between">
-                    <div class="d-flex align-items-center px-3">
-                        {{'common.individualNo' | translate}}: 
-                        <div class="d-flex justify-content-center align-items-center text-light count mx-2">{{i + 1}}</div>
-                    </div>
-                    <button type="button" mat-icon-button color="warn" (click)="removeAdult(i)">
-                        <mat-icon>delete</mat-icon>
-                    </button>
-                </div>
+            <div *ngFor="let adult of model.adults.controls; let i=index" class="rounded adult-section col-12 pt-3" [class.mt-3]="type === model.ticketType.group && i > 0">
                 <div [formGroupName]="i">
+                    <div *ngIf="i < 1" class="w-100 d-flex px-2 pb-2">
+                        <mat-icon color="primary">stars</mat-icon>
+                    </div>
+                    <div *ngIf="i > 0 && type === model.ticketType.group" class="d-flex w-100 align-items-center justify-content-between">
+                        <div class="d-flex align-items-center px-3">
+                            {{'common.individualNo' | translate}}: 
+                            <div class="d-flex justify-content-center align-items-center text-light count mx-2">{{i}}</div>
+                        </div>
+                        <button type="button" mat-icon-button color="warn" (click)="removeAdult(i)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </div>
                     <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
                         <mat-label>{{'home.arabicFullName' | translate}}</mat-label>
                         <input type="text" matInput formControlName="name">
@@ -76,6 +79,7 @@
                             <mat-radio-group formControlName="status" class="d-flex">
                                 <mat-radio-button [value]="model.socialStatus.single" color="primary">{{'common.single' | translate}}</mat-radio-button>
                                 <mat-radio-button [value]="model.socialStatus.married" color="primary">{{'common.married' | translate}}</mat-radio-button>
+                                <mat-radio-button [value]="model.socialStatus.widower" color="primary">{{'common.widower' | translate}}</mat-radio-button>
                             </mat-radio-group>
                         </div>
                     </div>
@@ -154,7 +158,7 @@
             </ng-container>
         </ng-container>
 
-        <div *ngIf="type === model.ticketType.group" class="mt-3">
+        <div *ngIf="type === model.ticketType.group && (model.adults.controls.length + model.children.controls.length) < 5" class="mt-3">
             <button type="button" mat-stroked-button color="primary" (click)="addAdult()">{{'common.AddAdult' | translate}}</button>
             <button type="button" mat-stroked-button color="primary" (click)="addChild()" class="child-btn">{{'common.addChild' | translate}}</button>
         </div>

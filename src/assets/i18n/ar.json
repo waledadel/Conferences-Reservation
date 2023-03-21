@@ -13,6 +13,7 @@
         "socialStatus": "الحالة الإجتماعية",
         "married": "متزوج",
         "single": "أعزب",
+        "widower": "أرمل",
         "notes": "ملاحظات",
         "addBooking": "إضافة حجز",
         "addChild": "إضافة طفل",
@@ -26,7 +27,9 @@
         "needChildBed": "هل تريد سرير منفصل للطفل ؟",
         "confirmDelete": "تأكيد الحذف",
         "sureToDelete": "هل أنت متأكد أنك تريد حذف هذا العنصر ؟",
-        "cancel": "إلغاء"
+        "cancel": "إلغاء",
+        "maximumPersons": "الحد الأقصي هو 5 أشخاص",
+        "save": "حفظ"
     },
     "languages": {
         "arabic": "العربية",
@@ -62,7 +65,8 @@
         "createdSuccessfully": "تمت الإضافة بنجاح",
         "updatedSuccessfully": "تم التحديث بنجاح",
         "removedSuccessfully": "تم الحذف بنجاح",
-        "bookedSuccessfully": "تم الحجز بنجاح"
+        "bookedSuccessfully": "تم الحجز بنجاح",
+        "settingsSavedSuccessfully": "تم حفظ التغييرات بنجاح"
     },
     "validations": {
         "requiredField": "هذا الحقل مطلوب",
@@ -75,5 +79,14 @@
         "arabicFullName": "الاسم ثلاثي كامل باللغة العربية",
         "englishMobileNumber": "رقم الموبايل باللغة الإنجليزية",
         "transportation": "المواصلات للمؤتمر"
+    },
+    "settings": {
+        "title": "اسم المؤتمر",
+        "image": "صورة المؤتمر",
+        "generalAlerts": "تنبيهات عامة",
+        "priceDetails": "قيمة الاشتراك",
+        "importantDates": "مواعيد هامة" ,
+        "firstReservationDate": "أول تاريخ للحجز",
+        "lastReservationDate": "اخر تاريخ للحجز"
     }
 }

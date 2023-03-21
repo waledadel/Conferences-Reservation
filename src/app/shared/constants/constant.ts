@@ -6,6 +6,7 @@ export namespace Constants {
         public static readonly buses = 'buses';
         public static readonly address = 'address';
         public static readonly tickets = 'tickets';
+        public static readonly settings = 'settings';
     }
 
     export class PageDirection {
