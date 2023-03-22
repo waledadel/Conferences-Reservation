@@ -1,54 +1,65 @@
 <div class="container-fluid d-flex justify-content-center py-4">
-    <form [formGroup]="model.form" #categoryForm="ngForm" novalidate class="col-md-9 py-4 col-12 px-md-2 px-0 container-border" (ngSubmit)="save(categoryForm)">
-        <mat-form-field class="col-12 px-md-2 px-0">
+    <form [formGroup]="model.form" #categoryForm="ngForm" novalidate class="col-md-9 py-4 col-12 px-md-3 px-0 container-border" (ngSubmit)="save()">
+        <div class="col-12 px-md-3 px-0 mb-4">
+            <div class="image-section rounded pt-3 pb-4">
+                <div class="d-flex px-3">
+                    <button mat-icon-button type="button" color="primary" (click)="imageInput.click()">
+                        <mat-icon>photo</mat-icon>
+                    </button>
+                    <button mat-icon-button type="button" color="warn" (click)="deleteImage()">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                    <input type="file" #imageInput class="d-none" accept="image/*" (change)="onSelectedImage(imageInput)">
+                </div>
+                <div class="col-12 d-flex justify-content-center align-items-center">
+                    <img [src]="model.selectedImage" alt="image" class="img-fluid avatar" loading="lazy" />
+                </div>
+            </div>
+        </div>
+        <mat-form-field class="col-12 px-md-3 px-0">
             <mat-label>{{'settings.title' | translate}}</mat-label>
             <textarea type="text" matInput formControlName="title" rows="2"></textarea>
             <mat-error *ngIf="model.form.get('title')!.hasError('required')">
                 {{'validations.requiredField' | translate}}
             </mat-error>
         </mat-form-field>
-        <div class="row mx-0">
-            <mat-form-field class="col-md-4 col-12 px-md-2 px-0">
-                <mat-label>{{'settings.generalAlerts' | translate}}</mat-label>
-                <textarea type="text" matInput formControlName="generalAlerts" rows="8"></textarea>
-                <mat-error *ngIf="model.form.get('generalAlerts')!.hasError('required')">
-                    {{'validations.requiredField' | translate}}
-                </mat-error>
-            </mat-form-field>
-            <mat-form-field class="col-md-4 col-12 px-md-2 px-0">
-                <mat-label>{{'settings.priceDetails' | translate}}</mat-label>
-                <textarea type="text" matInput formControlName="priceDetails" rows="8"></textarea>
-                <mat-error *ngIf="model.form.get('priceDetails')!.hasError('required')">
-                    {{'validations.requiredField' | translate}}
-                </mat-error>
-            </mat-form-field>
-            <mat-form-field class="col-md-4 col-12 px-md-2 px-0">
-                <mat-label>{{'settings.importantDates' | translate}}</mat-label>
-                <textarea type="text" matInput formControlName="importantDates" rows="8"></textarea>
-                <mat-error *ngIf="model.form.get('importantDates')!.hasError('required')">
-                    {{'validations.requiredField' | translate}}
-                </mat-error>
-            </mat-form-field>
+        <div class="col-12">
+            <div class="editor">
+                <ngx-editor-menu [editor]="model.generalAlertsEditor" [toolbar]="model.toolbar"></ngx-editor-menu>
+                <ngx-editor [editor]="model.generalAlertsEditor" formControlName="generalAlerts" [placeholder]="'settings.generalAlerts' | translate"></ngx-editor>
+            </div>
         </div>
-        <mat-form-field class="col-md-4 col-12 px-md-2 px-0">
+        <div class="col-12 my-3">
+            <div class="editor">
+                <ngx-editor-menu [editor]="model.priceDetailsEditor" [toolbar]="model.toolbar"></ngx-editor-menu>
+                <ngx-editor [editor]="model.priceDetailsEditor" formControlName="priceDetails" [placeholder]="'settings.priceDetails' | translate"></ngx-editor>
+            </div>
+        </div>
+        <div class="col-12 mb-3">
+            <div class="editor">
+                <ngx-editor-menu [editor]="model.importantDatesEditor" [toolbar]="model.toolbar"></ngx-editor-menu>
+                <ngx-editor [editor]="model.importantDatesEditor" formControlName="importantDates" [placeholder]="'settings.importantDates' | translate"></ngx-editor>
+            </div>
+        </div>
+        <mat-form-field class="col-md-4 col-12 px-md-3 px-0">
             <mat-label>{{'settings.firstReservationDate' | translate}}</mat-label>
-            <input matInput [matDatepicker]="picker" formControlName="firstReservationDate" [min]="model.minDate">
-            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
+            <input matInput [matDatepicker]="firstReservationDatePicker" formControlName="firstReservationDate" [min]="model.minDate">
+            <mat-datepicker-toggle matIconSuffix [for]="firstReservationDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #firstReservationDatePicker></mat-datepicker>
             <mat-error *ngIf="model.form.get('firstReservationDate')!.hasError('required')">
                 {{'validations.requiredField' | translate}}
             </mat-error>
         </mat-form-field>
-        <mat-form-field class="col-md-4 col-12 px-md-2 px-0">
+        <mat-form-field class="col-md-4 col-12 px-md-3 px-0">
             <mat-label>{{'settings.lastReservationDate' | translate}}</mat-label>
-            <input matInput [matDatepicker]="picker" formControlName="lastReservationDate" [min]="model.minDate">
-            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
+            <input matInput [matDatepicker]="lastReservationDatePicker" formControlName="lastReservationDate" [min]="model.minDate">
+            <mat-datepicker-toggle matIconSuffix [for]="lastReservationDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #lastReservationDatePicker></mat-datepicker>
             <mat-error *ngIf="model.form.get('lastReservationDate')!.hasError('required')">
                 {{'validations.requiredField' | translate}}
             </mat-error>
         </mat-form-field>
-        <div class="col-12 pt-3 px-md-2 px-0 d-flex justify-content-end">
+        <div class="col-12 pt-3 px-md-3 px-0 d-flex justify-content-end">
             <button mat-flat-button type="submit" color="primary">
                 {{'common.save' | translate}}
             </button>

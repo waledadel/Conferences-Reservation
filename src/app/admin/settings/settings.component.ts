@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Validators, FormBuilder, FormGroupDirective } from '@angular/forms';
+import { Validators, FormBuilder } from '@angular/forms';
+import { finalize } from 'rxjs';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
 
 import { ISettings } from '@app/models';
 import { Constants } from '@app/constants';
@@ -19,7 +21,8 @@ export class SettingsComponent implements OnInit {
     private fireStoreService: FireStoreService,
     private notifyService: NotifyService,
     private storageService: StorageService,
-    private translationService: TranslationService
+    private translationService: TranslationService,
+    private angularFireStorage: AngularFireStorage
   ) {
     this.model = new SettingsModel();
     this.model.form = this.initFormModels();
@@ -27,13 +30,36 @@ export class SettingsComponent implements OnInit {
 
   ngOnInit(): void {
     this.model.isArabic = this.storageService.getItem(Constants.Languages.languageKey) === Constants.Languages.ar;
+    this.setEditorOptions();
+    this.getSavedSettings();
   }
 
-  save(form: FormGroupDirective): void {
-    console.log('save', this.model.form.value);
+  onSelectedImage(selectedFile: any): void {
+    const file: File = selectedFile.files[0];
+    this.uploadImage(file);
+  }
+
+  save(): void {
     if (this.model.form.valid) {
-      this.add();
+      if (this.model.savedSettings.id != null) {
+        this.update();
+      } else {
+        this.add();
+      }
     }
+  }
+
+  deleteImage(): void {
+    const formValue = this.model.form.value;
+    this.fireStoreService.updateDoc(`${Constants.RealtimeDatabase.settings}/${this.model.savedSettings.id}`, {
+      ...formValue, imageUrl: '', imageName: ''
+    }).subscribe(() => {
+      const storageRef = this.angularFireStorage.ref('Images/');
+      storageRef.child(formValue.imageName).delete().subscribe(() => {
+        this.model.selectedImage = Constants.Images.defaultSettingImg;
+        this.notifyService.showNotifier(this.translationService.instant('notifications.settingsSavedSuccessfully'));
+      });
+    });
   }
 
   private add(): void {
@@ -43,16 +69,82 @@ export class SettingsComponent implements OnInit {
     });
   }
 
-  private initFormModels() {
-    return this.formBuilder.group({
-      title: ['', Validators.required],
-      image: ['', Validators.required],
-      generalAlerts: ['', Validators.required],
-      priceDetails: ['', Validators.required],
-      importantDates: ['', Validators.required],
-      firstReservationDate: [new Date(), Validators.required],
-      lastReservationDate: [new Date(), Validators.required],
+  private update(): void {
+    const formValue = this.model.form.value;
+    this.fireStoreService.updateDoc(`${Constants.RealtimeDatabase.settings}/${this.model.savedSettings.id}`, formValue).subscribe(() => {
+      this.notifyService.showNotifier(this.translationService.instant('notifications.settingsSavedSuccessfully'));
     });
   }
 
+  private initFormModels() {
+    return this.formBuilder.group({
+      title: ['', Validators.required],
+      imageUrl: ['', Validators.required],
+      imageName: ['', Validators.required],
+      generalAlerts: ['', Validators.required],
+      priceDetails: ['', Validators.required],
+      importantDates: ['', Validators.required],
+      firstReservationDate: [null, Validators.required],
+      lastReservationDate: [null, Validators.required],
+    });
+  }
+
+  private setEditorOptions(): void {
+    this.model.toolbar = [
+      ['bold', 'italic'],
+      ['underline', 'strike'],
+      // ['code', 'blockquote'],
+      [{ heading: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] }],
+      ['ordered_list', 'bullet_list'],
+      // ['link', 'image'],
+      ['text_color', 'background_color'],
+      ['align_left', 'align_center', 'align_right', 'align_justify'],
+    ];
+  }
+
+  private async uploadImage(file: File): Promise<void> {
+    const filePath = `Images/${file.name}`;
+    const storageRef = this.angularFireStorage.ref(filePath);
+    const task = this.angularFireStorage.upload(filePath, file,  {
+      cacheControl: 'max-age=2592000,public'
+    });
+    task.snapshotChanges().pipe(
+      finalize(() => {
+        storageRef.getDownloadURL().subscribe(url => {
+          if (url) {
+            this.model.form.patchValue({
+              imageUrl: url,
+              imageName: file.name
+            });
+            this.model.selectedImage = url;
+          }
+        });
+      }),
+    ).subscribe();
+  }
+
+  private getSavedSettings(): void {
+    this.fireStoreService.getAll<ISettings>(Constants.RealtimeDatabase.settings).subscribe(data => {
+      if (data && data.length === 1) {
+        this.patchFormValue(data[0]);
+        this.model.savedSettings = data[0];
+      }
+    });
+  }
+
+  private patchFormValue(item: ISettings): void {
+    this.model.form.patchValue({
+      title: item.title,
+      imageName: item.imageName,
+      imageUrl: item.imageUrl,
+      generalAlerts: item.generalAlerts,
+      priceDetails: item.priceDetails,
+      importantDates: item.importantDates,
+      firstReservationDate: item.firstReservationDate.toDate(),
+      lastReservationDate: item.lastReservationDate.toDate()
+    });
+    if (item.imageUrl != '') {
+      this.model.selectedImage = item.imageUrl;
+    }
+  }
 }

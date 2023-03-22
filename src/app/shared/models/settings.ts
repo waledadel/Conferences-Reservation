@@ -1,9 +1,12 @@
+import { Timestamp } from 'firebase/firestore';
 export interface ISettings {
+    id: string;
     title: string;
-    image: string;
+    imageUrl: string;
+    imageName: string;
     generalAlerts: string;
     priceDetails: string;
     importantDates: string;
-    firstReservationDate: Date;
-    lastReservationDate: Date;
+    firstReservationDate: Timestamp;
+    lastReservationDate: Timestamp;
 }

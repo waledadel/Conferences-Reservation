@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { NgxEditorModule } from 'ngx-editor';
 
 import { AdminRoutingModule } from './admin-routing.module';
 import { AdminComponent } from './admin.component';
@@ -37,7 +38,8 @@ import { AddressComponent } from './address/address.component';
   imports: [
     SharedModule,
     AdminRoutingModule,
-    LoadingModule
+    LoadingModule,
+    NgxEditorModule
   ]
 })
 export class AdminModule { }
