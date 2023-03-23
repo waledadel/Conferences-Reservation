@@ -8,14 +8,14 @@
     <div *ngIf="dataSource.data.length > 0; else emptyData" class="mat-elevation-z8">
       <div class="table-content">
         <table mat-table [dataSource]="dataSource">
-          <ng-container matColumnDef="arName">
-            <th mat-header-cell *matHeaderCellDef>{{'common.arName' | translate}}</th>
-            <td mat-cell *matCellDef="let element">{{element.arName}}</td>
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>{{'common.name' | translate}}</th>
+            <td mat-cell *matCellDef="let element" class="col-3">{{element.name}}</td>
           </ng-container>
       
-          <ng-container matColumnDef="enName">
-            <th mat-header-cell *matHeaderCellDef>{{'common.enName' | translate}}</th>
-            <td mat-cell *matCellDef="let element">{{ element.enName }}</td>
+          <ng-container matColumnDef="price">
+            <th mat-header-cell *matHeaderCellDef>{{'common.price' | translate}}</th>
+            <td mat-cell *matCellDef="let element" class="w-100">{{ element.price }}</td>
           </ng-container>
   
           <ng-container matColumnDef="actions">

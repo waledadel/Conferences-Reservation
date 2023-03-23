@@ -76,6 +76,7 @@ button:focus {
 
 .mat-mdc-dialog-actions {
   justify-content: end !important;
+  padding-inline-end: 24px !important;
   .mdc-button {
     min-width: 95px;
   }

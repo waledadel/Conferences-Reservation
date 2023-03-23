@@ -4,7 +4,7 @@ import { MatTableDataSource } from '@angular/material/table';
 
 import { Constants } from '@app/constants';
 import { IBus } from '@app/models';
-import { NotifyService, DialogService, TranslationService, FireStoreService, LanguageService } from '@app/services';
+import { NotifyService, DialogService, TranslationService, FireStoreService } from '@app/services';
 import { ManageBusComponent } from '../manage-bus/manage-bus.component';
 
 @Component({
@@ -12,7 +12,7 @@ import { ManageBusComponent } from '../manage-bus/manage-bus.component';
 })
 export class BusesComponent implements OnInit, AfterViewInit {
 
-  displayedColumns: string[] = ['arName', 'enName', 'actions'];
+  displayedColumns: string[] = ['name', 'price', 'actions'];
   dataSource: MatTableDataSource<IBus> = new MatTableDataSource<IBus>([]);
   @ViewChild(MatPaginator) paginator: MatPaginator = {} as MatPaginator;
   
@@ -21,7 +21,6 @@ export class BusesComponent implements OnInit, AfterViewInit {
     private dialogService: DialogService,
     private notifyService: NotifyService,
     private translationService: TranslationService,
-    private languageService: LanguageService,
   ) {}
 
   ngOnInit(): void {
@@ -51,7 +50,7 @@ export class BusesComponent implements OnInit, AfterViewInit {
   }
 
   delete(item: IBus): void {
-    this.dialogService.openConfirmDeleteDialog(this.languageService.isArabic ? item.arName : item.enName).afterClosed().subscribe((res: {confirmDelete: boolean}) => {
+    this.dialogService.openConfirmDeleteDialog(item.name).afterClosed().subscribe((res: {confirmDelete: boolean}) => {
       if (res && res.confirmDelete) {
         this.fireStoreService.delete(`${Constants.RealtimeDatabase.buses}/${item.id}`).subscribe(() => {
           this.getBuses();

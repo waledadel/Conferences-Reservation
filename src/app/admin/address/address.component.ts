@@ -4,7 +4,7 @@ import { MatTableDataSource } from '@angular/material/table';
 
 import { Constants } from '@app/constants';
 import { IAddress } from '@app/models';
-import { NotifyService, DialogService, FireStoreService, TranslationService, LanguageService } from '@app/services';
+import { NotifyService, DialogService, FireStoreService, TranslationService } from '@app/services';
 import { ManageAddressComponent } from './../manage-address/manage-address.component';
 
 @Component({
@@ -12,7 +12,7 @@ import { ManageAddressComponent } from './../manage-address/manage-address.compo
 })
 export class AddressComponent implements OnInit, AfterViewInit {
 
-  displayedColumns: string[] = ['arName', 'enName', 'actions'];
+  displayedColumns: string[] = ['name', 'actions'];
   dataSource: MatTableDataSource<IAddress> = new MatTableDataSource<IAddress>([]);
   @ViewChild(MatPaginator) paginator: MatPaginator = {} as MatPaginator;
   
@@ -20,8 +20,7 @@ export class AddressComponent implements OnInit, AfterViewInit {
     private fireStoreService: FireStoreService,
     private dialogService: DialogService,
     private notifyService: NotifyService,
-    private translationService: TranslationService,
-    private languageService: LanguageService
+    private translationService: TranslationService
   ) {}
 
   ngOnInit(): void {
@@ -51,7 +50,7 @@ export class AddressComponent implements OnInit, AfterViewInit {
   }
 
   delete(item: IAddress): void {
-    this.dialogService.openConfirmDeleteDialog(this.languageService.isArabic ? item.arName : item.enName).afterClosed().subscribe((res: {confirmDelete: boolean}) => {
+    this.dialogService.openConfirmDeleteDialog(item.name).afterClosed().subscribe((res: {confirmDelete: boolean}) => {
       if (res && res.confirmDelete) {
         this.fireStoreService.delete(`${Constants.RealtimeDatabase.address}/${item.id}`).subscribe(() => {
           this.getAddress();

@@ -4,7 +4,7 @@ import { Timestamp } from 'firebase/firestore';
 
 import { Constants } from '@app/constants';
 import { TicketModel } from './ticket.models';
-import { Gender, SocialStatus, TicketStatus, TicketType, ITicket, IAddress, IBus } from '@app/models';
+import { Gender, SocialStatus, TicketStatus, TicketType, IAddress, IBus } from '@app/models';
 import { DialogService, FireStoreService, NotifyService, StorageService, TranslationService } from '@app/services';
 
 @Component({
@@ -16,10 +16,6 @@ export class TicketComponent implements OnInit {
 
   @Input() type: TicketType = TicketType.individual;
   model: TicketModel;
-
-  get isMajor(): boolean {
-    return this.type === TicketType.individual || (this.type === TicketType.group && this.model.adults.length < 1);
-  }
 
   constructor(
     private formBuilder: FormBuilder,
@@ -35,74 +31,70 @@ export class TicketComponent implements OnInit {
 
   ngOnInit(): void {
     this.model.isArabic = this.storageService.getItem(Constants.Languages.languageKey) === Constants.Languages.ar;
-    this.addAdult();
     this.getAddressList();
     this.getBusList();
   }
+
+  isChild(index: number): boolean {
+    return this.model.participants.controls[index].get('isChild')?.value;
+  }
  
   addAdult(): void {
-    this.model.adults.push(this.newAdult());
+    this.model.participants.push(this.newParticipant(false, true));
   }
 
   removeAdult(index: number): void {
     const individualNo = this.translationService.instant('common.individualNo');
     this.dialogService.openConfirmDeleteDialog(this.translationService.instant(`${individualNo}: ${index}`)).afterClosed().subscribe((res: {confirmDelete: boolean}) => {
       if (res && res.confirmDelete) {
-        this.model.adults.removeAt(index);
+        this.model.participants.removeAt(index);
       }
     });
   }
 
   addChild(): void {
-    this.model.children.push(this.newChild());
+    this.model.participants.push(this.newParticipant(true, true));
   }
 
   removeChild(index: number): void {
     const individualNo = this.translationService.instant('common.childNo');
     this.dialogService.openConfirmDeleteDialog(this.translationService.instant(`${individualNo}: ${index+1}`)).afterClosed().subscribe((res: {confirmDelete: boolean}) => {
       if (res && res.confirmDelete) {
-        this.model.children.removeAt(index);
+        this.model.participants.removeAt(index);
       }
     });
   }
 
   save(form: FormGroupDirective): void {
-    console.log('save', this.model.form.value);
     if (this.model.form.valid) {
       this.add();
       form.reset();
     }
   }
 
-  private newAdult(): FormGroup {
+  private newParticipant(isChild: boolean, needBed: boolean): FormGroup {
     return this.formBuilder.group({
       name: ['', [Validators.required, Validators.pattern(Constants.Regex.arabicLetters)]],
-      mobile: ['', [Validators.required, Validators.pattern(Constants.Regex.mobileNumber)]],
-      transportation: ['', Validators.required],
-      address: ['', Validators.required],
+      transportationId: ['', Validators.required],
       birthDate: ['', Validators.required],
       gender: [Gender.male, Validators.required],
-      status: [SocialStatus.single, Validators.required],
       userNotes: [''],
-      isMajor: [this.isMajor],
-    });
-  }
-
-  private newChild(): FormGroup {
-    return this.formBuilder.group({
-      name: ['', [Validators.required, Validators.pattern(Constants.Regex.arabicLetters)]],
-      transportation: ['', Validators.required],
-      birthDate: ['', Validators.required],
-      gender: [Gender.male, Validators.required],
-      needBed: [true, Validators.required]
+      isChild: [isChild],
+      needsSeparateBed: [needBed, Validators.required],
+      addressId: ['', Validators.required],
+      mobile: ['', [Validators.required, Validators.pattern(Constants.Regex.mobileNumber)]],
+      socialStatus: [SocialStatus.single, Validators.required],
     });
   }
 
   private add(): void {
     const formValue = this.model.form.value;
-    this.fireStoreService.addDoc<ITicket>(Constants.RealtimeDatabase.tickets, formValue).subscribe(() => {
+    this.fireStoreService.addTicket(formValue).then(() => {
       this.notifyService.showNotifier(this.translationService.instant('notifications.bookedSuccessfully'));
     });
+    // this.fireStoreService.addDoc<ITicket>(Constants.RealtimeDatabase.tickets, formValue).subscribe(() => {
+    //   this.notifyService.showNotifier(this.translationService.instant('notifications.bookedSuccessfully'));
+    // });
   }
 
   private getAddressList(): void {
@@ -119,15 +111,23 @@ export class TicketComponent implements OnInit {
 
   private initFormModels() {
     return this.formBuilder.group({
+      name: ['', [Validators.required, Validators.pattern(Constants.Regex.arabicLetters)]],
+      mobile: ['', [Validators.required, Validators.pattern(Constants.Regex.mobileNumber)]],
+      birthDate: ['', Validators.required],
+      gender: [Gender.male, Validators.required],
+      socialStatus: [SocialStatus.single, Validators.required],
+      addressId: ['', Validators.required],
+      transportationId: ['', Validators.required],
+      bookingDate: [Timestamp.fromDate(new Date())],
       adminNotes: [''],
+      userNotes: [''],
       total: [0],
       paid: [0],
       remaining: [0],
-      status: [TicketStatus.new],
-      type: [this.type, Validators.required],
-      children: this.formBuilder.array([]),
-      adults: this.formBuilder.array([]),
-      bookingDate: [Timestamp.fromDate(new Date())],
+      ticketStatus: [TicketStatus.new],
+      ticketType: [this.type, Validators.required],
+      roomId: [''],
+      participants: this.formBuilder.array([]),
     });
   }
 }

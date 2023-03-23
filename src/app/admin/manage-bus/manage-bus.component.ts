@@ -21,8 +21,8 @@ export class ManageBusComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: IBus
     ) {
       this.form = this.formBuilder.group({
-        arName: ['', Validators.required],
-        enName: ['', Validators.required]
+        name: ['', Validators.required],
+        price: ['', [Validators.required, Validators.min(0)]]
       });
     }
 
@@ -48,8 +48,8 @@ export class ManageBusComponent implements OnInit {
     if (this.data) {
       this.form.patchValue({
         id: this.data.id,
-        arName: this.data.arName,
-        enName: this.data.enName
+        name: this.data.name,
+        price: this.data.price
       });
     }
   }

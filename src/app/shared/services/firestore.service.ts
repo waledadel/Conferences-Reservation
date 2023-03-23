@@ -1,10 +1,11 @@
+import { Constants } from '@app/constants';
 import { Injectable } from '@angular/core';
 import { Observable, first, from, map } from 'rxjs';
 import { DocumentReference, PartialWithFieldValue, Query, query, where, CollectionReference } from 'firebase/firestore';
 import { Firestore, collection, addDoc, collectionData, doc, updateDoc } from '@angular/fire/firestore';
 import { AngularFirestore, AngularFirestoreCollection, DocumentData, QueryFn } from '@angular/fire/compat/firestore';
 
-import { ICollectionData } from '@app/models';
+import { ICollectionData, ITicket } from '@app/models';
 import { convertSnaps } from './db-utils';
 
 
@@ -19,7 +20,6 @@ export class FireStoreService {
   ) { }
 
   getAll<T>(collectionName: string): Observable<Array<T>> {
-    // return collectionData(this.getCollection(collectionName), { idField: 'id' });
     return this.angularFirestore.collection(collectionName).snapshotChanges().pipe(
       map(snaps => convertSnaps<T>(snaps)),
       first()
@@ -28,6 +28,17 @@ export class FireStoreService {
 
   addDoc<T>(collectionName: string, data: PartialWithFieldValue<any>): Observable<DocumentReference<T>> {
     return from(addDoc(this.getCollection(collectionName), data));
+  }
+
+  async addTicket(ticket: ITicket): Promise<unknown> {
+    const ticketsCollection = this.angularFirestore.collection<ITicket>(Constants.RealtimeDatabase.tickets);
+    return ticketsCollection.add(ticket).then(async (docRef) => {
+      const participantsCollection = docRef.collection(Constants.RealtimeDatabase.participants);
+      const participantsData = ticket.participants.map((participant) => ({ ...participant }));
+      const addParticipantPromises = participantsData.map((participant) => participantsCollection.add(participant));
+      await Promise.all(addParticipantPromises);
+      return docRef;
+    });
   }
 
   updateDoc(path: string, data: PartialWithFieldValue<any>): Observable<any> {

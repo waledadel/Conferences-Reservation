@@ -7,6 +7,7 @@ export namespace Constants {
         public static readonly address = 'address';
         public static readonly tickets = 'tickets';
         public static readonly settings = 'settings';
+        public static readonly participants = 'participants';
     }
 
     export class PageDirection {

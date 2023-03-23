@@ -1,5 +1,5 @@
 export interface IBus {
     id: string;
-    arName: string;
-    enName: string;
+    name: string;
+    price: number;
 }

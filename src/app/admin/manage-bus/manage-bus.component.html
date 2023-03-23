@@ -1,5 +1,5 @@
 <div mat-dialog-title class="d-flex justify-content-between align-content-center">
-    <div class="font-weight-bold">{{ (data ? 'bus.update' : 'bus.add') | translate }}</div>
+    <div class="font-weight-bold">{{ (data ? 'common.update' : 'common.add') | translate }}</div>
     <button class="p-0 d-flex justify-content-cener align-items-center" (click)="close()">
         <mat-icon>close</mat-icon>
     </button>
@@ -7,16 +7,16 @@
 <div mat-dialog-content>
     <form [formGroup]="form" #categoryForm="ngForm" novalidate>
         <mat-form-field class="w-100">
-            <mat-label>{{'common.arName' | translate}}</mat-label>
-            <input type="text" matInput formControlName="arName">
-            <mat-error *ngIf="form.get('arName')!.hasError('required')">
+            <mat-label>{{'common.name' | translate}}</mat-label>
+            <input type="text" matInput formControlName="name" inputmode="text">
+            <mat-error *ngIf="form.get('name')!.hasError('required')">
                 {{'validations.requiredField' | translate}}
             </mat-error>
         </mat-form-field>
         <mat-form-field class="w-100">
-            <mat-label>{{'common.enName' | translate}}</mat-label>
-            <input type="text" matInput formControlName="enName">
-            <mat-error *ngIf="form.get('enName')!.hasError('required')">
+            <mat-label>{{'common.price' | translate}}</mat-label>
+            <input type="text" matInput formControlName="price" inputmode="numeric">
+            <mat-error *ngIf="form.get('price')!.hasError('required')">
                 {{'validations.requiredField' | translate}}
             </mat-error>
         </mat-form-field>
@@ -24,6 +24,6 @@
 </div>
 <div mat-dialog-actions>
     <button color="primary" mat-flat-button type="button" cdkFocusInitial (click)="save(categoryForm)">
-        <span> {{ (data ? 'bus.update' : 'bus.add') | translate }}</span>
+        <span> {{ 'common.save' | translate }}</span>
     </button>
 </div>

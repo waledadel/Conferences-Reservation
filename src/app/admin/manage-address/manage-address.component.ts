@@ -3,7 +3,7 @@ import { FormGroup, Validators, FormBuilder, FormGroupDirective } from '@angular
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { Constants } from '@app/constants';
-import { IBus } from '@app/models';
+import { IAddress, IBus } from '@app/models';
 import { NotifyService, TranslationService, FireStoreService } from '@app/services';
 
 @Component({
@@ -19,11 +19,10 @@ export class ManageAddressComponent implements OnInit {
     private fireStoreService: FireStoreService,
     private notifyService: NotifyService,
     private translationService: TranslationService,
-    @Inject(MAT_DIALOG_DATA) public data: IBus
+    @Inject(MAT_DIALOG_DATA) public data: IAddress
     ) {
       this.form = this.formBuilder.group({
-        arName: ['', Validators.required],
-        enName: ['', Validators.required]
+        name: ['', Validators.required]
       });
     }
 
@@ -49,8 +48,7 @@ export class ManageAddressComponent implements OnInit {
     if (this.data) {
       this.form.patchValue({
         id: this.data.id,
-        arName: this.data.arName,
-        enName: this.data.enName
+        name: this.data.name
       });
     }
   }

@@ -14,12 +14,8 @@ export class TicketModel {
     socialStatus = SocialStatus;
     ticketType = TicketType;
   
-    get adults(): FormArray {
-      return this.form.get('adults') as FormArray;
-    }
-  
-    get children(): FormArray {
-      return this.form.get('children') as FormArray;
+    get participants(): FormArray {
+      return this.form.get('participants') as FormArray;
     }
 
     constructor() {
