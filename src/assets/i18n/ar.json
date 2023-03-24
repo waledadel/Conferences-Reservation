@@ -36,7 +36,16 @@
         "mobile": "رقم الموبايل",
         "room": "الغرفة",
         "age": "السن",
-        "bookingStatus": "حالة الحجز"
+        "bookingStatus": "حالة الحجز",
+        "total": "العدد الكلي",
+        "adultsCount": "عدد الأطفال",
+        "childrenCount": "عدد البالغين",
+        "bookingType": "نوع الحجز",
+        "bookingDate": "تاريخ الحجز",
+        "paid": "المدفوع",
+        "totalCost": "الإجمالي",
+        "remaining": "الباقي",
+        "group": "مجموعة"
     },
     "languages": {
         "arabic": "العربية",
@@ -95,7 +104,7 @@
         "lastReservationDate": "اخر تاريخ للحجز",
         "agreeTerms": "موافق علي الشروط و ملتزم بجميع التنبيهات"
     },
-    "ticketStatus": {
+    "bookingStatus": {
         "new": "جديد",
         "confirmed": "مؤكد",
         "duplicated": "مكرر",

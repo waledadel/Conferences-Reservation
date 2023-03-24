@@ -15,8 +15,8 @@ export interface ITicket {
     total: number;
     paid: number;
     remaining: number;
-    ticketStatus: TicketStatus;
-    ticketType: TicketType;
+    bookingStatus: BookingStatus;
+    bookingType: BookingType;
     roomId: string;
     adultsCount: number;
     childrenCount: number;
@@ -45,8 +45,8 @@ export interface IPrimary extends IUserInfo {
     total: number;
     paid: number;
     remaining: number;
-    ticketStatus: TicketStatus;
-    ticketType: TicketType;
+    bookingStatus: BookingStatus;
+    bookingType: BookingType;
     roomId: string;
 }
 
@@ -60,7 +60,7 @@ export interface ITicketForm extends IPrimary {
     participants: Array<IParticipant>;
 }
 
-export enum TicketStatus {
+export enum BookingStatus {
     new = 1,
     confirmed = 2,
     duplicated = 3,
@@ -73,7 +73,7 @@ export enum SocialStatus {
     widower = 3
 }
 
-export enum TicketType {
+export enum BookingType {
     individual = 1,
     group = 2
 }

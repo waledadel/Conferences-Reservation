@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, first, from, map } from 'rxjs';
+import { Observable, first, from, map, take } from 'rxjs';
 import { DocumentReference, PartialWithFieldValue, Query, query, where, CollectionReference } from 'firebase/firestore';
 import { Firestore, collection, addDoc, collectionData, doc, updateDoc } from '@angular/fire/firestore';
 import { AngularFirestore, AngularFirestoreCollection, DocumentData, QueryFn } from '@angular/fire/compat/firestore';
@@ -52,8 +52,8 @@ export class FireStoreService {
       total: item.total,
       paid: item.paid,
       remaining: item.remaining,
-      ticketStatus: item.ticketStatus,
-      ticketType: item.ticketType,
+      bookingStatus: item.bookingStatus,
+      bookingType: item.bookingType,
       roomId: item.roomId,
       adultsCount: adultsCounts,
       childrenCount: childrenCounts,
@@ -75,8 +75,8 @@ export class FireStoreService {
           total: primary.total,
           paid: primary.paid,
           remaining: primary.remaining,
-          ticketStatus: primary.ticketStatus,
-          ticketType: primary.ticketType,
+          bookingStatus: primary.bookingStatus,
+          bookingType: primary.bookingType,
           roomId: primary.roomId,
           adultsCount: adultsCounts,
           childrenCount: childrenCounts,
@@ -98,6 +98,88 @@ export class FireStoreService {
   delete(path: string): Observable<void> {
     return from(this.angularFirestore.doc(path).delete());
   }
+
+  // getTicketCount(): Observable<number> {
+  //   return this.angularFirestore.collection(Constants.RealtimeDatabase.tickets).get().pipe(map(snaps => snaps.size));
+  // }
+
+  getAllSubscription(): Observable<Array<Partial<ITicket>>> {
+    return this.angularFirestore
+      .collection<ITicket>(Constants.RealtimeDatabase.tickets, ref => 
+        ref.orderBy('bookingDate', 'asc')
+      )
+      .valueChanges({ idField: 'id' })
+      .pipe(
+        map((tickets: Array<ITicket>) =>
+          tickets.map((ticket: ITicket) => ({
+            name: ticket.name,
+            mobile: ticket.mobile,
+            birthDate: ticket.birthDate,
+            roomId: ticket.roomId,
+            bookingStatus: ticket.bookingStatus,
+            age: new Date().getFullYear() - ticket.birthDate.toDate().getFullYear(),
+            gender: ticket.gender,
+            isMain: ticket.isMain,
+            isChild: ticket.isChild
+          }))
+        ),
+        take(1)
+      );
+  }
+
+
+  getPrimarySubscription(): Observable<Array<Partial<ITicket>>> {
+    // .orderBy('bookingDate', 'asc')
+    return this.angularFirestore
+      .collection<ITicket>(Constants.RealtimeDatabase.tickets, ref => 
+        ref.where('isMain', '==', true)
+      )
+      .valueChanges({ idField: 'id' })
+      .pipe(
+        map((tickets: Array<ITicket>) =>
+          tickets.map((ticket: ITicket) => ({
+            name: ticket.name,
+            adultsCount: ticket.adultsCount,
+            childrenCount: ticket.childrenCount,
+            roomId: ticket.roomId,
+            bookingType: ticket.bookingType,
+            bookingStatus: ticket.bookingStatus,
+            bookingDate: ticket.bookingDate,
+            totalCost: 0,
+            paid: ticket.paid,
+            remaining: ticket.remaining,
+            userNotes: ticket.userNotes
+          }))
+        ),
+        take(1)
+      );
+  }
+
+  getAllSubscriptionWithPagination(pageNumber: number, pageSize: number): Observable<Array<Partial<ITicket>>> {
+    return this.angularFirestore
+      .collection<ITicket>(Constants.RealtimeDatabase.tickets, ref => 
+        ref.orderBy('bookingDate', 'asc')
+           .limit(pageSize)
+           .startAfter(pageNumber * pageSize)
+      )
+      .valueChanges({ idField: 'id' })
+      .pipe(
+        map((tickets: Array<ITicket>) =>
+          tickets.map((ticket: ITicket) => ({
+            name: ticket.name,
+            mobile: ticket.mobile,
+            birthDate: ticket.birthDate,
+            roomId: ticket.roomId,
+            bookingStatus: ticket.bookingStatus,
+            age: new Date().getFullYear() - ticket.birthDate.toDate().getFullYear(),
+            gender: ticket.gender,
+            isMain: ticket.isMain,
+            isChild: ticket.isChild
+          }))
+        ),
+        take(1)
+      );
+  } 
 
   collection<T>(path: string, queryFn?: QueryFn): AngularFirestoreCollection<T> {
     return this.angularFirestore.collection(path, queryFn);

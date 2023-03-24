@@ -1,7 +1,7 @@
 import { Constants } from '@app/constants';
 import { Component, OnInit } from '@angular/core';
 
-import { ISettings, TicketType } from '@app/models';
+import { ISettings, BookingType } from '@app/models';
 import { FireStoreService } from '@app/services';
 import { Observable } from 'rxjs';
 
@@ -12,7 +12,7 @@ import { Observable } from 'rxjs';
 export class HomeComponent implements OnInit {
 
   selectedTabIndex = 0;
-  ticketType = TicketType;
+  bookingType = BookingType;
   settings: Observable<Array<ISettings>>;
   showForm = false;
 

@@ -4,7 +4,7 @@ import { Timestamp } from 'firebase/firestore';
 
 import { Constants } from '@app/constants';
 import { TicketModel } from './ticket.models';
-import { Gender, SocialStatus, TicketStatus, TicketType, IAddress, IBus } from '@app/models';
+import { Gender, SocialStatus, BookingStatus, BookingType, IAddress, IBus } from '@app/models';
 import { DialogService, FireStoreService, NotifyService, StorageService, TranslationService } from '@app/services';
 
 @Component({
@@ -14,7 +14,12 @@ import { DialogService, FireStoreService, NotifyService, StorageService, Transla
 })
 export class TicketComponent implements OnInit {
 
-  @Input() type: TicketType = TicketType.individual;
+  @Input() set type (val: BookingType) {
+    this.model.selectedType = val;
+    this.model.form.patchValue({
+      bookingType: val
+    });
+  }
   @Output() showForm: EventEmitter<boolean> = new EventEmitter<boolean>(false);
   model: TicketModel;
 
@@ -111,6 +116,7 @@ export class TicketComponent implements OnInit {
   }
 
   private initFormModels() {
+    console.log('type', this.model.selectedType);
     return this.formBuilder.group({
       name: ['', [Validators.required, Validators.pattern(Constants.Regex.arabicLetters)]],
       mobile: ['', [Validators.required, Validators.pattern(Constants.Regex.mobileNumber)]],
@@ -125,8 +131,8 @@ export class TicketComponent implements OnInit {
       total: [0],
       paid: [0],
       remaining: [0],
-      ticketStatus: [TicketStatus.new],
-      ticketType: [this.type, Validators.required],
+      bookingStatus: [BookingStatus.new],
+      bookingType: [this.model.selectedType, Validators.required],
       roomId: [''],
       participants: this.formBuilder.array([]),
     });
