@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup, Validators, FormBuilder, FormGroupDirective } from '@angular/forms';
 import { Timestamp } from 'firebase/firestore';
 
@@ -15,6 +15,7 @@ import { DialogService, FireStoreService, NotifyService, StorageService, Transla
 export class TicketComponent implements OnInit {
 
   @Input() type: TicketType = TicketType.individual;
+  @Output() showForm: EventEmitter<boolean> = new EventEmitter<boolean>(false);
   model: TicketModel;
 
   constructor(
@@ -68,11 +69,12 @@ export class TicketComponent implements OnInit {
   save(form: FormGroupDirective): void {
     if (this.model.form.valid) {
       this.add();
-      form.reset();
     }
   }
 
   private newParticipant(isChild: boolean, needBed: boolean): FormGroup {
+    const textValidator = isChild ? null : Validators.required;
+    const mobileValidator = isChild ? null : [Validators.required, Validators.pattern(Constants.Regex.mobileNumber)];
     return this.formBuilder.group({
       name: ['', [Validators.required, Validators.pattern(Constants.Regex.arabicLetters)]],
       transportationId: ['', Validators.required],
@@ -81,20 +83,19 @@ export class TicketComponent implements OnInit {
       userNotes: [''],
       isChild: [isChild],
       needsSeparateBed: [needBed, Validators.required],
-      addressId: ['', Validators.required],
-      mobile: ['', [Validators.required, Validators.pattern(Constants.Regex.mobileNumber)]],
-      socialStatus: [SocialStatus.single, Validators.required],
+      addressId: ['', textValidator],
+      mobile: ['', mobileValidator],
+      socialStatus: [SocialStatus.single, textValidator],
     });
   }
 
   private add(): void {
     const formValue = this.model.form.value;
-    this.fireStoreService.addTicket(formValue).then(() => {
+    this.fireStoreService.addTicket(formValue).subscribe(() => {
+      this.showForm.emit(false);
       this.notifyService.showNotifier(this.translationService.instant('notifications.bookedSuccessfully'));
+      this.model.form.reset();
     });
-    // this.fireStoreService.addDoc<ITicket>(Constants.RealtimeDatabase.tickets, formValue).subscribe(() => {
-    //   this.notifyService.showNotifier(this.translationService.instant('notifications.bookedSuccessfully'));
-    // });
   }
 
   private getAddressList(): void {

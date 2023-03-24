@@ -1,9 +1,36 @@
 import { Timestamp } from 'firebase/firestore';
 
+export interface ITicket {
+    id: string;
+    name: string;
+    addressId: string;
+    birthDate: Timestamp;
+    gender: Gender;
+    socialStatus: SocialStatus;
+    mobile: string;
+    transportationId: string;
+    userNotes: string;
+    bookingDate: Timestamp;
+    adminNotes: string;
+    total: number;
+    paid: number;
+    remaining: number;
+    ticketStatus: TicketStatus;
+    ticketType: TicketType;
+    roomId: string;
+    adultsCount: number;
+    childrenCount: number;
+    needsSeparateBed: boolean;
+    isChild: boolean;
+    isMain: boolean;
+    primaryId: string;
+    age?: number;
+}
+
 export interface IUserInfo {
     name: string;
     addressId: string;
-    birthDate: Date;
+    birthDate: Timestamp;
     gender: Gender;
     socialStatus: SocialStatus;
     mobile: string;
@@ -29,14 +56,14 @@ export interface IParticipant extends IUserInfo {
     isChild: boolean;
 }
 
-export interface ITicket extends IPrimary{
+export interface ITicketForm extends IPrimary {
     participants: Array<IParticipant>;
 }
 
 export enum TicketStatus {
     new = 1,
     confirmed = 2,
-    duplicated = 1,
+    duplicated = 3,
     canceled = 4
 }
 

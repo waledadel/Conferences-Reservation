@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ISettings } from '@app/models';
 
 @Component({
   selector: 'app-info',
@@ -6,5 +7,12 @@ import { Component } from '@angular/core';
   styleUrls: ['./info.component.scss']
 })
 export class InfoComponent {
+
+  @Input() settings: Array<ISettings> = [] as Array<ISettings>;
+  @Output() showForm: EventEmitter<boolean> = new EventEmitter<boolean>(false);
+
+  showTicketForm(): void {
+    this.showForm.emit(true);
+  }
 
 }

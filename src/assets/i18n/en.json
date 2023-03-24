@@ -32,7 +32,11 @@
         "price": "Price",
         "update": "Update",
         "add": "Add",
-        "egp": "EGP"
+        "egp": "EGP",
+        "mobile": "Mobile Number",
+        "room": "Room",
+        "age": "Age",
+        "bookingStatus": "Booking Status"
     },
     "languages": {
         "arabic": "العربية",
@@ -88,6 +92,13 @@
         "priceDetails": "Price Details",
         "importantDates": "Important Dates",
         "firstReservationDate": "The first reservation date",
-        "lastReservationDate": "The latest reservation date"
+        "lastReservationDate": "The latest reservation date",
+        "agreeTerms": "Agree to the terms and abide by all warnings"
+    },
+    "ticketStatus": {
+        "new": "New",
+        "confirmed": "Confirmed",
+        "duplicated": "Duplicated",
+        "canceled": "Canceled"
     }
 }

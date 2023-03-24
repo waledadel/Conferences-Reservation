@@ -4,32 +4,52 @@
         <table mat-table [dataSource]="dataSource">
           <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef>{{'common.name' | translate}}</th>
-            <td mat-cell *matCellDef="let element" class="col-3">{{element.name}}</td>
+            <td mat-cell *matCellDef="let element" class="col-2">{{element.name}}</td>
           </ng-container>
       
           <ng-container matColumnDef="mobile">
             <th mat-header-cell *matHeaderCellDef>{{'common.mobile' | translate}}</th>
-            <td mat-cell *matCellDef="let element" class="w-100">{{ element.mobile }}</td>
+            <td mat-cell *matCellDef="let element" class="col-2">{{ element.mobile }}</td>
           </ng-container>
 
           <ng-container matColumnDef="birthDate">
-            <th mat-header-cell *matHeaderCellDef>{{'common.mobile' | translate}}</th>
-            <td mat-cell *matCellDef="let element" class="w-100">{{ element.mobile }}</td>
+            <th mat-header-cell *matHeaderCellDef>{{'common.birthDate' | translate}}</th>
+            <td mat-cell *matCellDef="let element" class="col-2">{{ element.birthDate.toMillis() | date }}</td>
           </ng-container>
 
           <ng-container matColumnDef="age">
-            <th mat-header-cell *matHeaderCellDef>{{'common.mobile' | translate}}</th>
-            <td mat-cell *matCellDef="let element" class="w-100">{{ element.mobile }}</td>
+            <th mat-header-cell *matHeaderCellDef>{{'common.age' | translate}}</th>
+            <td mat-cell *matCellDef="let element" class="col-2">{{ element.age }}</td>
           </ng-container>
 
           <ng-container matColumnDef="room">
-            <th mat-header-cell *matHeaderCellDef>{{'common.mobile' | translate}}</th>
-            <td mat-cell *matCellDef="let element" class="w-100">{{ element.mobile }}</td>
+            <th mat-header-cell *matHeaderCellDef>{{'common.room' | translate}}</th>
+            <td mat-cell *matCellDef="let element" class="col-2">
+              <ng-container *ngIf="element.room; else empty">
+                {{ element.room }}
+              </ng-container>
+              <ng-template #empty>---</ng-template>
+            </td>
           </ng-container>
 
           <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef>{{'common.mobile' | translate}}</th>
-            <td mat-cell *matCellDef="let element" class="w-100">{{ element.mobile }}</td>
+            <th mat-header-cell *matHeaderCellDef>{{'common.bookingStatus' | translate}}</th>
+            <td mat-cell *matCellDef="let element" class="col-2">
+              <ng-container [ngSwitch]="element.ticketStatus">
+                <div *ngSwitchCase="2">
+                  <div class="badge badge-info">{{ 'ticketStatus.confirmed' | translate }}</div>
+                </div>
+                <div *ngSwitchCase="3">
+                  <div class="badge badge-warning">{{ 'ticketStatus.duplicated' | translate }}</div>
+                </div>
+                <div *ngSwitchCase="4">
+                  <div class="badge badge-danger">{{ 'ticketStatus.canceled' | translate }}</div>
+                </div>
+                <div *ngSwitchDefault>
+                  <div class="badge badge-success">{{ 'ticketStatus.new' | translate }}</div>
+                </div>
+              </ng-container>
+            </td>
           </ng-container>
   
   

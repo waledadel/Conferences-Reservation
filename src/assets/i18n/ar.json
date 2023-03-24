@@ -32,7 +32,11 @@
         "price": "الثمن",
         "update": "تعديل",
         "add": "إضافة",
-        "egp": "جنيه"
+        "egp": "جنيه",
+        "mobile": "رقم الموبايل",
+        "room": "الغرفة",
+        "age": "السن",
+        "bookingStatus": "حالة الحجز"
     },
     "languages": {
         "arabic": "العربية",
@@ -88,6 +92,13 @@
         "priceDetails": "قيمة الاشتراك",
         "importantDates": "مواعيد هامة" ,
         "firstReservationDate": "أول تاريخ للحجز",
-        "lastReservationDate": "اخر تاريخ للحجز"
+        "lastReservationDate": "اخر تاريخ للحجز",
+        "agreeTerms": "موافق علي الشروط و ملتزم بجميع التنبيهات"
+    },
+    "ticketStatus": {
+        "new": "جديد",
+        "confirmed": "مؤكد",
+        "duplicated": "مكرر",
+        "canceled": "ملغي"
     }
 }

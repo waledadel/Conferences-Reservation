@@ -144,7 +144,7 @@
                         </mat-form-field>
                         <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
                             <mat-label>{{'common.birthDate' | translate}}</mat-label>
-                            <input matInput [matDatepicker]="picker" formControlName="birthDate" [max]="model.maxDate" [min]="model.adultMinDate">
+                            <input matInput [matDatepicker]="picker" formControlName="birthDate" [max]="model.maxDate" [min]="isChild(i) ? model.childMinDate : model.adultMinDate">
                             <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                             <mat-datepicker #picker></mat-datepicker>
                             <mat-error *ngIf="participant.get('birthDate')!.hasError('required')">

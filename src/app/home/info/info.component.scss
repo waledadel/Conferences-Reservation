@@ -1,0 +1,12 @@
+.img {
+    max-height: 250px;
+}
+
+::ng-deep {
+    .conference-info {
+        font-size: 14px;
+        p {
+            margin-bottom: 4px !important;
+        }
+    }    
+}

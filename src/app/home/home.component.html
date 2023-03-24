@@ -1,16 +1,22 @@
-<mat-toolbar color="primary">
-    <span>{{'common.conferencesReservation' | translate}}</span>
-</mat-toolbar>
+<ng-container *ngIf="(settings | async) as setting">
+    <div class="container-fluid px-0">
+        <mat-toolbar color="primary" class="col-12 px-0">
+            <div *ngIf="setting && setting[0].title != ''" class="w-100 d-flex justify-content-center" [innerText]="setting[0].title">
+            </div>
+        </mat-toolbar>
+    </div>
+    <div *ngIf="!showForm" class="container my-md-4 p-md-3 p-0 container-border overflow-auto info-section">
+        <app-info [settings]="setting" (showForm)="showTicketForm($event)"></app-info>
+    </div>
+</ng-container>
 
-<!-- <app-info></app-info> -->
-
-<div class="container h-100 mt-3 px-0">
+<div *ngIf="showForm" class="container h-100 mt-3 px-0">
     <div class="d-flex justify-content-center">
         <div class="col-md-9 col-12 px-0 container-border">
             <mat-tab-group class="w-100" [selectedIndex]="selectedTabIndex" (selectedIndexChange)="onTabChanged($event)">
                 <mat-tab [label]="'home.individualBooking' | translate">
                     <ng-container *ngIf="selectedTabIndex < 1">
-                        <app-ticket [type]="ticketType.individual"></app-ticket>
+                        <app-ticket [type]="ticketType.individual" (showForm)="showTicketForm($event)"></app-ticket>
                     </ng-container>
                 </mat-tab>
                 <mat-tab [label]="'home.groupBooking' | translate">
@@ -26,7 +32,7 @@
                                 {{'common.maximumPersons' | translate}}
                             </div>
                         </div>
-                        <app-ticket [type]="ticketType.group"></app-ticket>
+                        <app-ticket [type]="ticketType.group" (showForm)="showTicketForm($event)"></app-ticket>
                     </ng-container>
                 </mat-tab>
             </mat-tab-group>

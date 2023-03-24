@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 
-// import { Constants } from '@app/constants';
+import { Constants } from '@app/constants';
 import { ITicket } from '@app/models';
 import { FireStoreService } from '@app/services';
 
@@ -15,8 +15,7 @@ export class AllSubscriptionsComponent implements OnInit, AfterViewInit {
   dataSource: MatTableDataSource<ITicket> = new MatTableDataSource<ITicket>([]);
   @ViewChild(MatPaginator) paginator: MatPaginator = {} as MatPaginator;
   
-  constructor(
-    public fireStoreService: FireStoreService) {}
+  constructor(private fireStoreService: FireStoreService) {}
 
   ngOnInit(): void {
     this.getTickets();
@@ -27,10 +26,8 @@ export class AllSubscriptionsComponent implements OnInit, AfterViewInit {
   }
 
   private getTickets(): void {
-    // this.fireStoreService.getAllSubscriptions().subscribe(data => {
-    //   // this.dataSource.data = data;
-    //   console.log('data', data);
-    // });
+    this.fireStoreService.getAll<ITicket>(Constants.RealtimeDatabase.tickets).subscribe(res => {
+      this.dataSource.data = res.map(item => ({...item, age: new Date().getFullYear() - item.birthDate.toDate().getFullYear() }));
+    });
   }
-
 }

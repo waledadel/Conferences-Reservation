@@ -4,4 +4,19 @@
     }
 }
 
+.info-section {
+    height: calc(100% - 110px);
+}
 
+@media (max-width: 769px) {
+    .info-section {
+        height: calc(100% - 56px) !important;
+    }
+    .mat-toolbar {
+        white-space: pre-line !important;
+        font-size: 14px;
+        text-align: center;
+        line-height: 1.7;
+        padding: 0 10px !important;
+    }
+}
