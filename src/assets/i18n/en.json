@@ -45,7 +45,11 @@
         "paid": "Paid",
         "totalCost": "Total",
         "remaining": "Remaining",
-        "group": "Group"
+        "group": "Group",
+        "edit": "Edit",
+        "delete": "Delete",
+        "noDataFound": "No Data Found",
+        "adminNotes": "Admin Notes"
     },
     "languages": {
         "arabic": "العربية",
@@ -80,6 +84,7 @@
         "updatedSuccessfully": "Updated Successfully",
         "removedSuccessfully": "Removed Successfully",
         "bookedSuccessfully": "Booked Successfully",
+        "bookedUpdatedSuccessfully": "Booked updated successfully",
         "settingsSavedSuccessfully": "Settings saved successfully"
     },
     "validations": {

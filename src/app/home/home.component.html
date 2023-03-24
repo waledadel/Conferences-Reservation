@@ -16,7 +16,7 @@
             <mat-tab-group class="w-100" [selectedIndex]="selectedTabIndex" (selectedIndexChange)="onTabChanged($event)">
                 <mat-tab [label]="'home.individualBooking' | translate">
                     <ng-container *ngIf="selectedTabIndex < 1">
-                        <app-ticket [type]="bookingType.individual" (showForm)="showTicketForm($event)"></app-ticket>
+                        <app-reservation [type]="bookingType.individual" (showForm)="showTicketForm($event)"></app-reservation>
                     </ng-container>
                 </mat-tab>
                 <mat-tab [label]="'home.groupBooking' | translate">
@@ -32,7 +32,7 @@
                                 {{'common.maximumPersons' | translate}}
                             </div>
                         </div>
-                        <app-ticket [type]="bookingType.group" (showForm)="showTicketForm($event)"></app-ticket>
+                        <app-reservation [type]="bookingType.group" (showForm)="showTicketForm($event)"></app-reservation>
                     </ng-container>
                 </mat-tab>
             </mat-tab-group>

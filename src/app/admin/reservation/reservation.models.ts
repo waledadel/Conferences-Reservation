@@ -1,8 +1,9 @@
+import { KeyValue } from '@angular/common';
 import { FormArray, FormGroup } from '@angular/forms';
 
-import { Gender, IAddress, IBus, SocialStatus, BookingType } from '@app/models';
+import { Gender, IAddress, IBus, SocialStatus, BookingType, BookingStatus } from '@app/models';
 
-export class TicketModel {
+export class ReservationModel {
   form: FormGroup;
   addressList: Array<IAddress> = [];
   busList: Array<IBus> = [];
@@ -14,6 +15,13 @@ export class TicketModel {
   socialStatus = SocialStatus;
   bookingType = BookingType;
   selectedType = BookingType.individual;
+  isEditMode = false;
+  bookingStatusList: Array<KeyValue<string, BookingStatus>> = [
+    {key: 'bookingStatus.new', value: BookingStatus.new},
+    {key: 'bookingStatus.confirmed', value: BookingStatus.confirmed},
+    {key: 'bookingStatus.canceled', value: BookingStatus.canceled},
+    {key: 'bookingStatus.duplicated', value: BookingStatus.duplicated},
+  ];
 
   get participants(): FormArray {
     return this.form.get('participants') as FormArray;

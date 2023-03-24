@@ -45,7 +45,11 @@
         "paid": "المدفوع",
         "totalCost": "الإجمالي",
         "remaining": "الباقي",
-        "group": "مجموعة"
+        "group": "مجموعة",
+        "edit": "تعديل",
+        "delete": "حذف",
+        "noDataFound": "لا توجد بيانات",
+        "adminNotes": "ملاحظات المسئول"
     },
     "languages": {
         "arabic": "العربية",
@@ -80,6 +84,7 @@
         "updatedSuccessfully": "تم التحديث بنجاح",
         "removedSuccessfully": "تم الحذف بنجاح",
         "bookedSuccessfully": "تم الحجز بنجاح",
+        "bookedUpdatedSuccessfully": "تم تعديل الحجز بنجاح",
         "settingsSavedSuccessfully": "تم حفظ التغييرات بنجاح"
     },
     "validations": {

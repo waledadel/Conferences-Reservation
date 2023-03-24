@@ -56,7 +56,6 @@ export class AllSubscriptionsComponent implements OnInit, AfterViewInit {
     // });
     this.fireStoreService.getAllSubscription().subscribe(res => {
       this.dataSource.data = res;
-      console.log('res', res);
       this.total = res.length;
     });
   }

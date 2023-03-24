@@ -1,0 +1,17 @@
+<div mat-dialog-title class="d-flex justify-content-between align-content-center">
+    <div class="font-weight-bold">{{ (data ? 'common.update' : 'common.add') | translate }}</div>
+    <button class="p-0 d-flex justify-content-cener align-items-center" (click)="close()">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+<div mat-dialog-content>
+    <ng-container *ngIf="data && data.bookingType && isDataLoaded">
+        <app-reservation [type]="data.bookingType" [canManageReservation]="true" [reservationData]="reservationData" [fireSaveAction]="fireSave" (closeModal)="close(true)"></app-reservation>
+    </ng-container>
+</div>
+<div mat-dialog-actions>
+    <button color="primary" mat-flat-button type="button" cdkFocusInitial (click)="save()" [disabled]="fireSave">
+        <span> {{ 'common.save' | translate }}</span>
+        <i *ngIf="fireSave" class="fa-solid fa-spinner fa-spin px-2"></i>
+    </button>
+</div>

@@ -48,6 +48,10 @@ export interface IPrimary extends IUserInfo {
     bookingStatus: BookingStatus;
     bookingType: BookingType;
     roomId: string;
+    primaryId: string;
+    isChild: boolean;
+    isMain: boolean;
+    needsSeparateBed: boolean;
 }
 
 export interface IParticipant extends IUserInfo {

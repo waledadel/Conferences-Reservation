@@ -1,5 +1,5 @@
 <div class="row mx-0 pb-4" [class.pt-4]="model.selectedType === model.bookingType.individual">
-    <form [formGroup]="model.form" #categoryForm="ngForm" novalidate class="col-12" (ngSubmit)="save(categoryForm)">
+    <form [formGroup]="model.form" novalidate class="col-12" (ngSubmit)="save()">
         <div class="rounded primary-section col-12 pt-3">
             <div class="w-100 d-flex px-2 pb-2">
                 <mat-icon color="primary">stars</mat-icon>
@@ -16,7 +16,7 @@
             </mat-form-field>
             <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
                 <mat-label>{{'home.englishMobileNumber' | translate}}</mat-label>
-                <input type="text" matInput formControlName="mobile">
+                <input type="text" matInput formControlName="mobile" inputmode="numeric">
                 <mat-error *ngIf="model.form.get('mobile')!.hasError('required')">
                     {{'validations.requiredField' | translate}}
                 </mat-error>
@@ -82,6 +82,33 @@
                     {{'validations.requiredField' | translate}}
                 </mat-error>
             </mat-form-field>
+            <ng-container *ngIf="canManageReservation">
+                <mat-form-field  class="col-md-6 col-12 px-md-2 px-0">
+                    <mat-label>{{'common.bookingStatus' | translate}}</mat-label>
+                    <mat-select formControlName="bookingStatus">
+                        <ng-container *ngFor="let item of model.bookingStatusList">
+                            <mat-option [value]="item.value">{{ item.key | translate }}</mat-option>
+                        </ng-container>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
+                    <mat-label>{{'common.totalCost' | translate}}</mat-label>
+                    <input type="text" matInput formControlName="total" readonly>
+                </mat-form-field>
+                <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
+                    <mat-label>{{'common.paid' | translate}}</mat-label>
+                    <input type="text" matInput formControlName="paid" inputmode="numeric">
+                </mat-form-field>
+                <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
+                    <mat-label>{{'common.remaining' | translate}}</mat-label>
+                    <input type="text" matInput formControlName="remaining" inputmode="numeric">
+                </mat-form-field>
+                
+                <mat-form-field class="col-12 px-md-2 px-0">
+                    <mat-label>{{'common.adminNotes' | translate}}</mat-label>
+                    <textarea type="text" matInput formControlName="adminNotes"></textarea>
+                </mat-form-field>
+            </ng-container>
         </div>
         <ng-container formArrayName="participants">
             <ng-container *ngIf="model.participants.controls.length > 0">
@@ -93,7 +120,7 @@
                                 <div class="d-flex justify-content-center align-items-center text-light count mx-2">{{i+1}}</div>
                                 {{ ( isChild(i) ? 'common.child' : 'common.individual') | translate}}
                             </div>
-                            <button type="button" mat-icon-button color="warn" (click)="removeAdult(i)">
+                            <button type="button" mat-icon-button color="warn" (click)="remove(i)">
                                 <mat-icon>delete</mat-icon>
                             </button>
                         </div>
@@ -187,14 +214,16 @@
             </ng-container>
         </ng-container>
 
-        <div *ngIf="model.selectedType === model.bookingType.group && model.participants.controls.length < 4" class="mt-3">
-            <button type="button" mat-stroked-button color="primary" (click)="addAdult()">{{'common.AddAdult' | translate}}</button>
-            <button type="button" mat-stroked-button color="primary" (click)="addChild()" class="child-btn">{{'common.addChild' | translate}}</button>
-        </div>
-        <div class="col-12 pt-3 px-md-2 px-0 d-flex justify-content-end">
-            <button mat-flat-button type="submit" color="primary">
-                {{'common.addBooking' | translate}}
-            </button>
-        </div>
+        <ng-container *ngIf="!canManageReservation">
+            <div *ngIf="model.selectedType === model.bookingType.group && model.participants.controls.length < 4" class="mt-3">
+                <button type="button" mat-stroked-button color="primary" (click)="addAdult()">{{'common.AddAdult' | translate}}</button>
+                <button type="button" mat-stroked-button color="primary" (click)="addChild()" class="child-btn">{{'common.addChild' | translate}}</button>
+            </div>
+            <div class="col-12 pt-3 px-md-2 px-0 d-flex justify-content-end">
+                <button mat-flat-button type="submit" color="primary">
+                    {{'common.addBooking' | translate}}
+                </button>
+            </div>
+        </ng-container>
     </form>
 </div>

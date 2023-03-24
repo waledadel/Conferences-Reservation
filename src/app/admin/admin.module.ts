@@ -17,6 +17,8 @@ import { SettingsComponent } from './settings/settings.component';
 import { ManageBusComponent } from './manage-bus/manage-bus.component';
 import { ManageAddressComponent } from './manage-address/manage-address.component';
 import { AddressComponent } from './address/address.component';
+import { ManageReservationComponent } from './manage-reservation/manage-reservation.component';
+import { ReservationModule } from './reservation/reservation.module';
 
 
 @NgModule({
@@ -33,13 +35,15 @@ import { AddressComponent } from './address/address.component';
     SettingsComponent,
     ManageBusComponent,
     ManageAddressComponent,
-    AddressComponent
+    AddressComponent,
+    ManageReservationComponent
   ],
   imports: [
     SharedModule,
     AdminRoutingModule,
     LoadingModule,
-    NgxEditorModule
+    NgxEditorModule,
+    ReservationModule
   ]
 })
 export class AdminModule { }

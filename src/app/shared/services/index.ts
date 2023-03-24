@@ -1,6 +1,5 @@
 export { AuthService } from './auth.service';
 export { DialogService } from './dialog.service';
-export { FireStorageService } from './fire-storage.service';
 export { FireStoreService } from './firestore.service';
 export { LanguageService } from './language.service';
 export { NotifyService } from './notify.service';
