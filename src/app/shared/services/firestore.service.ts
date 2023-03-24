@@ -147,6 +147,17 @@ export class FireStoreService {
     return from(batch.commit()).pipe(map(() => null));
   }
 
+  deleteReservation(ids: Array<string>): Observable<unknown> {
+    const batch = this.angularFirestore.firestore.batch();
+    if (ids && ids.length > 0) {
+      ids.forEach(id => {
+        const ref = this.angularFirestore.doc(`/${Constants.RealtimeDatabase.tickets}/${id}`).ref;
+        batch.delete(ref);
+      });
+    }
+    return from(batch.commit()).pipe(map(() => null));
+  }
+
   updateDoc(path: string, data: PartialWithFieldValue<any>): Observable<any> {
     const docRef = doc(this.firestore, path);
     return from(updateDoc(docRef, data));

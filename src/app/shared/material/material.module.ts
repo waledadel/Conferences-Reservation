@@ -17,8 +17,8 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
+// import { MatTooltipModule } from '@angular/material/tooltip';
 // import { MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 // import { A11yModule } from '@angular/cdk/a11y';
 // import { ScrollingModule } from '@angular/cdk/scrolling';
@@ -64,8 +64,8 @@ const modules = [
   MatTableModule,
   MatTabsModule,
   MatToolbarModule,
-  MatTooltipModule,
   MatFormFieldModule
+  // MatTooltipModule,
   // MatProgressSpinnerModule,
   // ScrollingModule,
   // A11yModule,

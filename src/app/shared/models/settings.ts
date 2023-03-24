@@ -7,6 +7,10 @@ export interface ISettings {
     generalAlerts: string;
     priceDetails: string;
     importantDates: string;
-    firstReservationDate: Timestamp;
-    lastReservationDate: Timestamp;
+    startReservationDate: Timestamp;
+    endReservationDate: Timestamp;
+    reservationPrice: number;
+    waitingListCount: number;
+    availableTicketsCount: number;
+    waitingListMessage: string;
 }

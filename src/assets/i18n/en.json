@@ -49,7 +49,14 @@
         "edit": "Edit",
         "delete": "Delete",
         "noDataFound": "No Data Found",
-        "adminNotes": "Admin Notes"
+        "adminNotes": "Admin Notes",
+        "logout": "Log out",
+        "confirmation": "Confirmation",
+        "sureToLogout": " Are you sure you want to logout ?",
+        "noThanks": "No Thanks",
+        "email": "Email",
+        "password": "Password",
+        "login": "Login"
     },
     "languages": {
         "arabic": "العربية",
@@ -90,7 +97,8 @@
     "validations": {
         "requiredField": "This field is required",
         "arabicLettersOnly": "This field must be arabic letters only",
-        "mobileNumber": "Mobile number must be 11 digits and start with 01(0,1,2,5)"
+        "mobileNumber": "Mobile number must be 11 digits and start with 01(0,1,2,5)",
+        "invalidEmailAddress": "Invalid Email address"
     },
     "home": {
         "individualBooking": "Individual booking",
@@ -105,9 +113,13 @@
         "generalAlerts": "General Alerts",
         "priceDetails": "Price Details",
         "importantDates": "Important Dates",
-        "firstReservationDate": "The first reservation date",
-        "lastReservationDate": "The latest reservation date",
-        "agreeTerms": "Agree to the terms and abide by all warnings"
+        "startReservationDate": "The first reservation date",
+        "endReservationDate": "The latest reservation date",
+        "agreeTerms": "Agree to the terms and abide by all warnings",
+        "waitingListMessage": "Waiting list message",
+        "availableTicketsCount": "Available tickets count",
+        "waitingListCount": "Waiting list count",
+        "reservationPrice": "Reservation Price"
     },
     "bookingStatus": {
         "new": "New",

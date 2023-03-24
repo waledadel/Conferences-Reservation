@@ -4,28 +4,28 @@
             <img src="assets/images/logo.jpg" loading="lazy" alt="img" class="img-fluid mb-3">
             <form [formGroup]="form" novalidate (ngSubmit)="login()" class="col-12 px-0">
                 <mat-form-field class="w-100">
-                    <mat-label>Email</mat-label>
-                    <input type="email" matInput formControlName="email">
+                    <mat-label>{{'common.email' | translate}}</mat-label>
+                    <input type="email" matInput formControlName="email" inputmode="email">
                     <mat-error *ngIf="form.get('email')!.hasError('required')">
-                        Email is <strong>required</strong>
+                        {{'validations.requiredField' | translate}}
                     </mat-error>
                     <mat-error *ngIf="form.get('email')!.hasError('email')">
-                        Invalid Email address
+                       {{'validations.invalidEmailAddress' | translate}}
                     </mat-error>
                 </mat-form-field>
                 <mat-form-field class="w-100">
-                    <mat-label>Password</mat-label>
+                    <mat-label>{{'common.password' | translate}}</mat-label>
                     <input [type]="isPasswordVisible ? 'text' : 'password'" matInput formControlName="password">
                     <button mat-icon-button matSuffix (click)="toggleShowPassword()" type="button">
                         <mat-icon>{{isPasswordVisible ? 'visibility_off' : 'visibility'}}</mat-icon>
                         </button>
                     <mat-error *ngIf="form.get('password')!.hasError('required')">
-                        Password is <strong>required</strong>
+                        {{'validations.requiredField' | translate}}
                     </mat-error>
                 </mat-form-field>
                 <button mat-flat-button class="mt-2 w-100" type="submit" color="primary" [disabled]="isLoading">
                     <i *ngIf="isLoading" class="fa-solid fa-spinner fa-spin"></i>
-                    <span class="px-2">Login</span>
+                    <span class="px-2">{{'common.login' | translate}}</span>
                 </button>
             </form>
         </div>

@@ -1,12 +1,8 @@
 <mat-toolbar color="primary">
-    <button mat-icon-button (click)="drawer.toggle()" matTooltip="Menu">
+    <button mat-icon-button (click)="drawer.toggle()">
         <mat-icon>menu</mat-icon>
     </button>
     <span>{{'common.conferencesReservation' | translate}}</span>
-    <span class="toolbar-item-spacer"></span>
-    <button mat-icon-button matTooltip="Logout" (click)="logout()">
-        <mat-icon>exit_to_app</mat-icon>
-    </button>
 </mat-toolbar>
 
 <mat-drawer-container class="app-container" autosize>
@@ -32,6 +28,10 @@
                     <div class="p-3 lang-item" [class.active-lang]="model.english === model.selectedLanguage" (click)="changeLanguage(model.english)">{{'languages.english' | translate}}</div>
                 </mat-expansion-panel>
             </mat-accordion>
+            <mat-list-item (click)="logout()">
+                <mat-icon color="warn">exit_to_app</mat-icon>
+                <span class="px-2 text-danger">{{'common.logout' | translate}} </span>
+            </mat-list-item>
         </mat-nav-list>
     </mat-drawer>
     <router-outlet>

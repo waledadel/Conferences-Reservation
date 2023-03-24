@@ -84,8 +84,12 @@ export class SettingsComponent implements OnInit {
       generalAlerts: ['', Validators.required],
       priceDetails: ['', Validators.required],
       importantDates: ['', Validators.required],
-      firstReservationDate: [null, Validators.required],
-      lastReservationDate: [null, Validators.required],
+      startReservationDate: [null, Validators.required],
+      endReservationDate: [null, Validators.required],
+      reservationPrice: [null, [Validators.required, Validators.min(1)]],
+      waitingListCount: [null, [Validators.required, Validators.min(1)]],
+      availableTicketsCount: [null, [Validators.required, Validators.min(1)]],
+      waitingListMessage: ['', Validators.required],
     });
   }
 
@@ -140,8 +144,12 @@ export class SettingsComponent implements OnInit {
       generalAlerts: item.generalAlerts,
       priceDetails: item.priceDetails,
       importantDates: item.importantDates,
-      firstReservationDate: item.firstReservationDate.toDate(),
-      lastReservationDate: item.lastReservationDate.toDate()
+      startReservationDate: item.startReservationDate.toDate(),
+      endReservationDate: item.endReservationDate.toDate(),
+      reservationPrice: item.reservationPrice,
+      waitingListCount: item.waitingListCount,
+      availableTicketsCount: item.availableTicketsCount,
+      waitingListMessage: item.waitingListMessage,
     });
     if (item.imageUrl != '') {
       this.model.selectedImage = item.imageUrl;

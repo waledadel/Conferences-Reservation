@@ -8,7 +8,7 @@ export class LogoutComponent {
 
   constructor(private dialogRef: MatDialogRef<LogoutComponent>) {}
 
-  close(): void {
-    this.dialogRef.close();
+  close(confirmLogout: boolean = false): void {
+    this.dialogRef.close({logout: confirmLogout});
   }
 }

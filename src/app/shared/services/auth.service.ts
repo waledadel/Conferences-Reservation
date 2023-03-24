@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable, map } from 'rxjs';
+import { Observable, map, timer } from 'rxjs';
 
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { FirebaseError } from '@angular/fire/app';
@@ -43,12 +43,14 @@ export class AuthService {
       panelClass: 'customDialogPanelClass-md',
       disableClose: true,
     });
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
+    dialogRef.afterClosed().subscribe((result: {logout: boolean}) => {
+      if (result && result.logout) {
         this.angularFireAuth.signOut();
         localStorage.clear();
-        this.router.navigateByUrl('/login');
-        window.location.reload();
+        this.router.navigateByUrl(Constants.Routes.login);
+        timer(100).subscribe(() => {
+          window.location.reload();
+        });
       }
     });
   }

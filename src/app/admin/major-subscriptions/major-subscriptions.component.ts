@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { ITicket } from '@app/models';
-import { DialogService, FireStoreService } from '@app/services';
+import { DialogService, FireStoreService, NotifyService, TranslationService } from '@app/services';
 import { ManageReservationComponent } from '../manage-reservation/manage-reservation.component';
 
 @Component({
@@ -17,7 +17,9 @@ export class MajorSubscriptionsComponent implements OnInit {
   
   constructor(
     private fireStoreService: FireStoreService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private notifyService: NotifyService,
+    private translationService: TranslationService
   ) {}
 
   ngOnInit(): void {
@@ -35,7 +37,21 @@ export class MajorSubscriptionsComponent implements OnInit {
   }
 
   delete(item: Partial<ITicket>): void {
-
+    if (item.name) {
+      this.dialogService.openConfirmDeleteDialog(item.name).afterClosed().subscribe((res: {confirmDelete: boolean}) => {
+        if (res && res.confirmDelete && item.id) {
+          this.fireStoreService.getPrimaryWithRelatedParticipants(item.id).subscribe(list => {
+            const ids = list.map(item => item.id);
+            if (ids && ids.length > 0) {
+              this.fireStoreService.deleteReservation(ids).subscribe(() => {
+                this.notifyService.showNotifier(this.translationService.instant('notifications.removedSuccessfully'));
+                this.getPrimaryTickets();
+              });
+            }
+          });
+        }
+      });
+    }
   }
 
   private getPrimaryTickets(takeCount = 1): void {

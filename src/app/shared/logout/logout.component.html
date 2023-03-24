@@ -1,13 +1,13 @@
 <div mat-dialog-title class="d-flex justify-content-between align-content-center">
-    <div class="font-weight-bold">Confirmation</div>
+    <div class="font-weight-bold">{{'common.confirmation' | translate}}</div>
     <button class="p-0 d-flex justify-content-center align-items-center" (click)="close()">
         <mat-icon>close</mat-icon>
     </button>
 </div>
 <div class="py-4" mat-dialog-content>
-    Are you sure you want to logout ?
+   {{'common.sureToLogout' | translate}}
 </div>
 <div mat-dialog-actions>
-    <button mat-stroked-button color="primary" (click)="close()">No Thanks</button>
-    <button mat-flat-button color="warn" [mat-dialog-close]="true" cdkFocusInitial>Yes</button>
+    <button mat-stroked-button color="primary" (click)="close()">{{'common.noThanks' | translate}}</button>
+    <button mat-flat-button color="warn" cdkFocusInitial (click)="close(true)">{{'common.yes' | translate}}</button>
 </div>

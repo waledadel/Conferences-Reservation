@@ -49,7 +49,14 @@
         "edit": "تعديل",
         "delete": "حذف",
         "noDataFound": "لا توجد بيانات",
-        "adminNotes": "ملاحظات المسئول"
+        "adminNotes": "ملاحظات المسئول",
+        "logout": "تسجيل الخروج",
+        "confirmation": "تأكيد",
+        "sureToLogout": "هل أنت متأكد أنك تريد تسجيل الخروج ؟",
+        "noThanks": "لا شكرا",
+        "email": "البريد الإلكتروني",
+        "password": "كلمة المرور",
+        "login": "تسجيل الدخول"
     },
     "languages": {
         "arabic": "العربية",
@@ -90,7 +97,8 @@
     "validations": {
         "requiredField": "هذا الحقل مطلوب",
         "arabicLettersOnly": "يجب أن يكون هذا الحقل بأحرف عربية فقط",
-        "mobileNumber": "يجب أن يتكون رقم الهاتف المحمول من 11 رقمًا وأن يبدأ بـ 01 (0،1،2،5)"
+        "mobileNumber": "يجب أن يتكون رقم الهاتف المحمول من 11 رقمًا وأن يبدأ بـ 01 (0،1،2،5)",
+        "invalidEmailAddress": "البريد الإلكتروني غير صحيح"
     },
     "home": {
         "individualBooking": "حجز فرد",
@@ -105,9 +113,13 @@
         "generalAlerts": "تنبيهات عامة",
         "priceDetails": "قيمة الاشتراك",
         "importantDates": "مواعيد هامة" ,
-        "firstReservationDate": "أول تاريخ للحجز",
-        "lastReservationDate": "اخر تاريخ للحجز",
-        "agreeTerms": "موافق علي الشروط و ملتزم بجميع التنبيهات"
+        "startReservationDate": "بدء تاريخ للحجز",
+        "endReservationDate": "اخر تاريخ للحجز",
+        "agreeTerms": "موافق علي الشروط و ملتزم بجميع التنبيهات",
+        "waitingListMessage": "رسالة قائمة الانتظار",
+        "availableTicketsCount": "عدد التذاكر المتاحة",
+        "waitingListCount": "عدد قائمة الانتظار",
+        "reservationPrice": "سعر الحجز"
     },
     "bookingStatus": {
         "new": "جديد",
