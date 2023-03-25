@@ -5,7 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Constants } from '@app/constants';
 import { IRoom } from '@app/models';
 import { NotifyService, DialogService, TranslationService, FireStoreService } from '@app/services';
-import { ManageRoomsComponent } from '../manage-rooms/manage-rooms.component';
+import { ManageRoomsComponent } from './manage-rooms/manage-rooms.component';
 
 @Component({
   templateUrl: './rooms.component.html',

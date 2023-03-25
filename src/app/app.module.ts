@@ -5,9 +5,13 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { SharedModule } from './shared/shared.module';
 import { TranslationModule } from './shared/translation/translation.module';
 import { FirebaseModule } from './shared/modules/firebase.module';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSelectModule } from '@angular/material/select';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 @NgModule({
   declarations: [
@@ -20,7 +24,11 @@ import { FirebaseModule } from './shared/modules/firebase.module';
     HttpClientModule,
     TranslationModule.forRoot(),
     FirebaseModule,
-    SharedModule,
+    MatDialogModule,
+    MatSnackBarModule,
+    MatSelectModule,
+    MatNativeDateModule,
+    MatDatepickerModule
   ],
   bootstrap: [AppComponent]
 })

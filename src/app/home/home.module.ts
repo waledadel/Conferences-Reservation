@@ -2,9 +2,10 @@ import { NgModule } from '@angular/core';
 
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
-import { SharedModule } from 'app/shared/shared.module';
 import { InfoComponent } from './info/info.component';
 import { ReservationModule } from 'app/admin/reservation/reservation.module';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTabsModule } from '@angular/material/tabs';
 
 
 @NgModule({
@@ -13,7 +14,8 @@ import { ReservationModule } from 'app/admin/reservation/reservation.module';
     InfoComponent,
   ],
   imports: [
-    SharedModule,
+    MatTabsModule,
+    MatToolbarModule,
     HomeRoutingModule,
     ReservationModule
   ]

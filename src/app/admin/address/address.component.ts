@@ -5,7 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Constants } from '@app/constants';
 import { IAddress } from '@app/models';
 import { NotifyService, DialogService, FireStoreService, TranslationService } from '@app/services';
-import { ManageAddressComponent } from './../manage-address/manage-address.component';
+import { ManageAddressComponent } from './manage-address/manage-address.component';
 
 @Component({
   templateUrl: './address.component.html'

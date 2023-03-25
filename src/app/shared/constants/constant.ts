@@ -26,7 +26,7 @@ export namespace Constants {
         public static readonly home = 'home';
         public static readonly secure = 'secure';
         public static readonly dashboard = 'dashboard';
-        public static readonly major = 'major';
+        public static readonly primary = 'primary';
         public static readonly all = 'all';
         public static readonly rooms = 'rooms';
         public static readonly buses = 'buses';

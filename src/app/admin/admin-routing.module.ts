@@ -2,16 +2,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { Constants } from '@app/constants';
-import { AllSubscriptionsComponent } from './all-subscriptions/all-subscriptions.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AdminComponent } from './admin.component';
-import { MajorSubscriptionsComponent } from './major-subscriptions/major-subscriptions.component';
-import { RoomsComponent } from './rooms/rooms.component';
-import { BusesComponent } from './buses/buses.component';
-import { SettingsComponent } from './settings/settings.component';
 import { StatisticsComponent } from './statistics/statistics.component';
 import { UsersComponent } from './users/users.component';
-import { AddressComponent } from './address/address.component';
 
 const routes: Routes = [
   {
@@ -23,28 +17,28 @@ const routes: Routes = [
         component: DashboardComponent
       },
       {
-        path: Constants.Routes.major,
-        component: MajorSubscriptionsComponent
+        path: Constants.Routes.primary,
+        loadChildren: () => import('./primary/primary.module').then(mod => mod.PrimaryModule),
       },
       {
         path: Constants.Routes.all,
-        component: AllSubscriptionsComponent
+        loadChildren: () => import('./all-subscription/all-subscription.module').then(mod => mod.AllSubscriptionModule),
       },
       {
         path: Constants.Routes.rooms,
-        component: RoomsComponent
+        loadChildren: () => import('./rooms/rooms.module').then(mod => mod.RoomsModule),
       },
       {
         path: Constants.Routes.buses,
-        component: BusesComponent
+        loadChildren: () => import('./buses/buses.module').then(mod => mod.BusesModule),
       },
       {
         path: Constants.Routes.address,
-        component: AddressComponent
+        loadChildren: () => import('./address/address.module').then(mod => mod.AddressModule),
       },
       {
         path: Constants.Routes.settings,
-        component: SettingsComponent
+        loadChildren: () => import('./settings/settings.module').then(mod => mod.SettingsModule),
       },
       {
         path: Constants.Routes.statistics,

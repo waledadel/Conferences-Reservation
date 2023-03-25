@@ -3,12 +3,12 @@ import { MatTableDataSource } from '@angular/material/table';
 
 import { ITicket } from '@app/models';
 import { DialogService, FireStoreService, NotifyService, TranslationService } from '@app/services';
-import { ManageReservationComponent } from '../manage-reservation/manage-reservation.component';
+import { ManageReservationComponent } from '../reservation/manage-reservation/manage-reservation.component';
 
 @Component({
-  templateUrl: './major-subscriptions.component.html'
+  templateUrl: './primary.component.html'
 })
-export class MajorSubscriptionsComponent implements OnInit {
+export class PrimaryComponent implements OnInit {
 
   total = 0;
   displayedColumns: string[] = ['name', 'adultsCount', 'childrenCount', 'roomId',

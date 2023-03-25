@@ -5,7 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Constants } from '@app/constants';
 import { IBus } from '@app/models';
 import { NotifyService, DialogService, TranslationService, FireStoreService } from '@app/services';
-import { ManageBusComponent } from '../manage-bus/manage-bus.component';
+import { ManageBusComponent } from './manage-bus/manage-bus.component';
 
 @Component({
   templateUrl: './buses.component.html'

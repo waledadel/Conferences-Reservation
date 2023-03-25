@@ -6,9 +6,9 @@ import { ITicket } from '@app/models';
 import { FireStoreService } from '@app/services';
 
 @Component({
-  templateUrl: './all-subscriptions.component.html'
+  templateUrl: './all-subscription.component.html'
 })
-export class AllSubscriptionsComponent implements OnInit, AfterViewInit {
+export class AllSubscriptionComponent implements OnInit, AfterViewInit {
 
   pageSize = 10;
   pageIndex = 0;

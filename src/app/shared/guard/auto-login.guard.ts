@@ -27,7 +27,7 @@ export class AutoLoginGuard implements CanActivate, CanActivateChild {
       take(1),
       map(isAuth => {
         if (isAuth) {
-          this.router.navigateByUrl(`${Constants.Routes.secure}/${Constants.Routes.major}` , { replaceUrl: true });
+          this.router.navigateByUrl(`${Constants.Routes.secure}/${Constants.Routes.primary}` , { replaceUrl: true });
           return false;
         } else {
           return true;

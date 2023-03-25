@@ -14,7 +14,7 @@ export class AdminModel {
     {
       icon: 'star',
       text: 'menu.major',
-      url:  Constants.Routes.major
+      url:  Constants.Routes.primary
     },
     {
       icon: 'people',

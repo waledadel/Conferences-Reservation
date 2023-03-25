@@ -8,7 +8,7 @@ import { FirebaseError } from '@angular/fire/app';
 import firebase from 'firebase/compat';
 
 import { Constants } from '@app/constants';
-import { LogoutComponent } from '../logout/logout.component';
+import { LogoutComponent } from '../components/logout/logout.component';
 import { NotifyService } from './notify.service';
 
 @Injectable({
@@ -31,7 +31,7 @@ export class AuthService {
     this.angularFireAuth.signInWithEmailAndPassword(email, password).then((data: firebase.auth.UserCredential) => {
       if (data && data.user) {
         localStorage.setItem('userId', data.user.uid);
-        this.router.navigateByUrl(`${Constants.Routes.secure}/${Constants.Routes.major}`);
+        this.router.navigateByUrl(`${Constants.Routes.secure}/${Constants.Routes.primary}`);
       }
     }).catch((error: FirebaseError) => {
       this.showErrorMessage(error.code);

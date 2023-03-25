@@ -15,7 +15,7 @@
     <button mat-stroked-button type="button" color="primary" (click)="cancel()">
         {{'common.cancel' | translate}}
     </button>
-    <button mat-flat-button color="warn" [mat-dialog-close]="true" (click)="delete()" cdkFocusInitial>
+    <button mat-flat-button color="warn" (click)="delete()" cdkFocusInitial>
         {{'common.yes' | translate}}
     </button>
 </div>
