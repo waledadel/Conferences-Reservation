@@ -119,7 +119,8 @@
         "waitingListMessage": "رسالة قائمة الانتظار",
         "availableTicketsCount": "عدد التذاكر المتاحة",
         "waitingListCount": "عدد قائمة الانتظار",
-        "reservationPrice": "سعر الحجز"
+        "reservationPrice": "سعر الحجز",
+        "welcomeMessage": "رسالة ترحيبية قبل بدء الحجز أو عدم وجود المؤتمرات"
     },
     "bookingStatus": {
         "new": "جديد",

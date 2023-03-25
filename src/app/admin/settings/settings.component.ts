@@ -90,6 +90,7 @@ export class SettingsComponent implements OnInit {
       waitingListCount: [null, [Validators.required, Validators.min(1)]],
       availableTicketsCount: [null, [Validators.required, Validators.min(1)]],
       waitingListMessage: ['', Validators.required],
+      welcomeMessage: ['', Validators.required],
     });
   }
 
@@ -98,7 +99,7 @@ export class SettingsComponent implements OnInit {
       ['bold', 'italic'],
       ['underline', 'strike'],
       // ['code', 'blockquote'],
-      [{ heading: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] }],
+      // [{ heading: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] }],
       ['ordered_list', 'bullet_list'],
       // ['link', 'image'],
       ['text_color', 'background_color'],
@@ -150,6 +151,7 @@ export class SettingsComponent implements OnInit {
       waitingListCount: item.waitingListCount,
       availableTicketsCount: item.availableTicketsCount,
       waitingListMessage: item.waitingListMessage,
+      welcomeMessage: item.welcomeMessage
     });
     if (item.imageUrl != '') {
       this.model.selectedImage = item.imageUrl;

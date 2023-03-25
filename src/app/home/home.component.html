@@ -1,13 +1,20 @@
 <ng-container *ngIf="(settings | async) as setting">
-    <div class="container-fluid px-0">
-        <mat-toolbar color="primary" class="col-12 px-0">
-            <div *ngIf="setting && setting[0].title != ''" class="w-100 d-flex justify-content-center" [innerText]="setting[0].title">
-            </div>
-        </mat-toolbar>
-    </div>
-    <div *ngIf="!showForm" class="container my-md-4 p-md-3 p-0 container-border overflow-auto info-section">
-        <app-info [settings]="setting" (showForm)="showTicketForm($event)"></app-info>
-    </div>
+    <ng-container *ngIf="isReservationStart">
+        <div class="container-fluid px-0">
+            <mat-toolbar color="primary" class="col-12 px-0">
+                <div *ngIf="setting && setting[0].title != ''" class="w-100 d-flex justify-content-center" [innerText]="setting[0].title">
+                </div>
+            </mat-toolbar>
+        </div>
+        <div *ngIf="!showForm" class="container my-md-4 p-md-3 p-0 container-border overflow-auto info-section">
+            <app-info [settings]="setting" (showForm)="showTicketForm($event)"></app-info>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="!isReservationStart">
+        <div class="bg h-100 w-100 d-flex justify-content-center align-items-center">
+            <div class="alert alert-info" [innerHTML]="setting[0].welcomeMessage"></div>
+        </div>
+    </ng-container>
 </ng-container>
 
 <div *ngIf="showForm" class="container h-100 mt-3 px-0">
@@ -16,11 +23,17 @@
             <mat-tab-group class="w-100" [selectedIndex]="selectedTabIndex" (selectedIndexChange)="onTabChanged($event)">
                 <mat-tab [label]="'home.individualBooking' | translate">
                     <ng-container *ngIf="selectedTabIndex < 1">
+                        <ng-container *ngIf="(settings | async) as setting">
+                            <div *ngIf="isReservationEnd" class="alert alert-danger" [innerHtml]="setting[0].waitingListMessage"></div>
+                        </ng-container>
                         <app-reservation [type]="bookingType.individual" (showForm)="showTicketForm($event)"></app-reservation>
                     </ng-container>
                 </mat-tab>
                 <mat-tab [label]="'home.groupBooking' | translate">
                     <ng-container *ngIf="selectedTabIndex > 0">
+                        <ng-container *ngIf="(settings | async) as setting">
+                            <div *ngIf="isReservationEnd" class="alert alert-danger" [innerHtml]="setting[0].waitingListMessage"></div>
+                        </ng-container>
                         <div class="alert alert-info">
                             <div>
                                 {{'common.childInfo' | translate}}

@@ -6,11 +6,11 @@ export class AdminModel {
   english = Constants.Languages.en;
   selectedLanguage: string;
   menu: Array<IMenu> = [
-    {
-      icon: 'dashboard',
-      text: 'common.dashboard',
-      url: Constants.Routes.dashboard
-    },
+    // {
+    //   icon: 'dashboard',
+    //   text: 'common.dashboard',
+    //   url: Constants.Routes.dashboard
+    // },
     {
       icon: 'star',
       text: 'menu.major',
@@ -46,11 +46,11 @@ export class AdminModel {
       text: 'menu.settings',
       url:  Constants.Routes.settings
     },
-    {
-      icon: 'groups',
-      text: 'common.users',
-      url:  Constants.Routes.users
-    }
+    // {
+    //   icon: 'groups',
+    //   text: 'common.users',
+    //   url:  Constants.Routes.users
+    // }
   ];
 
   constructor() {

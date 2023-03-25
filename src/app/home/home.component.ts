@@ -15,13 +15,20 @@ export class HomeComponent implements OnInit {
   bookingType = BookingType;
   settings: Observable<Array<ISettings>>;
   showForm = false;
+  currentDate = new Date();
+  isReservationStart = false;
+  isReservationEnd = false;
 
   constructor(private fireStoreService: FireStoreService) {
     this.settings = {} as Observable<Array<ISettings>>;
   }
-
+  
   ngOnInit(): void {
     this.settings = this.fireStoreService.getAll(Constants.RealtimeDatabase.settings);
+    this.settings.subscribe(res => {
+      this.isReservationStart = this.currentDate > res[0].startReservationDate.toDate() ;
+      this.isReservationEnd = this.currentDate > res[0].endReservationDate.toDate();
+    });
   }
 
   onTabChanged(index: number): void {

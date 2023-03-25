@@ -19,15 +19,22 @@
         <div class="col-md-6 col-12 px-0">
             <mat-form-field class="col-12 px-md-3 px-0">
                 <mat-label>{{'settings.title' | translate}}</mat-label>
-                <textarea type="text" matInput formControlName="title" rows="5"></textarea>
+                <textarea type="text" matInput formControlName="title" rows="3"></textarea>
                 <mat-error *ngIf="model.form.get('title')!.hasError('required')">
                     {{'validations.requiredField' | translate}}
                 </mat-error>
             </mat-form-field>
             <mat-form-field class="col-12 px-md-3 px-0">
                 <mat-label>{{'settings.waitingListMessage' | translate}}</mat-label>
-                <textarea type="text" matInput formControlName="waitingListMessage" rows="5"></textarea>
+                <textarea type="text" matInput formControlName="waitingListMessage" rows="3"></textarea>
                 <mat-error *ngIf="model.form.get('waitingListMessage')!.hasError('required')">
+                    {{'validations.requiredField' | translate}}
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field class="col-12 px-md-3 px-0">
+                <mat-label>{{'settings.welcomeMessage' | translate}}</mat-label>
+                <textarea type="text" matInput formControlName="welcomeMessage" rows="2"></textarea>
+                <mat-error *ngIf="model.form.get('welcomeMessage')!.hasError('required')">
                     {{'validations.requiredField' | translate}}
                 </mat-error>
             </mat-form-field>

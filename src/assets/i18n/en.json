@@ -119,7 +119,8 @@
         "waitingListMessage": "Waiting list message",
         "availableTicketsCount": "Available tickets count",
         "waitingListCount": "Waiting list count",
-        "reservationPrice": "Reservation Price"
+        "reservationPrice": "Reservation Price",
+        "welcomeMessage": "A welcome message before the start of the reservation or the absence of the conferences"
     },
     "bookingStatus": {
         "new": "New",

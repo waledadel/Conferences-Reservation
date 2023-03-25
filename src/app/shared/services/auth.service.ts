@@ -31,7 +31,7 @@ export class AuthService {
     this.angularFireAuth.signInWithEmailAndPassword(email, password).then((data: firebase.auth.UserCredential) => {
       if (data && data.user) {
         localStorage.setItem('userId', data.user.uid);
-        this.router.navigateByUrl(`${Constants.Routes.secure}/${Constants.Routes.dashboard}`);
+        this.router.navigateByUrl(`${Constants.Routes.secure}/${Constants.Routes.major}`);
       }
     }).catch((error: FirebaseError) => {
       this.showErrorMessage(error.code);

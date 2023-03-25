@@ -13,4 +13,5 @@ export interface ISettings {
     waitingListCount: number;
     availableTicketsCount: number;
     waitingListMessage: string;
+    welcomeMessage: string;
 }
