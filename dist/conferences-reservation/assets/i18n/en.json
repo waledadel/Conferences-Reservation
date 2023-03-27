@@ -1,0 +1,131 @@
+{
+    "common": {
+        "dashboard": "Dashboard",
+        "language": "Language",
+        "users": "Users",
+        "conferencesReservation": "Conferences Reservation",
+        "name": "Name",
+        "birthDate": "BirthDate",
+        "gender": "Gender",
+        "male": "Male",
+        "female": "Female",
+        "socialStatus": "Social Status",
+        "married": "Married",
+        "single": "Single",
+        "widower": "Widower",
+        "notes": "Notes",
+        "addBooking": "Add Booking",
+        "addChild": "Add Child",
+        "AddAdult": "Add Adult",
+        "childInfo": "Children from 4 years old to under 12 years old",
+        "adultInfo": "Adults over 12 years old",
+        "individual": "Individual",
+        "child": "Child",
+        "yes": "Yes",
+        "no": "No",
+        "needChildBed": "Do you want a separate bed for the child?",
+        "confirmDelete": "Confirm Delete",
+        "sureToDelete": "Are you sure you want to delete this item ?",
+        "cancel": "Cancel",
+        "maximumPersons": "The maximum is 5 persons",
+        "save": "Save",
+        "price": "Price",
+        "update": "Update",
+        "add": "Add",
+        "egp": "EGP",
+        "mobile": "Mobile Number",
+        "room": "Room",
+        "age": "Age",
+        "bookingStatus": "Booking Status",
+        "total": "Total",
+        "adultsCount": "Adults Count",
+        "childrenCount": "Children Count",
+        "bookingType": "Booking Type",
+        "bookingDate": "Booking Date",
+        "paid": "Paid",
+        "totalCost": "Total",
+        "remaining": "Remaining",
+        "group": "Group",
+        "edit": "Edit",
+        "delete": "Delete",
+        "noDataFound": "No Data Found",
+        "adminNotes": "Admin Notes",
+        "logout": "Log out",
+        "confirmation": "Confirmation",
+        "sureToLogout": " Are you sure you want to logout ?",
+        "noThanks": "No Thanks",
+        "email": "Email",
+        "password": "Password",
+        "login": "Login"
+    },
+    "languages": {
+        "arabic": "العربية",
+        "english": "English"
+    },
+    "menu": {
+        "major": "Major subscriptions",
+        "all": "All subscribers",
+        "rooms": "Rooms",
+        "buses": "Buses",
+        "statistics": "Statistics",
+        "settings": "Settings",
+        "address": "Address"
+    },
+    "room": {
+        "add": "Add Room",
+        "building": "Building",
+        "floor": "Room Floor Number",
+        "name": "Room Name",
+        "type": "Room Type",
+        "rest": "The Rest"
+    },
+    "bus": {
+        "add": "Add Bus"
+    },
+    "address": {
+        "add": "Add Address",
+        "title": "Address"
+    },
+    "notifications": {
+        "createdSuccessfully": "Created Successfully",
+        "updatedSuccessfully": "Updated Successfully",
+        "removedSuccessfully": "Removed Successfully",
+        "bookedSuccessfully": "Booked Successfully",
+        "bookedUpdatedSuccessfully": "Booked updated successfully",
+        "settingsSavedSuccessfully": "Settings saved successfully"
+    },
+    "validations": {
+        "requiredField": "This field is required",
+        "arabicLettersOnly": "This field must be arabic letters only",
+        "mobileNumber": "Mobile number must be 11 digits and start with 01(0,1,2,5)",
+        "invalidEmailAddress": "Invalid Email address"
+    },
+    "home": {
+        "individualBooking": "Individual booking",
+        "groupBooking": "Group booking",
+        "arabicFullName": "The full name is in Arabic",
+        "englishMobileNumber": "Mobile number in English",
+        "transportation": "Transportation to the conference"
+    },
+    "settings": {
+        "title": "Conference Name",
+        "image": "Image",
+        "generalAlerts": "General Alerts",
+        "priceDetails": "Price Details",
+        "importantDates": "Important Dates",
+        "startReservationDate": "The first reservation date",
+        "endReservationDate": "The latest reservation date",
+        "agreeTerms": "Agree to the terms and abide by all warnings",
+        "waitingListMessage": "Waiting list message",
+        "availableTicketsCount": "Available tickets count",
+        "waitingListCount": "Waiting list count",
+        "reservationPrice": "Reservation Price",
+        "welcomeMessage": "A welcome message before the start of the reservation or the absence of the conferences"
+    },
+    "bookingStatus": {
+        "new": "New",
+        "confirmed": "Confirmed",
+        "duplicated": "Duplicated",
+        "canceled": "Canceled"
+    }
+}
