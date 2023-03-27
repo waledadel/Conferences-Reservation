@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "build:prod": "ng build --configuration=production",
-    "deploy": "ng build --output-path docs --base-href github-hosting-project"
+    "deploy": "ng build --output-path docs --base-href conferences-reservation"
   },
   "private": true,
   "dependencies": {
