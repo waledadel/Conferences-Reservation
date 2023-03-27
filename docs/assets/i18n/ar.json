@@ -1,0 +1,131 @@
+{
+    "common": {
+        "dashboard": "الملخص",
+        "language": "اللغة",
+        "users": "المستخدمين",
+        "conferencesReservation": "موقع حجز المؤتمرات",
+        "name": "الاسم",
+        "birthDate": "تاريخ الميلاد",
+        "gender": "النوع",
+        "male": "ذكر",
+        "female": "أنثي",
+        "socialStatus": "الحالة الإجتماعية",
+        "married": "متزوج",
+        "single": "أعزب",
+        "widower": "أرمل",
+        "notes": "ملاحظات",
+        "addBooking": "إضافة حجز",
+        "addChild": "إضافة طفل",
+        "AddAdult": "إضافة فرد",
+        "childInfo": "الأطفال من سن 4 سنوات إلي سن أقل من 12 سنة",
+        "adultInfo": "البالغين من فوق 12 سنة",
+        "individual": "فرد",
+        "child": "طفل",
+        "yes": "نعم",
+        "no": "لا",
+        "needChildBed": "هل تريد سرير منفصل للطفل ؟",
+        "confirmDelete": "تأكيد الحذف",
+        "sureToDelete": "هل أنت متأكد أنك تريد حذف هذا العنصر ؟",
+        "cancel": "إلغاء",
+        "maximumPersons": "الحد الأقصي هو 5 أشخاص",
+        "save": "حفظ",
+        "price": "الثمن",
+        "update": "تعديل",
+        "add": "إضافة",
+        "egp": "جنيه",
+        "mobile": "رقم الموبايل",
+        "room": "الغرفة",
+        "age": "السن",
+        "bookingStatus": "حالة الحجز",
+        "total": "العدد الكلي",
+        "adultsCount": "عدد الأطفال",
+        "childrenCount": "عدد البالغين",
+        "bookingType": "نوع الحجز",
+        "bookingDate": "تاريخ الحجز",
+        "paid": "المدفوع",
+        "totalCost": "الإجمالي",
+        "remaining": "الباقي",
+        "group": "مجموعة",
+        "edit": "تعديل",
+        "delete": "حذف",
+        "noDataFound": "لا توجد بيانات",
+        "adminNotes": "ملاحظات المسئول",
+        "logout": "تسجيل الخروج",
+        "confirmation": "تأكيد",
+        "sureToLogout": "هل أنت متأكد أنك تريد تسجيل الخروج ؟",
+        "noThanks": "لا شكرا",
+        "email": "البريد الإلكتروني",
+        "password": "كلمة المرور",
+        "login": "تسجيل الدخول"
+    },
+    "languages": {
+        "arabic": "العربية",
+        "english": "English"
+    },
+    "menu": {
+        "major": "الاشتراكات الرئيسية",
+        "all": "كل المشتركين",
+        "rooms": "الغرف",
+        "buses": "الإتوبيسات",
+        "statistics": "إحصائيات",
+        "settings": "إعدادات",
+        "address": "العنوان"
+    },
+    "room": {
+        "add": "إضافة غرفة",
+        "building": "المبني",
+        "floor": "رقم دور الغرفة",
+        "name": "اسم الغرفة",
+        "type": "نوع الغرفة",
+        "rest": "الباقي"
+    },
+    "bus": {
+        "add": "إضافة أتوبيس"
+    },
+    "address": {
+        "add": "إضافة عنوان",
+        "title": "العنوان"
+    },
+    "notifications": {
+        "createdSuccessfully": "تمت الإضافة بنجاح",
+        "updatedSuccessfully": "تم التحديث بنجاح",
+        "removedSuccessfully": "تم الحذف بنجاح",
+        "bookedSuccessfully": "تم الحجز بنجاح",
+        "bookedUpdatedSuccessfully": "تم تعديل الحجز بنجاح",
+        "settingsSavedSuccessfully": "تم حفظ التغييرات بنجاح"
+    },
+    "validations": {
+        "requiredField": "هذا الحقل مطلوب",
+        "arabicLettersOnly": "يجب أن يكون هذا الحقل بأحرف عربية فقط",
+        "mobileNumber": "يجب أن يتكون رقم الهاتف المحمول من 11 رقمًا وأن يبدأ بـ 01 (0،1،2،5)",
+        "invalidEmailAddress": "البريد الإلكتروني غير صحيح"
+    },
+    "home": {
+        "individualBooking": "حجز فرد",
+        "groupBooking": "حجز مجموعة",
+        "arabicFullName": "الاسم ثلاثي كامل باللغة العربية",
+        "englishMobileNumber": "رقم الموبايل باللغة الإنجليزية",
+        "transportation": "المواصلات للمؤتمر"
+    },
+    "settings": {
+        "title": "اسم المؤتمر",
+        "image": "صورة المؤتمر",
+        "generalAlerts": "تنبيهات عامة",
+        "priceDetails": "قيمة الاشتراك",
+        "importantDates": "مواعيد هامة" ,
+        "startReservationDate": "بدء تاريخ للحجز",
+        "endReservationDate": "اخر تاريخ للحجز",
+        "agreeTerms": "موافق علي الشروط و ملتزم بجميع التنبيهات",
+        "waitingListMessage": "رسالة قائمة الانتظار",
+        "availableTicketsCount": "عدد التذاكر المتاحة",
+        "waitingListCount": "عدد قائمة الانتظار",
+        "reservationPrice": "سعر الحجز",
+        "welcomeMessage": "رسالة ترحيبية قبل بدء الحجز أو عدم وجود المؤتمرات"
+    },
+    "bookingStatus": {
+        "new": "جديد",
+        "confirmed": "مؤكد",
+        "duplicated": "مكرر",
+        "canceled": "ملغي"
+    }
+}
