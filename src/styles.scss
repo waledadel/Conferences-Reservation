@@ -6,7 +6,6 @@
 html {
   scroll-behavior: smooth;
   letter-spacing: 0 !important;
-  height: 100%;
 }
 
 * {
@@ -17,9 +16,14 @@ html {
   font-family: "Cairo", sans-serif !important;
 }
 
+html, body {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+}
+
 body {
   background-color: #ECEFEF !important;
-  height: 100vh;
   width: 100%;
   overflow: hidden;
 }
@@ -179,4 +183,8 @@ button:focus {
 
 .primary {
   color: #3f51b5 !important;
+}
+
+.mat-toolbar.mat-primary {
+  background: #000000 !important;
 }
