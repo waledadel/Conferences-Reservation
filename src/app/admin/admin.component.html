@@ -5,11 +5,11 @@
     <span>{{'common.conferencesReservation' | translate}}</span>
 </mat-toolbar>
 
-<mat-drawer-container class="app-container" autosize>
-    <mat-drawer #drawer class="app-sidenav" mode="side">
+<mat-drawer-container class="app-container">
+    <mat-drawer #drawer class="app-sidenav" [mode]="model.isMobileView ? 'over' : 'side'">
         <mat-nav-list>
             <ng-container *ngFor="let item of model.menu">
-                <a [routerLink]="item.url" [routerLinkActiveOptions]="{exact:true}" routerLinkActive="active-link" class="menu-item-link">
+                <a [routerLink]="item.url" [routerLinkActiveOptions]="{exact:true}" routerLinkActive="active-link" class="menu-item-link" (click)="onItemClick()">
                     <mat-list-item>
                         <mat-icon>{{item.icon}}</mat-icon>
                         <span class="px-2">{{item.text | translate}} </span>

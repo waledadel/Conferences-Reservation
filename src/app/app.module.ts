@@ -12,6 +12,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { WINDOW_PROVIDERS } from './shared/services/window.service';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,9 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
     MatSelectModule,
     MatNativeDateModule,
     MatDatepickerModule
+  ],
+  providers: [
+    WINDOW_PROVIDERS
   ],
   bootstrap: [AppComponent]
 })

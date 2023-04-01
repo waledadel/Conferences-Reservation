@@ -5,6 +5,7 @@ export class AdminModel {
   arabic = Constants.Languages.ar;
   english = Constants.Languages.en;
   selectedLanguage: string;
+  isMobileView = false;
   menu: Array<IMenu> = [
     // {
     //   icon: 'dashboard',

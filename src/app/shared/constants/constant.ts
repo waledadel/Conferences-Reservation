@@ -15,6 +15,11 @@ export namespace Constants {
         public static readonly rtl = 'rtl';
     }
 
+    export class ScreenWidth {
+      static readonly tabletView = 769;
+      static readonly mobileView = 576;
+    }
+
     export class Languages {
         public static readonly languageKey = 'lang';
         public static readonly en = 'en';

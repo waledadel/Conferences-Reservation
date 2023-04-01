@@ -1,9 +1,10 @@
-import { Constants } from '@app/constants';
-import { Component, ViewChild, AfterViewInit, OnInit } from '@angular/core';
+import { Component, ViewChild, AfterViewInit, OnInit, Inject, HostListener } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
 
+import { Constants } from '@app/constants';
 import { AdminModel } from './admin.models';
 import { LanguageService, AuthService, StorageService } from '@app/services';
+import { WINDOW } from 'app/shared/services/window.service';
 
 @Component({
   templateUrl: './admin.component.html',
@@ -17,9 +18,14 @@ export class AdminComponent implements OnInit, AfterViewInit {
   constructor(
     private authService: AuthService,
     private LanguageService: LanguageService,
-    private storageService: StorageService
+    private storageService: StorageService,
+    @Inject(WINDOW) private window: Window
   ) {
     this.drawer = {} as MatDrawer;
+  }
+
+  @HostListener('window:resize', ['$event']) onResize() {
+    this.detectMobileView();
   }
 
   ngOnInit(): void {
@@ -31,10 +37,19 @@ export class AdminComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.drawer.opened = true;
+    if (!this.model.isMobileView) {
+      this.drawer.opened = true;
+    }
+  }
+
+  onItemClick(): void {
+    if (this.model.isMobileView) {
+      this.drawer.opened = false;
+    }
   }
 
   changeLanguage(lang: string): void {
+    this.onItemClick();
     this.LanguageService.changeLanguage(lang);
   }
 
@@ -44,5 +59,10 @@ export class AdminComponent implements OnInit, AfterViewInit {
 
   private initModel(): void {
     this.model = new AdminModel();
+    this.detectMobileView();
+  }
+  
+  private detectMobileView(): void {
+    this.model.isMobileView = this.window.innerWidth < Constants.ScreenWidth.tabletView;
   }
 }
