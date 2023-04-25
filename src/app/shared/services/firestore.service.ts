@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, first, from, map, take } from 'rxjs';
 import { DocumentReference, PartialWithFieldValue, Query, query, where, CollectionReference } from 'firebase/firestore';
-import { Firestore, collection, addDoc, collectionData, doc, updateDoc } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, collectionData, doc, updateDoc, docData } from '@angular/fire/firestore';
 import { AngularFirestore, AngularFirestoreCollection, DocumentData, QueryFn } from '@angular/fire/compat/firestore';
 
 import { Constants } from '@app/constants';
@@ -29,6 +29,11 @@ export class FireStoreService {
     );
   }
 
+  getById(path: string): Observable<any> {
+    const docRef = doc(this.firestore, path);
+    return docData(docRef, { idField: 'id' }) as Observable<any>;
+  }
+
   addDoc<T>(collectionName: string, data: PartialWithFieldValue<any>): Observable<DocumentReference<T>> {
     return from(addDoc(this.getCollection(collectionName), data));
   }
@@ -51,9 +56,7 @@ export class FireStoreService {
       userNotes: item.userNotes,
       bookingDate: item.bookingDate,
       adminNotes: item.adminNotes,
-      total: item.total,
       paid: item.paid,
-      remaining: item.remaining,
       bookingStatus: item.bookingStatus,
       bookingType: item.bookingType,
       roomId: item.roomId,
@@ -71,9 +74,7 @@ export class FireStoreService {
           ...p,
           bookingDate: primary.bookingDate,
           adminNotes: primary.adminNotes,
-          total: primary.total,
           paid: primary.paid,
-          remaining: primary.remaining,
           bookingStatus: primary.bookingStatus,
           bookingType: primary.bookingType,
           roomId: primary.roomId,
@@ -106,9 +107,7 @@ export class FireStoreService {
       userNotes: item.userNotes,
       bookingDate: item.bookingDate,
       adminNotes: item.adminNotes,
-      total: item.total,
       paid: item.paid,
-      remaining: item.remaining,
       bookingStatus: item.bookingStatus,
       bookingType: item.bookingType,
       roomId: item.roomId,
@@ -129,9 +128,7 @@ export class FireStoreService {
           id: this.createId(),
           bookingDate: primary.bookingDate,
           adminNotes: primary.adminNotes,
-          total: primary.total,
           paid: primary.paid,
-          remaining: primary.remaining,
           bookingStatus: primary.bookingStatus,
           bookingType: primary.bookingType,
           roomId: primary.roomId,
@@ -218,7 +215,6 @@ export class FireStoreService {
             bookingDate: ticket.bookingDate,
             totalCost: 0,
             paid: ticket.paid,
-            remaining: ticket.remaining,
             userNotes: ticket.userNotes
           }))
         ),

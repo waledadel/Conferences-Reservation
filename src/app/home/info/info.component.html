@@ -1,9 +1,9 @@
 <div class="h-100">
     <ng-container *ngFor="let item of settings">
-        <div *ngIf="item.imageUrl" class="col-12 px-0 text-center">
+        <div *ngIf="item.imageUrl" class="col-12 px-0 pt-4 text-center">
             <img [src]="item.imageUrl" alt="img" loading="lazy" class="img-fluid img" />
         </div>
-        <div class="row mx-0 mt-4 conference-info">
+        <div class="row mx-0 pt-4 conference-info">
             <div *ngIf="item.generalAlerts" class="col-md-4 col-12 px-md-3 px-0">
                 <div class="text-center font-weight-bold">{{'settings.generalAlerts' | translate}}</div>
                 <div [innerHTML]="item.generalAlerts"></div>

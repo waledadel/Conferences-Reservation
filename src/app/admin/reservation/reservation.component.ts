@@ -4,7 +4,7 @@ import { Timestamp } from 'firebase/firestore';
 
 import { Constants } from '@app/constants';
 import { ReservationModel } from './reservation.models';
-import { Gender, SocialStatus, BookingStatus, BookingType, IAddress, IBus, ITicket } from '@app/models';
+import { Gender, SocialStatus, BookingStatus, BookingType, IAddress, IBus, ITicket, ISettings } from '@app/models';
 import { DialogService, FireStoreService, NotifyService, StorageService, TranslationService } from '@app/services';
 
 
@@ -47,9 +47,9 @@ export class ReservationComponent implements OnInit {
 
   ngOnInit(): void {
     this.model.isArabic = this.storageService.getItem(Constants.Languages.languageKey) === Constants.Languages.ar;
+    this.getSettings();
     this.getAddressList();
     this.getBusList();
-    this.patchFormValue();
   }
 
   isChild(index: number): boolean {
@@ -148,7 +148,7 @@ export class ReservationComponent implements OnInit {
       userNotes: [''],
       total: [0],
       paid: [0, [Validators.required, Validators.min(0)]],
-      remaining: [0, [Validators.required, Validators.min(0)]],
+      remaining: [0],
       bookingStatus: [BookingStatus.new],
       bookingType: [this.model.selectedType, Validators.required],
       roomId: [''],
@@ -161,6 +161,7 @@ export class ReservationComponent implements OnInit {
       const primary = this.reservationData.find(m => m.isMain);
       const allParticipants = this.reservationData.filter(p => !p.isMain);
       if (primary && primary != null) {
+        const totalCost = this.model.reservationPrice * (1 + primary.adultsCount + primary.childrenCount);
         this.model.form.patchValue({
           id: primary.id,
           name: primary.name,
@@ -173,9 +174,9 @@ export class ReservationComponent implements OnInit {
           bookingDate: primary.bookingDate,
           adminNotes: primary.adminNotes,
           userNotes: primary.userNotes,
-          total: primary.total,
+          total: totalCost,
           paid: primary.paid,
-          remaining: primary.remaining,
+          remaining: totalCost - primary.paid,
           bookingStatus: primary.bookingStatus,
           bookingType: primary.bookingType,
           roomId: primary.roomId,
@@ -197,4 +198,12 @@ export class ReservationComponent implements OnInit {
     }
   }
 
+  private getSettings(): void {
+    this.fireStoreService.getAll<ISettings>(Constants.RealtimeDatabase.settings).subscribe(data => {
+      if (data && data.length > 0) {
+        this.model.reservationPrice = data[0].reservationPrice;
+        this.patchFormValue();
+      }
+    });
+  }
 }

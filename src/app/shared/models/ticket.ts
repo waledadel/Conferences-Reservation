@@ -12,9 +12,7 @@ export interface ITicket {
     userNotes: string;
     bookingDate: Timestamp;
     adminNotes: string;
-    total: number;
     paid: number;
-    remaining: number;
     bookingStatus: BookingStatus;
     bookingType: BookingType;
     roomId: string;

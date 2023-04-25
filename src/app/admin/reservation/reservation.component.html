@@ -93,15 +93,18 @@
                 </mat-form-field>
                 <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
                     <mat-label>{{'common.totalCost' | translate}}</mat-label>
-                    <input type="text" matInput formControlName="total" readonly>
+                    <input type="number" matInput formControlName="total" readonly>
                 </mat-form-field>
                 <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
                     <mat-label>{{'common.paid' | translate}}</mat-label>
-                    <input type="text" matInput formControlName="paid" inputmode="numeric">
+                    <input type="number" matInput formControlName="paid" inputmode="numeric">
                 </mat-form-field>
                 <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
                     <mat-label>{{'common.remaining' | translate}}</mat-label>
-                    <input type="text" matInput formControlName="remaining" inputmode="numeric">
+                    <input type="number" matInput formControlName="remaining" inputmode="numeric" readonly>
+                    <mat-hint>
+                        سوف يتم إحتساب المبلغ المتبقي بعد الحفظ فقط
+                    </mat-hint>
                 </mat-form-field>
                 
                 <mat-form-field class="col-12 px-md-2 px-0">

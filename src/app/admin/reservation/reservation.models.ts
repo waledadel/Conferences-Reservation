@@ -16,6 +16,7 @@ export class ReservationModel {
   bookingType = BookingType;
   selectedType = BookingType.individual;
   isEditMode = false;
+  reservationPrice = 0;
   bookingStatusList: Array<KeyValue<string, BookingStatus>> = [
     {key: 'bookingStatus.new', value: BookingStatus.new},
     {key: 'bookingStatus.confirmed', value: BookingStatus.confirmed},
