@@ -119,8 +119,12 @@
         "waitingListMessage": "رسالة قائمة الانتظار",
         "availableTicketsCount": "عدد التذاكر المتاحة",
         "waitingListCount": "عدد قائمة الانتظار",
-        "reservationPrice": "سعر الحجز",
-        "welcomeMessage": "رسالة ترحيبية قبل بدء الحجز أو عدم وجود المؤتمرات"
+        "reservationPrice": "سعر الحجز للبالغ",
+        "childReservationPrice": "سعر الحجز للطفل",
+        "welcomeMessage": "رسالة ترحيبية قبل بدء الحجز أو عدم وجود المؤتمرات",
+        "childReservationPriceMoreThanEight": "سعر الحجز للطفل أكبر من 8 سنوات واصغر من 12",
+        "childReservationPriceLessThanEight": "سعر الحجز للطفل أكبر من 4 سنوات واصغر من 8",
+        "childBedPrice": "سعر السرير للطفل"
     },
     "bookingStatus": {
         "new": "جديد",

@@ -161,7 +161,8 @@ export class ReservationComponent implements OnInit {
       const primary = this.reservationData.find(m => m.isMain);
       const allParticipants = this.reservationData.filter(p => !p.isMain);
       if (primary && primary != null) {
-        const totalCost = this.model.reservationPrice * (1 + primary.adultsCount + primary.childrenCount);
+        const totalCost = this.getTotalCost();
+        console.log('total', totalCost);
         this.model.form.patchValue({
           id: primary.id,
           name: primary.name,
@@ -201,9 +202,44 @@ export class ReservationComponent implements OnInit {
   private getSettings(): void {
     this.fireStoreService.getAll<ISettings>(Constants.RealtimeDatabase.settings).subscribe(data => {
       if (data && data.length > 0) {
-        this.model.reservationPrice = data[0].reservationPrice;
+        this.model.adultReservationPrice = data[0].reservationPrice;
+        this.model.childReservationPriceLessThanEight = data[0].childReservationPriceLessThanEight;
+        this.model.childReservationPriceMoreThanEight = data[0].childReservationPriceMoreThanEight;
+        this.model.childBedPrice = data[0].childBedPrice;
         this.patchFormValue();
       }
     });
+  }
+
+  private getTotalCost(): number {
+    if (this.reservationData.length > 0) {
+      const primary = this.reservationData.find(m => m.isMain);
+      if (primary) {
+        let childrenCost = 0;
+        const children = this.reservationData.filter(c => c.isChild);
+        if (children && children.length > 0) {
+          children.forEach(child => {
+            childrenCost += this.getChildReservationPrice(child.birthDate) + (child.needsSeparateBed ? this.model.childBedPrice : 0)
+          });
+        }
+        return childrenCost + (primary.adultsCount! + 1) * this.model.adultReservationPrice;
+      }
+      return 0;
+    }
+    return 0;
+  }
+
+  private getChildReservationPrice(birthDate?: Timestamp): number {
+    if (birthDate) {
+      const childYears = new Date().getFullYear() - birthDate.toDate().getFullYear();
+      if (childYears >= 8 && childYears < 12) {
+        return this.model.childReservationPriceMoreThanEight;
+      } else if(childYears >= 4 && childYears < 8) {
+        return this.model.childReservationPriceLessThanEight;
+      } else {
+        return 0;
+      }
+    }
+    return 0;
   }
 }

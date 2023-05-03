@@ -14,6 +14,7 @@ export class SettingsModel {
   selectedImage: string;
   toolbar: Toolbar;
   savedSettings: ISettings;
+  isLoading = false;
 
   constructor() {
     this.form = {} as FormGroup;

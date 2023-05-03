@@ -5,7 +5,7 @@ import { Firestore, collection, addDoc, collectionData, doc, updateDoc, docData 
 import { AngularFirestore, AngularFirestoreCollection, DocumentData, QueryFn } from '@angular/fire/compat/firestore';
 
 import { Constants } from '@app/constants';
-import { ICollectionData, ITicket, ITicketForm } from '@app/models';
+import { ICollectionData, IPrimaryChildrenViewModel, IPrimaryListViewModel, ITicket, ITicketForm } from '@app/models';
 import { convertSnaps } from './db-utils';
 
 @Injectable({
@@ -197,14 +197,14 @@ export class FireStoreService {
       );
   }
 
-  getPrimarySubscription(takeCount = 1): Observable<Array<Partial<ITicket>>> {
+  getPrimarySubscription(takeCount = 1): Observable<Array<Partial<IPrimaryListViewModel>>> {
     return this.angularFirestore
-      .collection<ITicket>(Constants.RealtimeDatabase.tickets, ref => 
+      .collection<IPrimaryListViewModel>(Constants.RealtimeDatabase.tickets, ref => 
         ref.where('isMain', '==', true)
       ).valueChanges({ idField: 'id' })
       .pipe(
-        map((tickets: Array<ITicket>) =>
-          tickets.map((ticket: ITicket) => ({
+        map((tickets: Array<IPrimaryListViewModel>) =>
+          tickets.map((ticket: IPrimaryListViewModel) => ({
             id: ticket.id,
             name: ticket.name,
             adultsCount: ticket.adultsCount,
@@ -216,6 +216,24 @@ export class FireStoreService {
             totalCost: 0,
             paid: ticket.paid,
             userNotes: ticket.userNotes
+          }))
+        ),
+        take(takeCount)
+      );
+  }
+
+  getChildSubscription(takeCount = 1): Observable<Array<IPrimaryChildrenViewModel>> {
+    return this.angularFirestore
+      .collection<IPrimaryChildrenViewModel>(Constants.RealtimeDatabase.tickets, ref => 
+        ref.where('isChild', '==', true)
+      ).valueChanges({ idField: 'id' })
+      .pipe(
+        map((tickets: Array<IPrimaryChildrenViewModel>) =>
+          tickets.map((ticket: IPrimaryChildrenViewModel) => ({
+            id: ticket.id,
+            primaryId: ticket.primaryId,
+            birthDate: ticket.birthDate,
+            needsSeparateBed: ticket.needsSeparateBed,
           }))
         ),
         take(takeCount)

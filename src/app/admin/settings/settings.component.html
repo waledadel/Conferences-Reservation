@@ -41,7 +41,7 @@
         </div>
         <mat-form-field class="col-md-3 col-12 px-md-3 px-0">
             <mat-label>{{'settings.startReservationDate' | translate}}</mat-label>
-            <input matInput [matDatepicker]="startReservationDate" formControlName="startReservationDate" [min]="model.minDate">
+            <input matInput [matDatepicker]="startReservationDate" formControlName="startReservationDate">
             <mat-datepicker-toggle matIconSuffix [for]="startReservationDate"></mat-datepicker-toggle>
             <mat-datepicker #startReservationDate></mat-datepicker>
             <mat-error *ngIf="model.form.get('startReservationDate')!.hasError('required')">
@@ -50,17 +50,10 @@
         </mat-form-field>
         <mat-form-field class="col-md-3 col-12 px-md-3 px-0">
             <mat-label>{{'settings.endReservationDate' | translate}}</mat-label>
-            <input matInput [matDatepicker]="endReservationDatePicker" formControlName="endReservationDate" [min]="model.minDate">
+            <input matInput [matDatepicker]="endReservationDatePicker" formControlName="endReservationDate">
             <mat-datepicker-toggle matIconSuffix [for]="endReservationDatePicker"></mat-datepicker-toggle>
             <mat-datepicker #endReservationDatePicker></mat-datepicker>
             <mat-error *ngIf="model.form.get('endReservationDate')!.hasError('required')">
-                {{'validations.requiredField' | translate}}
-            </mat-error>
-        </mat-form-field>
-        <mat-form-field class="col-md-2 col-12 px-md-3 px-0">
-            <mat-label>{{'settings.reservationPrice' | translate}}</mat-label>
-            <input type="text" matInput formControlName="reservationPrice" inputmode="numeric">
-            <mat-error *ngIf="model.form.get('reservationPrice')!.hasError('required')">
                 {{'validations.requiredField' | translate}}
             </mat-error>
         </mat-form-field>
@@ -72,9 +65,37 @@
             </mat-error>
         </mat-form-field>
         <mat-form-field class="col-md-2 col-12 px-md-3 px-0">
+            <mat-label>{{'settings.reservationPrice' | translate}}</mat-label>
+            <input type="text" matInput formControlName="reservationPrice" inputmode="numeric">
+            <mat-error *ngIf="model.form.get('reservationPrice')!.hasError('required')">
+                {{'validations.requiredField' | translate}}
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field class="col-md-2 col-12 px-md-3 px-0">
             <mat-label>{{'settings.waitingListCount' | translate}}</mat-label>
             <input type="text" matInput formControlName="waitingListCount" inputmode="numeric">
             <mat-error *ngIf="model.form.get('waitingListCount')!.hasError('required')">
+                {{'validations.requiredField' | translate}}
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field class="col-md-4 col-12 px-md-3 px-0">
+            <mat-label>{{'settings.childBedPrice' | translate}}</mat-label>
+            <input type="text" matInput formControlName="childBedPrice" inputmode="numeric">
+            <mat-error *ngIf="model.form.get('childBedPrice')!.hasError('required')">
+                {{'validations.requiredField' | translate}}
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field class="col-md-4 col-12 px-md-3 px-0">
+            <mat-label>{{'settings.childReservationPriceMoreThanEight' | translate}}</mat-label>
+            <input type="text" matInput formControlName="childReservationPriceMoreThanEight" inputmode="numeric">
+            <mat-error *ngIf="model.form.get('childReservationPriceMoreThanEight')!.hasError('required')">
+                {{'validations.requiredField' | translate}}
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field class="col-md-4 col-12 px-md-3 px-0">
+            <mat-label>{{'settings.childReservationPriceLessThanEight' | translate}}</mat-label>
+            <input type="text" matInput formControlName="childReservationPriceLessThanEight" inputmode="numeric">
+            <mat-error *ngIf="model.form.get('childReservationPriceLessThanEight')!.hasError('required')">
                 {{'validations.requiredField' | translate}}
             </mat-error>
         </mat-form-field>
@@ -97,7 +118,8 @@
             </div>
         </div>
         <div class="col-12 pt-3 px-md-3 px-0 d-flex justify-content-end">
-            <button mat-flat-button type="submit" color="primary">
+            <button mat-flat-button type="submit" color="primary" [disabled]="model.isLoading">
+                <i *ngIf="model.isLoading" class="fa-solid fa-spinner fa-spin"></i>
                 {{'common.save' | translate}}
             </button>
         </div>

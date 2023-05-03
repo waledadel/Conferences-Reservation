@@ -62,6 +62,27 @@ export interface ITicketForm extends IPrimary {
     participants: Array<IParticipant>;
 }
 
+export interface IPrimaryListViewModel {
+    id: string;
+    name: string;
+    adultsCount: number;
+    childrenCount: number;
+    roomId: string;
+    bookingType: BookingType;
+    bookingStatus: BookingStatus;
+    bookingDate: Timestamp;
+    totalCost: number;
+    paid: number;
+    userNotes: string;
+}
+
+export interface IPrimaryChildrenViewModel {
+    id: string;
+    primaryId: string;
+    birthDate: Timestamp;
+    needsSeparateBed: boolean;
+}
+
 export enum BookingStatus {
     new = 1,
     confirmed = 2,

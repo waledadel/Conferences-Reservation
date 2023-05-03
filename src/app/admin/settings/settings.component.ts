@@ -41,6 +41,7 @@ export class SettingsComponent implements OnInit {
 
   save(): void {
     if (this.model.form.valid) {
+      this.model.isLoading = true;
       if (this.model.savedSettings.id != null) {
         this.update();
       } else {
@@ -63,16 +64,18 @@ export class SettingsComponent implements OnInit {
   }
 
   private add(): void {
-    const formValue = this.model.form.value;
+    const formValue = this.getFormValueWithNumeric();
     this.fireStoreService.addDoc<ISettings>(Constants.RealtimeDatabase.settings, formValue).subscribe(() => {
       this.notifyService.showNotifier(this.translationService.instant('notifications.settingsSavedSuccessfully'));
+      this.model.isLoading = false;
     });
   }
 
   private update(): void {
-    const formValue = this.model.form.value;
+    const formValue = this.getFormValueWithNumeric();
     this.fireStoreService.updateDoc(`${Constants.RealtimeDatabase.settings}/${this.model.savedSettings.id}`, formValue).subscribe(() => {
       this.notifyService.showNotifier(this.translationService.instant('notifications.settingsSavedSuccessfully'));
+      this.model.isLoading = false;
     });
   }
 
@@ -87,6 +90,9 @@ export class SettingsComponent implements OnInit {
       startReservationDate: [null, Validators.required],
       endReservationDate: [null, Validators.required],
       reservationPrice: [null, [Validators.required, Validators.min(1)]],
+      childReservationPriceMoreThanEight: [null, [Validators.required, Validators.min(1)]],
+      childReservationPriceLessThanEight: [null, [Validators.required, Validators.min(1)]],
+      childBedPrice: [null, [Validators.required, Validators.min(1)]],
       waitingListCount: [null, [Validators.required, Validators.min(1)]],
       availableTicketsCount: [null, [Validators.required, Validators.min(1)]],
       waitingListMessage: ['', Validators.required],
@@ -148,13 +154,29 @@ export class SettingsComponent implements OnInit {
       startReservationDate: item.startReservationDate.toDate(),
       endReservationDate: item.endReservationDate.toDate(),
       reservationPrice: item.reservationPrice,
+      childReservationPriceMoreThanEight: item.childReservationPriceMoreThanEight,
+      childReservationPriceLessThanEight: item.childReservationPriceLessThanEight,
       waitingListCount: item.waitingListCount,
       availableTicketsCount: item.availableTicketsCount,
       waitingListMessage: item.waitingListMessage,
-      welcomeMessage: item.welcomeMessage
+      welcomeMessage: item.welcomeMessage,
+      childBedPrice: item.childBedPrice
     });
     if (item.imageUrl != '') {
       this.model.selectedImage = item.imageUrl;
     }
+  }
+
+  private getFormValueWithNumeric(): ISettings {
+    const formValue = this.model.form.value;
+    return {
+      ...formValue,
+      reservationPrice: +formValue.reservationPrice,
+      childReservationPriceMoreThanEight: +formValue.childReservationPriceMoreThanEight,
+      childReservationPriceLessThanEight: +formValue.childReservationPriceLessThanEight,
+      availableTicketsCount: +formValue.availableTicketsCount,
+      waitingListCount: +formValue.waitingListCount,
+      childBedPrice: +formValue.childBedPrice
+    };
   }
 }
