@@ -88,12 +88,15 @@ export class PrimaryComponent implements OnInit {
 
   private updateTableRow(item: Partial<ITicket>): void {
     this.fireStoreService.getById(`${Constants.RealtimeDatabase.tickets}/${item.id}`).subscribe((res: Partial<ITicket>) => {
-      console.log('res', res);
       if (res) {
         const index = this.dataSource.data.findIndex(t => t.id === item.id);
-        if (index > -1) {
-          this.dataSource.data[index] = {...res, totalCost: this.getTotalCost(res)};
-          this.dataSource._updateChangeSubscription();
+        console.log('res', res);
+        if (index > -1 && res.primaryId) {
+          this.fireStoreService.getAllChildForSpecificSubscription(res.primaryId, 1).subscribe(children => {
+            this.children = children;
+            this.dataSource.data[index] = {...res, totalCost: this.getTotalCost(res)};
+            this.dataSource._updateChangeSubscription();
+          });
         }
       }
     });

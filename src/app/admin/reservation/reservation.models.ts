@@ -20,6 +20,8 @@ export class ReservationModel {
   childReservationPriceLessThanEight = 0;
   childReservationPriceMoreThanEight = 0;
   childBedPrice = 0;
+  isLoading = false;
+  idsNeedToRemoved: Array<string> = [];
   bookingStatusList: Array<KeyValue<string, BookingStatus>> = [
     {key: 'bookingStatus.new', value: BookingStatus.new},
     {key: 'bookingStatus.confirmed', value: BookingStatus.confirmed},

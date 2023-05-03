@@ -66,6 +66,10 @@ export class ReservationComponent implements OnInit {
     this.dialogService.openConfirmDeleteDialog(this.translationService.instant(`${text}: ${index + 1}`))
     .afterClosed().subscribe((res: {confirmDelete: boolean}) => {
       if (res && res.confirmDelete) {
+        if (this.canManageReservation) {
+          const id = this.model.participants.at(index).value.id;
+          this.model.idsNeedToRemoved.push(id);
+        }
         this.model.participants.removeAt(index);
       }
     });
@@ -77,6 +81,7 @@ export class ReservationComponent implements OnInit {
 
   save(): void {
     if (this.model.form.valid) {
+      this.model.isLoading = true;
       if (this.model.isEditMode) {
         this.update();
       } else {
@@ -109,15 +114,17 @@ export class ReservationComponent implements OnInit {
       this.showForm.emit(false);
       this.notifyService.showNotifier(this.translationService.instant('notifications.bookedSuccessfully'));
       this.model.form.reset();
+      this.model.isLoading = false;
     });
   }
 
   private update(): void {
     const formValue = this.model.form.value;
-    this.fireStoreService.updateTicket(formValue).subscribe(() => {
+    this.fireStoreService.updateTicket(formValue, this.model.idsNeedToRemoved).subscribe(() => {
       this.closeModal.emit(true);
       this.notifyService.showNotifier(this.translationService.instant('notifications.bookedUpdatedSuccessfully'));
       this.model.form.reset();
+      this.model.isLoading = false;
     });
   }
 
@@ -162,7 +169,6 @@ export class ReservationComponent implements OnInit {
       const allParticipants = this.reservationData.filter(p => !p.isMain);
       if (primary && primary != null) {
         const totalCost = this.getTotalCost();
-        console.log('total', totalCost);
         this.model.form.patchValue({
           id: primary.id,
           name: primary.name,

@@ -223,7 +223,8 @@
                 <button type="button" mat-stroked-button color="primary" (click)="addChild()" class="child-btn">{{'common.addChild' | translate}}</button>
             </div>
             <div *ngIf="!canManageReservation" class="col-12 pt-3 px-md-2 px-0 d-flex justify-content-end">
-                <button mat-flat-button type="submit" color="primary">
+                <button mat-flat-button type="submit" color="primary" [disabled]="model.isLoading">
+                    <i *ngIf="model.isLoading" class="fa-solid fa-spinner fa-spin"></i>
                     {{'common.addBooking' | translate}}
                 </button>
             </div>
