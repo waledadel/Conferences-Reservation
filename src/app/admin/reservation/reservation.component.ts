@@ -92,7 +92,6 @@ export class ReservationComponent implements OnInit {
 
   private newParticipant(isChild: boolean, needBed: boolean): FormGroup {
     const textValidator = isChild ? null : Validators.required;
-    const mobileValidator = isChild ? null : [Validators.required, Validators.pattern(Constants.Regex.mobileNumber)];
     return this.formBuilder.group({
       id: [''],
       name: ['', [Validators.required, Validators.pattern(Constants.Regex.arabicLetters)]],
@@ -103,7 +102,7 @@ export class ReservationComponent implements OnInit {
       isChild: [isChild],
       needsSeparateBed: [needBed, Validators.required],
       addressId: ['', textValidator],
-      mobile: ['', mobileValidator],
+      mobile: ['', [Validators.required, Validators.pattern(Constants.Regex.mobileNumber)]],
       socialStatus: [SocialStatus.single, textValidator],
     });
   }

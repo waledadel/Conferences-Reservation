@@ -1,6 +1,6 @@
 <div class="h-100">
     <ng-container *ngFor="let item of settings">
-        <div *ngIf="item.imageUrl" class="col-12 px-0 pt-4 text-center">
+        <div *ngIf="item.imageUrl" class="col-12 px-0 text-center">
             <img [src]="item.imageUrl" alt="img" loading="lazy" class="img-fluid img" />
         </div>
         <div class="row mx-0 pt-4 conference-info">
@@ -18,7 +18,7 @@
             </div>
         </div>
     </ng-container>
-    <div class="d-flex justify-content-center">
+    <div class="d-flex justify-content-center mt-3">
         <button mat-flat-button color="primary" type="button" (click)="showTicketForm()">{{'settings.agreeTerms' | translate}}</button>
     </div>
 </div>

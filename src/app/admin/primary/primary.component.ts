@@ -178,30 +178,32 @@ export class PrimaryComponent implements OnInit {
   }
 
   private getTotalCost(ticket: IPrimaryDataSourceVm, list: Array<IRelatedMemberViewModel>): number {
-    if (ticket && list.length > 0) {
+    if (ticket) {
       let childrenCost = 0;
       let adultCost = 0;
       let primaryCost = 0;
       primaryCost = this.adultReservationPrice + this.getTransportPrice(ticket.transportationId);
-      if (ticket.childrenCount > 0) {
-        const children = list.filter(c => c.primaryId === ticket.id && c.isChild);
-        if (children && children.length > 0) {
-          children.forEach(child => {
-            const reservationPrice = this.getChildReservationPrice(child.birthDate);
-            const bedPrice = this.getChildBedPrice(child);
-            const transportPrice = this.getTransportPrice(child.transportationId);
-            childrenCost += (reservationPrice + bedPrice + transportPrice);
-          });
+      if (list.length > 0) {
+        if (ticket.childrenCount > 0) {
+          const children = list.filter(c => c.primaryId === ticket.id && c.isChild);
+          if (children && children.length > 0) {
+            children.forEach(child => {
+              const reservationPrice = this.getChildReservationPrice(child.birthDate);
+              const bedPrice = this.getChildBedPrice(child);
+              const transportPrice = this.getTransportPrice(child.transportationId);
+              childrenCost += (reservationPrice + bedPrice + transportPrice);
+            });
+          }
         }
-      }
-      if (ticket.adultsCount > 0) {
-        const adults = list.filter(c => c.primaryId === ticket.id && !c.isChild);
-        if (adults && adults.length > 0) {
-          adults.forEach(adult => {
-            const price = this.adultReservationPrice;
-            const transportPrice = this.getTransportPrice(adult.transportationId);
-            adultCost += price + transportPrice;
-          });
+        if (ticket.adultsCount > 0) {
+          const adults = list.filter(c => c.primaryId === ticket.id && !c.isChild);
+          if (adults && adults.length > 0) {
+            adults.forEach(adult => {
+              const price = this.adultReservationPrice;
+              const transportPrice = this.getTransportPrice(adult.transportationId);
+              adultCost += price + transportPrice;
+            });
+          }
         }
       }
       return primaryCost + adultCost + childrenCost;
