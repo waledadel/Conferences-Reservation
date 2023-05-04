@@ -5,7 +5,7 @@ import { Firestore, collection, addDoc, collectionData, doc, updateDoc, docData 
 import { AngularFirestore, AngularFirestoreCollection, DocumentData, QueryFn } from '@angular/fire/compat/firestore';
 
 import { Constants } from '@app/constants';
-import { ICollectionData, IRelatedMemberViewModel, IPrimaryDataSourceVm, ITicket, ITicketForm } from '@app/models';
+import { ICollectionData, IRelatedMemberViewModel, IPrimaryDataSourceVm, ITicket, ITicketForm, IAllSubscriptionDataSourceVm } from '@app/models';
 import { convertSnaps } from './db-utils';
 
 @Injectable({
@@ -200,15 +200,16 @@ export class FireStoreService {
       .valueChanges({ idField: 'id' });
   }
 
-  getAllSubscription(): Observable<Array<Partial<ITicket>>> {
+  getAllSubscription(): Observable<Array<IAllSubscriptionDataSourceVm>> {
     return this.angularFirestore
-      .collection<ITicket>(Constants.RealtimeDatabase.tickets, ref => 
+      .collection<IAllSubscriptionDataSourceVm>(Constants.RealtimeDatabase.tickets, ref => 
         ref.orderBy('bookingDate', 'asc')
       )
       .valueChanges({ idField: 'id' })
       .pipe(
-        map((tickets: Array<ITicket>) =>
-          tickets.map((ticket: ITicket) => ({
+        map((tickets: Array<IAllSubscriptionDataSourceVm>) =>
+          tickets.map((ticket: IAllSubscriptionDataSourceVm) => ({
+            id: ticket.id,
             name: ticket.name,
             mobile: ticket.mobile,
             birthDate: ticket.birthDate,
@@ -217,7 +218,9 @@ export class FireStoreService {
             age: new Date().getFullYear() - ticket.birthDate.toDate().getFullYear(),
             gender: ticket.gender,
             isMain: ticket.isMain,
-            isChild: ticket.isChild
+            isChild: ticket.isChild,
+            addressId: ticket.addressId,
+            address: ''
           }))
         ),
         take(1)

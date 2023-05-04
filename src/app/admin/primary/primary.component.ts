@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { IBus, IRelatedMemberViewModel, IPrimaryDataSourceVm, ISettings, ITicket, ICostDetailsDataSourceVm } from '@app/models';
@@ -23,6 +23,14 @@ export class PrimaryComponent implements OnInit {
   dataSource: MatTableDataSource<IPrimaryDataSourceVm> = new MatTableDataSource<IPrimaryDataSourceVm>([]);
   notPrimaryMembers: Array<IRelatedMemberViewModel> = [];
   buses: Array<IBus> = [];
+  isMobileView = false;
+  get isMobile(): boolean {
+    return window.innerWidth < Constants.Grid.large;
+  }
+  
+  @HostListener('window:resize', ['$event']) onWindowResize(): void {
+    this.detectMobileView();
+  }
   
   constructor(
     private fireStoreService: FireStoreService,
@@ -32,6 +40,7 @@ export class PrimaryComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.detectMobileView();
     this.getBuses();
     this.getSettings();
   }
@@ -252,5 +261,12 @@ export class PrimaryComponent implements OnInit {
       return 0;
     }
     return 0;
+  }
+
+  private detectMobileView(): void {
+    this.isMobileView = this.isMobile;
+    if (this.isMobileView) {
+      this.displayedColumns = ['mobileView'];
+    }
   }
 }

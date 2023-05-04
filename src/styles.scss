@@ -63,22 +63,26 @@ button:focus {
   }
 }
 
-.customDialogPanelClass-md {
-  width: 400px !important;
-}
-
-
-.customDialogPanelClass-lg {
-  width: 800px !important;
-}
-
-.customDialogPanelClass-xlg {
-  width: 1000px !important;
+@media (min-width: 769px) {
+  .customDialogPanelClass-md {
+    width: 400px !important;
+  }
+  
+  
+  .customDialogPanelClass-lg {
+    width: 800px !important;
+  }
+  
+  .customDialogPanelClass-xlg {
+    width: 1000px !important;
+  }
 }
 
 @media (max-width: 769px) {
-  .customDialogPanelClass-md, .customDialogPanelClass-lg {
+  .customDialogPanelClass-sm, .customDialogPanelClass-md, 
+  .customDialogPanelClass-lg, .customDialogPanelClass-xlg {
     max-width: 100% !important;
+    min-width: 100% !important;
   }
 }
 
@@ -96,7 +100,7 @@ button:focus {
   .mat-elevation-z8 {
     border-radius: 5px;
     box-shadow: 0 0 5px 1px #a7a7a7b3;
-    max-height: 615px;
+
     overflow-y: scroll;
     .table-content {
       .mat-mdc-table {
@@ -131,6 +135,21 @@ button:focus {
         background-color: #f9f9f9;
         border-radius: 0 0 5px 5px;
       }
+    }
+  }
+}
+
+@media (min-width: 769px) {
+  .table-container {
+    .mat-elevation-z8 {
+      max-height: 615px;
+    }
+  }
+}
+@media (max-width: 769px) {
+  .table-container {
+    .mat-elevation-z8 {
+      max-height: 100%;
     }
   }
 }
@@ -186,27 +205,27 @@ button:focus {
 }
 
 .mat-mdc-unelevated-button.mat-primary {
-  --mdc-filled-button-container-color: #8e1212 !important;
+  --mdc-filled-button-container-color: #146C94 !important;
 }
 
 .mat-mdc-raised-button.mat-primary {
-  --mdc-protected-button-container-color: #8e1212 !important;
+  --mdc-protected-button-container-color: #146C94 !important;
 }
 
 .primary {
-  color: #8e1212 !important;
+  color: #146C94 !important;
 }
 
 .mat-toolbar.mat-primary {
-  background: #8e1212 !important;
+  background: #146C94 !important;
 }
 
 .mat-mdc-tab:not(.mat-mdc-tab-disabled) .mdc-tab-indicator__content--underline, .mat-mdc-tab-link:not(.mat-mdc-tab-disabled) .mdc-tab-indicator__content--underline {
-  border-color: var(--mdc-tab-indicator-active-indicator-color, #8e1212);
+  border-color: var(--mdc-tab-indicator-active-indicator-color, #146C94);
 }
 
 .mat-mdc-tab:not(.mat-mdc-tab-disabled).mdc-tab--active .mdc-tab__text-label, .mat-mdc-tab-link:not(.mat-mdc-tab-disabled).mdc-tab--active .mdc-tab__text-label {
-  color: #8e1212;
+  color: #146C94;
 }
 
 .mat-mdc-radio-button.mat-primary {
@@ -216,18 +235,23 @@ button:focus {
   --mdc-radio-unselected-hover-icon-color: #212121;
   --mdc-radio-unselected-icon-color: rgba(0, 0, 0, 0.54);
   --mdc-radio-unselected-pressed-icon-color: rgba(0, 0, 0, 0.54);
-  --mdc-radio-selected-focus-icon-color: #8e1212;
-  --mdc-radio-selected-hover-icon-color: #8e1212;
-  --mdc-radio-selected-icon-color: #8e1212;
-  --mdc-radio-selected-pressed-icon-color: #8e1212;
+  --mdc-radio-selected-focus-icon-color: #146C94;
+  --mdc-radio-selected-hover-icon-color: #146C94;
+  --mdc-radio-selected-icon-color: #146C94;
+  --mdc-radio-selected-pressed-icon-color: #146C94;
   --mat-mdc-radio-ripple-color: #000;
-  --mat-mdc-radio-checked-ripple-color: #8e1212;
+  --mat-mdc-radio-checked-ripple-color: #146C94;
 }
 
 .total {
-  color: #8e1212;
+  color: #146C94;
   cursor: pointer;
   &:hover {
     text-decoration: underline;
   }
+}
+
+.width-135 {
+  width: 135px;
+  min-width: 135px;
 }

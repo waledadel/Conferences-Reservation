@@ -78,6 +78,23 @@ export interface IPrimaryDataSourceVm {
     primaryId: string;
 }
 
+
+
+export interface IAllSubscriptionDataSourceVm {
+    id: string;
+    age: number;
+    birthDate: Timestamp;
+    bookingStatus: BookingStatus;
+    gender: Gender;
+    isChild: boolean;
+    isMain: boolean;
+    mobile: string;
+    name: string;
+    roomId: string;
+    addressId: string;
+    address: string;
+}
+
 export interface ICostDetailsDataSourceVm {
     name: string;
     reservationPrice: number;

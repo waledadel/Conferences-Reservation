@@ -10,6 +10,13 @@ export namespace Constants {
         public static readonly participants = 'participants';
     }
 
+    export class Grid {
+        public static small = 576;
+        public static medium = 768;
+        public static large = 992;
+        public static extraLarge = 1200;
+    }
+
     export class PageDirection {
         public static readonly ltr = 'ltr';
         public static readonly rtl = 'rtl';
