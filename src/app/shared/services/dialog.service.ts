@@ -3,7 +3,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 import { ConfirmDeleteComponent } from '../components/confirm-delete/confirm-delete.component';
 
-type modalSize = 'sm' | 'md' | 'lg';
+type modalSize = 'sm' | 'md' | 'lg' | 'xlg';
 
 @Injectable({
   providedIn: 'root'

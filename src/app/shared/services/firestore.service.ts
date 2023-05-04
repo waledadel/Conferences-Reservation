@@ -5,7 +5,7 @@ import { Firestore, collection, addDoc, collectionData, doc, updateDoc, docData 
 import { AngularFirestore, AngularFirestoreCollection, DocumentData, QueryFn } from '@angular/fire/compat/firestore';
 
 import { Constants } from '@app/constants';
-import { ICollectionData, IPrimaryChildrenViewModel, IPrimaryListViewModel, ITicket, ITicketForm } from '@app/models';
+import { ICollectionData, IRelatedMemberViewModel, IPrimaryDataSourceVm, ITicket, ITicketForm } from '@app/models';
 import { convertSnaps } from './db-utils';
 
 @Injectable({
@@ -224,14 +224,14 @@ export class FireStoreService {
       );
   }
 
-  getPrimarySubscription(takeCount = 1): Observable<Array<Partial<IPrimaryListViewModel>>> {
+  getPrimarySubscription(takeCount = 1): Observable<Array<IPrimaryDataSourceVm>> {
     return this.angularFirestore
-      .collection<IPrimaryListViewModel>(Constants.RealtimeDatabase.tickets, ref => 
+      .collection<IPrimaryDataSourceVm>(Constants.RealtimeDatabase.tickets, ref => 
         ref.where('isMain', '==', true)
       ).valueChanges({ idField: 'id' })
       .pipe(
-        map((tickets: Array<IPrimaryListViewModel>) =>
-          tickets.map((ticket: IPrimaryListViewModel) => ({
+        map((tickets: Array<IPrimaryDataSourceVm>) =>
+          tickets.map((ticket: IPrimaryDataSourceVm) => ({
             id: ticket.id,
             name: ticket.name,
             adultsCount: ticket.adultsCount,
@@ -242,43 +242,51 @@ export class FireStoreService {
             bookingDate: ticket.bookingDate,
             totalCost: 0,
             paid: ticket.paid,
-            userNotes: ticket.userNotes
+            userNotes: ticket.userNotes,
+            transportationId: ticket.transportationId,
+            primaryId: ticket.primaryId
           }))
         ),
         take(takeCount)
       );
   }
 
-  getChildSubscription(takeCount = 1): Observable<Array<IPrimaryChildrenViewModel>> {
+  getNotPrimarySubscription(takeCount = 1): Observable<Array<IRelatedMemberViewModel>> {
     return this.angularFirestore
-      .collection<IPrimaryChildrenViewModel>(Constants.RealtimeDatabase.tickets, ref => 
-        ref.where('isChild', '==', true)
+      .collection<IRelatedMemberViewModel>(Constants.RealtimeDatabase.tickets, ref => 
+        ref.where('isMain', '==', false)
       ).valueChanges({ idField: 'id' })
       .pipe(
-        map((tickets: Array<IPrimaryChildrenViewModel>) =>
-          tickets.map((ticket: IPrimaryChildrenViewModel) => ({
+        map((tickets: Array<IRelatedMemberViewModel>) =>
+          tickets.map((ticket: IRelatedMemberViewModel) => ({
             id: ticket.id,
             primaryId: ticket.primaryId,
+            name: ticket.name,
             birthDate: ticket.birthDate,
             needsSeparateBed: ticket.needsSeparateBed,
+            transportationId: ticket.transportationId,
+            isChild: ticket.isChild
           }))
         ),
         take(takeCount)
       );
   }
 
-  getAllChildForSpecificSubscription(primaryId: string, takeCount = 1): Observable<Array<IPrimaryChildrenViewModel>> {
+  getRelatedMembersByPrimaryId(primaryId: string, takeCount = 1): Observable<Array<IRelatedMemberViewModel>> {
     return this.angularFirestore
       .collection<ITicket>(Constants.RealtimeDatabase.tickets, ref => 
         ref.where('primaryId', '==', primaryId)
       ).valueChanges({ idField: 'id' })
       .pipe(
         map((tickets: Array<ITicket>) =>
-          tickets.filter(c => c.isChild).map((ticket: IPrimaryChildrenViewModel) => ({
+          tickets.filter(c => c.isChild).map((ticket: IRelatedMemberViewModel) => ({
             id: ticket.id,
             primaryId: ticket.primaryId,
+            name: ticket.name,
             birthDate: ticket.birthDate,
             needsSeparateBed: ticket.needsSeparateBed,
+            transportationId: ticket.transportationId,
+            isChild: ticket.isChild
           }))
         ),
         take(takeCount)

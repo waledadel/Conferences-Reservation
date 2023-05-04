@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 
-import { IPrimaryChildrenViewModel, IPrimaryListViewModel, ISettings, ITicket } from '@app/models';
+import { IBus, IRelatedMemberViewModel, IPrimaryDataSourceVm, ISettings, ITicket, ICostDetailsDataSourceVm } from '@app/models';
 import { DialogService, FireStoreService, NotifyService, TranslationService } from '@app/services';
 import { ManageReservationComponent } from '../reservation/manage-reservation/manage-reservation.component';
 import { Constants } from '@app/constants';
 import { Timestamp } from '@angular/fire/firestore';
+import { CostDetailsComponent } from './cost-details/cost-details.component';
 
 @Component({
   templateUrl: './primary.component.html'
@@ -19,8 +20,9 @@ export class PrimaryComponent implements OnInit {
   childBedPrice = 0;
   displayedColumns: string[] = ['name', 'adultsCount', 'childrenCount', 'roomId',
   'bookingType', 'bookingDate', 'totalCost', 'paid', 'remaining', 'userNotes', 'bookingStatus', 'actions'];
-  dataSource: MatTableDataSource<Partial<IPrimaryListViewModel>> = new MatTableDataSource<Partial<IPrimaryListViewModel>>([]);
-  children: Array<IPrimaryChildrenViewModel> = [];
+  dataSource: MatTableDataSource<IPrimaryDataSourceVm> = new MatTableDataSource<IPrimaryDataSourceVm>([]);
+  notPrimaryMembers: Array<IRelatedMemberViewModel> = [];
+  buses: Array<IBus> = [];
   
   constructor(
     private fireStoreService: FireStoreService,
@@ -30,6 +32,7 @@ export class PrimaryComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.getBuses();
     this.getSettings();
   }
 
@@ -60,9 +63,70 @@ export class PrimaryComponent implements OnInit {
     }
   }
 
-  private getChildSubscription(takeCount = 1): void {
-    this.fireStoreService.getChildSubscription(takeCount).subscribe(res => {
-      this.children = res;
+  viewCostDetails(item: IPrimaryDataSourceVm): void {
+    const list: Array<ICostDetailsDataSourceVm> = [];
+    // Primary
+    list.push({
+      isChild: false,
+      isMain: true,
+      name: item.name,
+      bedPrice: 0,
+      needBed: true,
+      privateTransport: this.isPrivateTransport(item.transportationId),
+      reservationPrice: this.adultReservationPrice,
+      transportPrice: this.getTransportPrice(item.transportationId)
+    });
+    // other members
+    const allRelatedMembers = this.notPrimaryMembers.filter(m => m.primaryId === item.primaryId);
+    if (allRelatedMembers.length > 0) {
+      const adults = allRelatedMembers.filter(m => !m.isChild);
+      const children = allRelatedMembers.filter(m => m.isChild);
+      if (children && children.length > 0) {
+        children.forEach(item => {
+          list.push({
+            isChild: true,
+            isMain: false,
+            name: item.name,
+            bedPrice: this.getChildBedPrice(item),
+            needBed: item.needsSeparateBed,
+            privateTransport: this.isPrivateTransport(item.transportationId),
+            reservationPrice: this.getChildReservationPrice(item.birthDate),
+            transportPrice: this.getTransportPrice(item.transportationId)
+          });
+        });
+      }
+      if (adults && adults.length > 0) {
+        adults.forEach(item => {
+          list.push({
+            isChild: false,
+            isMain: false,
+            name: item.name,
+            bedPrice: 0,
+            needBed: item.needsSeparateBed,
+            privateTransport: this.isPrivateTransport(item.transportationId),
+            reservationPrice: this.adultReservationPrice,
+            transportPrice: this.getTransportPrice(item.transportationId)
+          });
+        });
+      }
+    }
+    this.dialogService.openAddEditDialog(CostDetailsComponent, 'xlg', true, list);
+  }
+
+  private isPrivateTransport(transportId: string): boolean {
+    if (transportId && this.buses.length > 0) {
+      const bus = this.buses.find(b => b.id === transportId);
+      if (bus) {
+        return bus.price > 0 ? false : true;
+      }
+      return false;
+    }
+    return false;
+  }
+
+  private getNotPrimarySubscription(takeCount = 1): void {
+    this.fireStoreService.getNotPrimarySubscription(takeCount).subscribe(res => {
+      this.notPrimaryMembers = res;
       this.getPrimaryTickets();
     });
   }
@@ -81,19 +145,18 @@ export class PrimaryComponent implements OnInit {
         this.childReservationPriceLessThanEight = data[0].childReservationPriceLessThanEight;
         this.childReservationPriceMoreThanEight = data[0].childReservationPriceMoreThanEight;
         this.childBedPrice = data[0].childBedPrice;
-        this.getChildSubscription();
+        this.getNotPrimarySubscription();
       }
     });
   }
 
   private updateTableRow(item: Partial<ITicket>): void {
-    this.fireStoreService.getById(`${Constants.RealtimeDatabase.tickets}/${item.id}`).subscribe((res: Partial<ITicket>) => {
+    this.fireStoreService.getById(`${Constants.RealtimeDatabase.tickets}/${item.id}`).subscribe((res: IPrimaryDataSourceVm) => {
       if (res) {
         const index = this.dataSource.data.findIndex(t => t.id === item.id);
-        console.log('res', res);
         if (index > -1 && res.primaryId) {
-          this.fireStoreService.getAllChildForSpecificSubscription(res.primaryId, 1).subscribe(children => {
-            this.children = children;
+          this.fireStoreService.getRelatedMembersByPrimaryId(res.primaryId, 1).subscribe(list => {
+            this.notPrimaryMembers = list;
             this.dataSource.data[index] = {...res, totalCost: this.getTotalCost(res)};
             this.dataSource._updateChangeSubscription();
           });
@@ -111,19 +174,34 @@ export class PrimaryComponent implements OnInit {
     }
   }
 
-  private getTotalCost(ticket: Partial<ITicket>): number {
-    if (ticket) {
-      if (this.children.length > 0) {
-        let childrenCost = 0;
-        const children = this.children.filter(c => c.primaryId === ticket.id);
+  private getTotalCost(ticket: IPrimaryDataSourceVm): number {
+    if (ticket && this.notPrimaryMembers.length > 0) {
+      let childrenCost = 0;
+      let adultCost = 0;
+      let primaryCost = 0;
+      primaryCost = this.adultReservationPrice + this.getTransportPrice(ticket.transportationId);
+      if (ticket.childrenCount > 0) {
+        const children = this.notPrimaryMembers.filter(c => c.primaryId === ticket.id && c.isChild);
         if (children && children.length > 0) {
           children.forEach(child => {
-            childrenCost += this.getChildReservationPrice(child.birthDate) + (child.needsSeparateBed ? this.childBedPrice : 0)
+            const reservationPrice = this.getChildReservationPrice(child.birthDate);
+            const bedPrice = this.getChildBedPrice(child);
+            const transportPrice = this.getTransportPrice(child.transportationId);
+            childrenCost += (reservationPrice + bedPrice + transportPrice);
           });
         }
-        return childrenCost + (ticket.adultsCount! + 1) * this.adultReservationPrice;
       }
-      return (ticket.adultsCount! + 1) * this.adultReservationPrice;
+      if (ticket.adultsCount > 0) {
+        const adults = this.notPrimaryMembers.filter(c => c.primaryId === ticket.id && !c.isChild);
+        if (adults && adults.length > 0) {
+          adults.forEach(adult => {
+            const price = this.adultReservationPrice;
+            const transportPrice = this.getTransportPrice(adult.transportationId);
+            adultCost += price + transportPrice;
+          });
+        }
+      }
+      return primaryCost + adultCost + childrenCost;
     }
     return 0;
   }
@@ -138,6 +216,35 @@ export class PrimaryComponent implements OnInit {
       } else {
         return 0;
       }
+    }
+    return 0;
+  }
+
+  private getChildBedPrice(child: IRelatedMemberViewModel ): number {
+    if (child) {
+      const childYears = new Date().getFullYear() - child.birthDate.toDate().getFullYear();
+      if (childYears >= 8 && childYears < 12) {
+        return 0; // Already pay as the adult
+      } else {
+        return child.needsSeparateBed ? this.childBedPrice : 0;
+      }
+    }
+    return 0;
+  }
+
+  private getBuses(): void {
+    this.fireStoreService.getAll<IBus>(Constants.RealtimeDatabase.buses).subscribe(data => {
+      this.buses = data;
+    });
+  }
+
+  private getTransportPrice(transportId: string): number {
+    if (transportId && this.buses.length > 0) {
+      const bus = this.buses.find(b => b.id === transportId);
+      if (bus) {
+        return +bus.price;
+      }
+      return 0;
     }
     return 0;
   }

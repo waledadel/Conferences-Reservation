@@ -72,6 +72,10 @@ button:focus {
   width: 800px !important;
 }
 
+.customDialogPanelClass-xlg {
+  width: 1000px !important;
+}
+
 @media (max-width: 769px) {
   .customDialogPanelClass-md, .customDialogPanelClass-lg {
     max-width: 100% !important;
@@ -187,4 +191,12 @@ button:focus {
 
 .mat-toolbar.mat-primary {
   background: #000000 !important;
+}
+
+.total {
+  color: #3f51b5;
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
 }

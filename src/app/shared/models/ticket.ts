@@ -62,7 +62,7 @@ export interface ITicketForm extends IPrimary {
     participants: Array<IParticipant>;
 }
 
-export interface IPrimaryListViewModel {
+export interface IPrimaryDataSourceVm {
     id: string;
     name: string;
     adultsCount: number;
@@ -74,13 +74,29 @@ export interface IPrimaryListViewModel {
     totalCost: number;
     paid: number;
     userNotes: string;
+    transportationId: string;
+    primaryId: string;
 }
 
-export interface IPrimaryChildrenViewModel {
+export interface ICostDetailsDataSourceVm {
+    name: string;
+    reservationPrice: number;
+    bedPrice: number;
+    transportPrice: number;
+    needBed: boolean;
+    privateTransport: boolean;
+    isChild: boolean;
+    isMain: boolean;
+}
+
+export interface IRelatedMemberViewModel {
     id: string;
     primaryId: string;
+    name: string;
     birthDate: Timestamp;
     needsSeparateBed: boolean;
+    transportationId: string;
+    isChild: boolean;
 }
 
 export enum BookingStatus {

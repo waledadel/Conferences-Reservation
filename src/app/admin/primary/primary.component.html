@@ -51,7 +51,9 @@
                 <ng-container matColumnDef="totalCost">
                     <th mat-header-cell *matHeaderCellDef>{{'common.totalCost' | translate}}</th>
                     <td mat-cell *matCellDef="let element">
-                        {{element.totalCost}}
+                        <a (click)="viewCostDetails(element)" class="total">
+                            {{element.totalCost}}
+                        </a>
                     </td>
                 </ng-container>
 

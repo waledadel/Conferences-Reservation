@@ -56,7 +56,15 @@
         "noThanks": "لا شكرا",
         "email": "البريد الإلكتروني",
         "password": "كلمة المرور",
-        "login": "تسجيل الدخول"
+        "login": "تسجيل الدخول",
+        "close": "إغلاق",
+        "costDetails": "تفاصيل الإجمالي",
+        "reservationPrice": "تكلفة الحجز",
+        "bedPrice": "تكلفة السرير",
+        "transportPrice": "تكلفة المواصلات",
+        "needBed": "محتاج سرير",
+        "privateTransport": "مواصلات خاصة",
+        "isChild": "طفل"
     },
     "languages": {
         "arabic": "العربية",
