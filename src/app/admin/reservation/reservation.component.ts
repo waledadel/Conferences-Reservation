@@ -47,9 +47,9 @@ export class ReservationComponent implements OnInit {
 
   ngOnInit(): void {
     this.model.isArabic = this.storageService.getItem(Constants.Languages.languageKey) === Constants.Languages.ar;
+    this.getBusList();
     this.getSettings();
     this.getAddressList();
-    this.getBusList();
   }
 
   isChild(index: number): boolean {
@@ -219,16 +219,30 @@ export class ReservationComponent implements OnInit {
 
   private getTotalCost(): number {
     if (this.reservationData.length > 0) {
+      let childrenCost = 0;
+      let adultCost = 0;
+      let primaryCost = 0;
       const primary = this.reservationData.find(m => m.isMain);
       if (primary) {
-        let childrenCost = 0;
+        primaryCost = this.model.adultReservationPrice + this.getTransportPrice(primary.transportationId);
         const children = this.reservationData.filter(c => c.isChild);
-        if (children && children.length > 0) {
+        const adults = this.reservationData.filter(c => !c.isChild && !c.isMain);
+        if (primary.childrenCount > 0 && children && children.length > 0) {
           children.forEach(child => {
-            childrenCost += this.getChildReservationPrice(child.birthDate) + (child.needsSeparateBed ? this.model.childBedPrice : 0)
+            const reservationPrice = this.getChildReservationPrice(child.birthDate);
+            const bedPrice = this.getChildBedPrice(child);
+            const transportPrice = this.getTransportPrice(child.transportationId);
+            childrenCost += (reservationPrice + bedPrice + transportPrice);
           });
         }
-        return childrenCost + (primary.adultsCount! + 1) * this.model.adultReservationPrice;
+        if (primary.adultsCount > 0 && adults && adults.length > 0) {
+          adults.forEach(adult => {
+            const price = this.model.adultReservationPrice;
+            const transportPrice = this.getTransportPrice(adult.transportationId);
+            adultCost += price + transportPrice;
+          });
+        }
+        return primaryCost + adultCost + childrenCost;
       }
       return 0;
     }
@@ -244,6 +258,29 @@ export class ReservationComponent implements OnInit {
         return this.model.childReservationPriceLessThanEight;
       } else {
         return 0;
+      }
+    }
+    return 0;
+  }
+
+  private getTransportPrice(transportId: string): number {
+    if (transportId && this.model.busList.length > 0) {
+      const bus = this.model.busList.find(b => b.id === transportId);
+      if (bus) {
+        return +bus.price;
+      }
+      return 0;
+    }
+    return 0;
+  }
+
+  private getChildBedPrice(child: ITicket): number {
+    if (child) {
+      const childYears = new Date().getFullYear() - child.birthDate.toDate().getFullYear();
+      if (childYears >= 8 && childYears < 12) {
+        return 0; // Already pay as the adult
+      } else {
+        return child.needsSeparateBed ? this.model.childBedPrice : 0;
       }
     }
     return 0;

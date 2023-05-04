@@ -279,7 +279,7 @@ export class FireStoreService {
       ).valueChanges({ idField: 'id' })
       .pipe(
         map((tickets: Array<ITicket>) =>
-          tickets.filter(c => c.isChild).map((ticket: IRelatedMemberViewModel) => ({
+          tickets.filter(c => !c.isMain).map((ticket: IRelatedMemberViewModel) => ({
             id: ticket.id,
             primaryId: ticket.primaryId,
             name: ticket.name,

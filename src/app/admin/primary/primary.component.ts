@@ -133,7 +133,7 @@ export class PrimaryComponent implements OnInit {
 
   private getPrimaryTickets(takeCount = 1): void {
     this.fireStoreService.getPrimarySubscription(takeCount).subscribe(res => {
-      this.dataSource.data = res.map(item => ({...item, totalCost: this.getTotalCost(item)}));
+      this.dataSource.data = res.map(item => ({...item, totalCost: this.getTotalCost(item, this.notPrimaryMembers)}));
       this.total = res.length;
     });
   }
@@ -156,8 +156,11 @@ export class PrimaryComponent implements OnInit {
         const index = this.dataSource.data.findIndex(t => t.id === item.id);
         if (index > -1 && res.primaryId) {
           this.fireStoreService.getRelatedMembersByPrimaryId(res.primaryId, 1).subscribe(list => {
-            this.notPrimaryMembers = list;
-            this.dataSource.data[index] = {...res, totalCost: this.getTotalCost(res)};
+            if (list && list.length > 0) {
+              this.dataSource.data[index] = {...res, totalCost: this.getTotalCost(res, list)};
+            } else {
+              this.dataSource.data[index] = {...res, totalCost: this.getTotalCost(res, this.notPrimaryMembers)};
+            }
             this.dataSource._updateChangeSubscription();
           });
         }
@@ -174,14 +177,14 @@ export class PrimaryComponent implements OnInit {
     }
   }
 
-  private getTotalCost(ticket: IPrimaryDataSourceVm): number {
-    if (ticket && this.notPrimaryMembers.length > 0) {
+  private getTotalCost(ticket: IPrimaryDataSourceVm, list: Array<IRelatedMemberViewModel>): number {
+    if (ticket && list.length > 0) {
       let childrenCost = 0;
       let adultCost = 0;
       let primaryCost = 0;
       primaryCost = this.adultReservationPrice + this.getTransportPrice(ticket.transportationId);
       if (ticket.childrenCount > 0) {
-        const children = this.notPrimaryMembers.filter(c => c.primaryId === ticket.id && c.isChild);
+        const children = list.filter(c => c.primaryId === ticket.id && c.isChild);
         if (children && children.length > 0) {
           children.forEach(child => {
             const reservationPrice = this.getChildReservationPrice(child.birthDate);
@@ -192,7 +195,7 @@ export class PrimaryComponent implements OnInit {
         }
       }
       if (ticket.adultsCount > 0) {
-        const adults = this.notPrimaryMembers.filter(c => c.primaryId === ticket.id && !c.isChild);
+        const adults = list.filter(c => c.primaryId === ticket.id && !c.isChild);
         if (adults && adults.length > 0) {
           adults.forEach(adult => {
             const price = this.adultReservationPrice;
