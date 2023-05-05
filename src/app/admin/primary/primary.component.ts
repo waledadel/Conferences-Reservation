@@ -1,5 +1,6 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
 
 import { IBus, IRelatedMemberViewModel, IPrimaryDataSourceVm, ISettings, ITicket, ICostDetailsDataSourceVm } from '@app/models';
 import { DialogService, FireStoreService, NotifyService, TranslationService } from '@app/services';
@@ -13,6 +14,7 @@ import { CostDetailsComponent } from './cost-details/cost-details.component';
 })
 export class PrimaryComponent implements OnInit {
 
+  @ViewChild(MatSort, {static: true}) sort!: MatSort;
   total = 0;
   adultReservationPrice = 0;
   childReservationPriceLessThanEight = 0;
@@ -21,7 +23,7 @@ export class PrimaryComponent implements OnInit {
   readonly desktopColumn = ['name', 'adultsCount', 'childrenCount', 'roomId',
   'bookingType', 'bookingDate', 'totalCost', 'paid', 'remaining', 'userNotes', 'bookingStatus', 'actions'];
   displayedColumns: string[] = [];
-  dataSource: MatTableDataSource<IPrimaryDataSourceVm> = new MatTableDataSource<IPrimaryDataSourceVm>([]);
+  dataSource = new MatTableDataSource<IPrimaryDataSourceVm>([]);
   notPrimaryMembers: Array<IRelatedMemberViewModel> = [];
   buses: Array<IBus> = [];
   isMobileView = false;
@@ -123,6 +125,26 @@ export class PrimaryComponent implements OnInit {
     this.dialogService.openAddEditDialog(CostDetailsComponent, 'xlg', true, list);
   }
 
+  getAllAdultsCount(): number {
+    return this.dataSource.data.map(t => t.adultsCount + 1).reduce((acc, value) => acc + value, 0);
+  }
+
+  getAllChildrenCount(): number {
+    return this.dataSource.data.map(t => t.childrenCount).reduce((acc, value) => acc + value, 0);
+  }
+
+  getAllTotalCost(): number {
+    return this.dataSource.data.map(t => t.totalCost).reduce((acc, value) => acc + value, 0);
+  }
+
+  getAllPaid(): number {
+    return this.dataSource.data.map(t => t.paid).reduce((acc, value) => acc + value, 0);
+  }
+
+  getAllRemaining(): number {
+    return this.dataSource.data.map(t => t.totalCost - t.paid).reduce((acc, value) => acc + value, 0);
+  }
+
   private isPrivateTransport(transportId: string): boolean {
     if (transportId && this.buses.length > 0) {
       const bus = this.buses.find(b => b.id === transportId);
@@ -143,8 +165,10 @@ export class PrimaryComponent implements OnInit {
 
   private getPrimaryTickets(takeCount = 1): void {
     this.fireStoreService.getPrimarySubscription(takeCount).subscribe(res => {
-      this.dataSource.data = res.map(item => ({...item, totalCost: this.getTotalCost(item, this.notPrimaryMembers)}));
+      const data = res.map(item => ({...item, totalCost: this.getTotalCost(item, this.notPrimaryMembers)}));
+      this.dataSource = new MatTableDataSource(data);
       this.total = res.length;
+      this.dataSource.sort = this.sort;
     });
   }
 

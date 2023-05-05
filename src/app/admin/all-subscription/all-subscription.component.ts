@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 
@@ -9,13 +9,13 @@ import { FireStoreService } from '@app/services';
 @Component({
   templateUrl: './all-subscription.component.html'
 })
-export class AllSubscriptionComponent implements OnInit, AfterViewInit {
+export class AllSubscriptionComponent implements OnInit {
 
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   total = 0;
   readonly desktopColumns = ['name', 'mobile', 'birthDate', 'address', 'age', 'gender', 'room', 'status'];
   displayedColumns: string[] = [];
-  dataSource: MatTableDataSource<IAllSubscriptionDataSourceVm> = new MatTableDataSource<IAllSubscriptionDataSourceVm>([]);
+  dataSource = new MatTableDataSource<IAllSubscriptionDataSourceVm>([]);
   addressList: Array<IAddress> = [];
   isMobileView = false;
   get isMobile(): boolean {
@@ -33,9 +33,6 @@ export class AllSubscriptionComponent implements OnInit, AfterViewInit {
     this.getAddress();
   }
 
-  ngAfterViewInit(): void {
-  }
-
   private getAddress(): void {
     this.fireStoreService.getAll<IAddress>(Constants.RealtimeDatabase.address).subscribe(data => {
       this.addressList = data;
@@ -45,7 +42,8 @@ export class AllSubscriptionComponent implements OnInit, AfterViewInit {
 
   private getTickets(): void {
     this.fireStoreService.getAllSubscription().subscribe(res => {
-      this.dataSource.data = res.map(item => ({...item, address: this.getAddressById(item.addressId) }));
+      const data = res.map(item => ({...item, address: this.getAddressById(item.addressId) }));
+      this.dataSource = new MatTableDataSource(data);
       this.total = res.length;
       this.dataSource.sort = this.sort;
     });
