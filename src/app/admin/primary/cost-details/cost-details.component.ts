@@ -10,7 +10,8 @@ import { ICostDetailsDataSourceVm } from '@app/models';
 })
 export class CostDetailsComponent implements OnInit {
 
-  displayedColumns: string[] = ['name', 'reservationPrice', 'bedPrice', 'transportPrice', 'needBed', 'privateTransport', 'isChild'];
+  readonly desktopColumns: string[] = ['name', 'reservationPrice', 'bedPrice', 'transportPrice', 'needBed', 'privateTransport', 'isChild'];
+  displayedColumns: string[] = [];
   dataSource: MatTableDataSource<ICostDetailsDataSourceVm> = new MatTableDataSource<ICostDetailsDataSourceVm>([]);
   total = 0;
   isMobileView = false;
@@ -45,6 +46,8 @@ export class CostDetailsComponent implements OnInit {
     this.isMobileView = this.isMobile;
     if (this.isMobileView) {
       this.displayedColumns = ['mobileView'];
+    } else {
+      this.displayedColumns = this.desktopColumns;
     }
   }
 }

@@ -7,100 +7,98 @@
 <div mat-dialog-content>
     <div class="container-fluid table-container" [ngClass]="isMobileView ? 'px-0' : 'p-1'">
         <div *ngIf="dataSource.data.length > 0" class="mat-elevation-z8">
-            <div class="table-content">
-                <table mat-table [dataSource]="dataSource" matSort matSortActive="name">
+            <table mat-table [dataSource]="dataSource" matSort matSortActive="name">
 
-                    <ng-container matColumnDef="mobileView">
-                        <th mat-header-cell *matHeaderCellDef>
-                            {{'common.total' | translate}}:  {{total}}
-                        </th>
-                        <td mat-cell *matCellDef="let element" class="py-2">
-                            <div class="d-flex flex-column">
-                                <div> <b>{{'common.name' | translate}}:</b> {{element.name}}</div>
-                                <div> <b>{{'common.reservationPrice' | translate}}:</b> {{element.reservationPrice}}</div>
-                                <div> <b>{{'common.bedPrice' | translate}}:</b> {{element.bedPrice}}</div>
-                                <div> <b>{{'common.transportPrice' | translate}}:</b> {{element.transportPrice}}</div>
-                                <div class="d-flex align-items-center">
-                                    <b>{{'common.needBed' | translate}}:</b>&nbsp;
-                                    <ng-container *ngIf="element.needBed; else unCheck">
-                                        <i class="fa-solid fa-square-check text-success"></i>
-                                    </ng-container>
-                                </div>
-                                <div class="d-flex align-items-center">
-                                    <b>{{'common.privateTransport' | translate}}:</b>&nbsp;
-                                    <ng-container *ngIf="element.privateTransport; else unCheck">
-                                        <i class="fa-solid fa-square-check text-success"></i>
-                                    </ng-container>
-                                </div>
-                                <div class="d-flex align-items-center">
-                                    <b>{{'common.isChild' | translate}}:</b>&nbsp;
-                                    <ng-container *ngIf="element.isChild; else unCheck">
-                                        <i class="fa-solid fa-square-check text-success"></i>
-                                    </ng-container>
-                                </div>
+                <ng-container matColumnDef="mobileView">
+                    <th mat-header-cell *matHeaderCellDef>
+                        {{'common.total' | translate}}:  {{total}}
+                    </th>
+                    <td mat-cell *matCellDef="let element" class="py-2">
+                        <div class="d-flex flex-column">
+                            <div> <b>{{'common.name' | translate}}:</b> {{element.name}}</div>
+                            <div> <b>{{'common.reservationPrice' | translate}}:</b> {{element.reservationPrice}}</div>
+                            <div> <b>{{'common.bedPrice' | translate}}:</b> {{element.bedPrice}}</div>
+                            <div> <b>{{'common.transportPrice' | translate}}:</b> {{element.transportPrice}}</div>
+                            <div class="d-flex align-items-center">
+                                <b>{{'common.needBed' | translate}}:</b>&nbsp;
+                                <ng-container *ngIf="element.needBed; else unCheck">
+                                    <i class="fa-solid fa-square-check text-success"></i>
+                                </ng-container>
                             </div>
-                        </td>
-                    </ng-container>
+                            <div class="d-flex align-items-center">
+                                <b>{{'common.privateTransport' | translate}}:</b>&nbsp;
+                                <ng-container *ngIf="element.privateTransport; else unCheck">
+                                    <i class="fa-solid fa-square-check text-success"></i>
+                                </ng-container>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <b>{{'common.isChild' | translate}}:</b>&nbsp;
+                                <ng-container *ngIf="element.isChild; else unCheck">
+                                    <i class="fa-solid fa-square-check text-success"></i>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </td>
+                </ng-container>
 
-                    <ng-container matColumnDef="name">
-                        <th mat-header-cell *matHeaderCellDef>{{'common.name' | translate}}</th>
-                        <td mat-cell *matCellDef="let element">
-                            <div class="d-flex">
-                                <div>{{element.name}}</div>
-                                <mat-icon *ngIf="element.isMain" color="primary" class="mx-2">star</mat-icon>
-                                <mat-icon *ngIf="element.isChild" color="primary" class="mx-2">child_care</mat-icon>
-                            </div>
-                        </td>
-                    </ng-container>
-    
-                    <ng-container matColumnDef="reservationPrice">
-                        <th mat-header-cell *matHeaderCellDef>{{'common.reservationPrice' | translate}}</th>
-                        <td mat-cell *matCellDef="let element">{{ element.reservationPrice}}</td>
-                    </ng-container>
-    
-                    <ng-container matColumnDef="bedPrice">
-                        <th mat-header-cell *matHeaderCellDef>{{'common.bedPrice' | translate}}</th>
-                        <td mat-cell *matCellDef="let element">{{ element.bedPrice }}</td>
-                    </ng-container>
-    
-                    <ng-container matColumnDef="transportPrice">
-                        <th mat-header-cell *matHeaderCellDef>{{'common.transportPrice' | translate}}</th>
-                        <td mat-cell *matCellDef="let element">
-                            {{element.transportPrice}}
-                        </td>
-                    </ng-container>
-    
-                    <ng-container matColumnDef="needBed">
-                        <th mat-header-cell *matHeaderCellDef>{{'common.needBed' | translate}}</th>
-                        <td mat-cell *matCellDef="let element">
-                            <ng-container *ngIf="element.needBed; else unCheck">
-                                <i class="fa-solid fa-square-check text-success"></i>
-                            </ng-container>
-                        </td>
-                    </ng-container>
-    
-                    <ng-container matColumnDef="privateTransport">
-                        <th mat-header-cell *matHeaderCellDef>{{'common.privateTransport' | translate}}</th>
-                        <td mat-cell *matCellDef="let element">
-                            <ng-container *ngIf="element.privateTransport; else unCheck">
-                                <i class="fa-solid fa-square-check text-success"></i>
-                            </ng-container>
-                        </td>
-                    </ng-container>
-    
-                    <ng-container matColumnDef="isChild">
-                        <th mat-header-cell *matHeaderCellDef>{{'common.isChild' | translate}}</th>
-                        <td mat-cell *matCellDef="let element">
-                            <ng-container *ngIf="element.isChild; else unCheck">
-                                <i class="fa-solid fa-square-check text-success"></i>
-                            </ng-container>
-                        </td>
-                    </ng-container>
-    
-                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                </table>
-            </div>
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef>{{'common.name' | translate}}</th>
+                    <td mat-cell *matCellDef="let element">
+                        <div class="d-flex">
+                            <div>{{element.name}}</div>
+                            <mat-icon *ngIf="element.isMain" color="primary" class="mx-2">star</mat-icon>
+                            <mat-icon *ngIf="element.isChild" color="primary" class="mx-2">child_care</mat-icon>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="reservationPrice">
+                    <th mat-header-cell *matHeaderCellDef>{{'common.reservationPrice' | translate}}</th>
+                    <td mat-cell *matCellDef="let element">{{ element.reservationPrice}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="bedPrice">
+                    <th mat-header-cell *matHeaderCellDef>{{'common.bedPrice' | translate}}</th>
+                    <td mat-cell *matCellDef="let element">{{ element.bedPrice }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="transportPrice">
+                    <th mat-header-cell *matHeaderCellDef>{{'common.transportPrice' | translate}}</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.transportPrice}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="needBed">
+                    <th mat-header-cell *matHeaderCellDef>{{'common.needBed' | translate}}</th>
+                    <td mat-cell *matCellDef="let element">
+                        <ng-container *ngIf="element.needBed; else unCheck">
+                            <i class="fa-solid fa-square-check text-success"></i>
+                        </ng-container>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="privateTransport">
+                    <th mat-header-cell *matHeaderCellDef>{{'common.privateTransport' | translate}}</th>
+                    <td mat-cell *matCellDef="let element">
+                        <ng-container *ngIf="element.privateTransport; else unCheck">
+                            <i class="fa-solid fa-square-check text-success"></i>
+                        </ng-container>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="isChild">
+                    <th mat-header-cell *matHeaderCellDef>{{'common.isChild' | translate}}</th>
+                    <td mat-cell *matCellDef="let element">
+                        <ng-container *ngIf="element.isChild; else unCheck">
+                            <i class="fa-solid fa-square-check text-success"></i>
+                        </ng-container>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
             <div *ngIf="!isMobileView" class="d-flex justify-content-start p-3">
                 {{'common.totalCost' | translate}}: {{total}}
             </div>

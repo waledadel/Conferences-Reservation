@@ -18,8 +18,9 @@ export class PrimaryComponent implements OnInit {
   childReservationPriceLessThanEight = 0;
   childReservationPriceMoreThanEight = 0;
   childBedPrice = 0;
-  displayedColumns: string[] = ['name', 'adultsCount', 'childrenCount', 'roomId',
+  readonly desktopColumn = ['name', 'adultsCount', 'childrenCount', 'roomId',
   'bookingType', 'bookingDate', 'totalCost', 'paid', 'remaining', 'userNotes', 'bookingStatus', 'actions'];
+  displayedColumns: string[] = [];
   dataSource: MatTableDataSource<IPrimaryDataSourceVm> = new MatTableDataSource<IPrimaryDataSourceVm>([]);
   notPrimaryMembers: Array<IRelatedMemberViewModel> = [];
   buses: Array<IBus> = [];
@@ -267,6 +268,8 @@ export class PrimaryComponent implements OnInit {
     this.isMobileView = this.isMobile;
     if (this.isMobileView) {
       this.displayedColumns = ['mobileView'];
+    } else {
+      this.displayedColumns = this.desktopColumn;
     }
   }
 }
