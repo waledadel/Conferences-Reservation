@@ -3,19 +3,19 @@
         <app-empty-data></app-empty-data>
     </ng-container>
     <div [hidden]="dataSource && dataSource.data.length < 1" class="mat-elevation-z8" [class.mt-3]="!isMobileView">
-        <table mat-table [dataSource]="dataSource" matSort matSortActive="name" matSortDirection="asc" matSortDisableClear="true">
-
+        <table mat-table [dataSource]="dataSource" matSort matSortActive="name" matSortDirection="asc"
+            matSortDisableClear="true">
             <ng-container matColumnDef="mobileView">
                 <th mat-header-cell *matHeaderCellDef>
-                    {{'common.total' | translate}}:  {{total}}
+                    {{'common.total' | translate}}: {{total}}
                 </th>
                 <td mat-cell *matCellDef="let element" class="py-2">
-                    <div class="d-flex justify-content-between align-items-start"> 
+                    <div class="d-flex justify-content-between align-items-start">
                         <div class="d-flex flex-column">
                             <div><b>{{'common.name' | translate}}:</b> {{element.name}}</div>
                             <div> <b>{{'common.adultsCount' | translate}}:</b> {{element.adultsCount + 1}}</div>
                             <div> <b>{{'common.childrenCount' | translate}}:</b> {{element.childrenCount}}</div>
-                            <div class="d-flex"> 
+                            <div class="d-flex">
                                 <b>{{'common.room' | translate}}:</b>&nbsp;
                                 <ng-container *ngIf="element.room; else empty">
                                     {{ element.room }}
@@ -33,23 +33,27 @@
                                     </div>
                                 </ng-container>
                             </div>
-                            <div> <b>{{'common.bookingDate' | translate}}:</b> {{element.bookingDate.toMillis() | date}}</div>
+                            <div> <b>{{'common.bookingDate' | translate}}:</b> {{element.bookingDate.toMillis() | date}}
+                            </div>
                             <div> <b>{{'common.totalCost' | translate}}:</b>
                                 <a (click)="viewCostDetails(element)" class="total">
                                     {{element.totalCost}}
                                 </a>
                             </div>
                             <div> <b>{{'common.paid' | translate}}:</b> {{element.paid}}</div>
-                            <div> <b>{{'common.remaining' | translate}}:</b>  {{ element.totalCost - element.paid }}</div>
-                            <div> <b>{{'common.notes' | translate}}:</b>  {{ element.userNotes }}</div>
+                            <div> <b>{{'common.remaining' | translate}}:</b> {{ element.totalCost - element.paid }}
+                            </div>
+                            <div> <b>{{'common.notes' | translate}}:</b> {{ element.userNotes }}</div>
                         </div>
                         <div class="d-flex flex-column-reverse">
                             <ng-container [ngSwitch]="element.bookingStatus">
                                 <div *ngSwitchCase="2">
-                                    <div class="badge px-2 py-1 badge-info">{{ 'bookingStatus.confirmed' | translate }}</div>
+                                    <div class="badge px-2 py-1 badge-info">{{ 'bookingStatus.confirmed' | translate }}
+                                    </div>
                                 </div>
                                 <div *ngSwitchCase="3">
-                                    <div class="badge px-2 py-1 badge-warning">{{ 'bookingStatus.duplicated' | translate }}
+                                    <div class="badge px-2 py-1 badge-warning">{{ 'bookingStatus.duplicated' | translate
+                                        }}
                                     </div>
                                 </div>
                                 <div *ngSwitchCase="4">
@@ -57,7 +61,8 @@
                                     </div>
                                 </div>
                                 <div *ngSwitchDefault>
-                                    <div class="badge px-2 py-1 badge-success">{{ 'bookingStatus.new' | translate }}</div>
+                                    <div class="badge px-2 py-1 badge-success">{{ 'bookingStatus.new' | translate }}
+                                    </div>
                                 </div>
                             </ng-container>
                             <div>
@@ -65,19 +70,22 @@
                                     <i class="fa-solid fa-ellipsis-vertical"></i>
                                 </button>
                                 <mat-menu #menu="matMenu">
-                                    <button mat-menu-item class="primary" (click)="update(element)">{{'common.edit' | translate}}</button>
-                                    <button mat-menu-item class="text-danger" (click)="delete(element)">{{'common.delete' | translate}}</button>
+                                    <button mat-menu-item class="primary" (click)="update(element)">{{'common.edit' |
+                                        translate}}</button>
+                                    <button mat-menu-item class="text-danger"
+                                        (click)="delete(element)">{{'common.delete' | translate}}</button>
                                 </mat-menu>
                             </div>
                         </div>
                     </div>
                 </td>
+                <td mat-footer-cell *matFooterCellDef></td>
             </ng-container>
 
             <ng-container matColumnDef="name">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.name' | translate}}</th>
                 <td mat-cell *matCellDef="let element">
-                    {{element.name}}         
+                    {{element.name}}
                 </td>
                 <td mat-footer-cell *matFooterCellDef>{{'common.total' | translate}}: <b>{{total}}</b> </td>
             </ng-container>
@@ -201,6 +209,7 @@
                 </td>
                 <td mat-footer-cell *matFooterCellDef></td>
             </ng-container>
+
             <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef></th>
                 <td mat-cell *matCellDef="let element">
@@ -208,12 +217,15 @@
                         <i class="fa-solid fa-ellipsis"></i>
                     </button>
                     <mat-menu #menu="matMenu">
-                        <button mat-menu-item class="primary" (click)="update(element)">{{'common.edit' | translate}}</button>
-                        <button mat-menu-item class="text-danger" (click)="delete(element)">{{'common.delete' | translate}}</button>
+                        <button mat-menu-item class="primary" (click)="update(element)">{{'common.edit' |
+                            translate}}</button>
+                        <button mat-menu-item class="text-danger" (click)="delete(element)">{{'common.delete' |
+                            translate}}</button>
                     </mat-menu>
                 </td>
                 <td mat-footer-cell *matFooterCellDef></td>
-                </ng-container>
+            </ng-container>
+
             <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
