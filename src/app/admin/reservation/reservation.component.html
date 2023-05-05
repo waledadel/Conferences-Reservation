@@ -161,7 +161,7 @@
                                 {{'validations.requiredField' | translate}}
                             </mat-error>
                         </mat-form-field>
-                        <mat-form-field *ngIf="!isChild(i)" class="col-md-6 col-12 px-md-2 px-0">
+                        <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
                             <mat-label>{{'address.title' | translate}}</mat-label>
                             <mat-select formControlName="addressId">
                                 <ng-container *ngFor="let item of model.addressList">

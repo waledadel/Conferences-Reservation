@@ -101,7 +101,7 @@ export class ReservationComponent implements OnInit {
       userNotes: [''],
       isChild: [isChild],
       needsSeparateBed: [needBed, Validators.required],
-      addressId: ['', textValidator],
+      addressId: ['', Validators.required],
       mobile: ['', [Validators.required, Validators.pattern(Constants.Regex.mobileNumber)]],
       socialStatus: [SocialStatus.single, textValidator],
     });

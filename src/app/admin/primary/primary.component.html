@@ -1,7 +1,7 @@
 <div class="container-fluid table-container" [class.px-0]="isMobileView">
-    <ng-container *ngIf="dataSource && dataSource.data.length < 1">
+    <div *ngIf="dataSource && dataSource.data.length < 1" class="mt-3">
         <app-empty-data></app-empty-data>
-    </ng-container>
+    </div>
     <div [hidden]="dataSource && dataSource.data.length < 1" class="mat-elevation-z8" [class.mt-3]="!isMobileView">
         <table mat-table [dataSource]="dataSource" matSort matSortActive="name" matSortDirection="asc"
             matSortDisableClear="true">
