@@ -76,6 +76,7 @@ export interface IPrimaryDataSourceVm {
     userNotes: string;
     transportationId: string;
     primaryId: string;
+    mobile: string;
 }
 
 

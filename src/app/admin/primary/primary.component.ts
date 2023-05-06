@@ -8,6 +8,7 @@ import { ManageReservationComponent } from '../reservation/manage-reservation/ma
 import { Constants } from '@app/constants';
 import { Timestamp } from '@angular/fire/firestore';
 import { CostDetailsComponent } from './cost-details/cost-details.component';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   templateUrl: './primary.component.html'
@@ -20,13 +21,15 @@ export class PrimaryComponent implements OnInit {
   childReservationPriceLessThanEight = 0;
   childReservationPriceMoreThanEight = 0;
   childBedPrice = 0;
-  readonly desktopColumn = ['name', 'adultsCount', 'childrenCount', 'roomId',
+  readonly desktopColumn = ['name', 'mobile', 'adultsCount', 'childrenCount', 'roomId',
   'bookingType', 'bookingDate', 'totalCost', 'paid', 'remaining', 'userNotes', 'bookingStatus', 'actions'];
   displayedColumns: string[] = [];
   dataSource = new MatTableDataSource<IPrimaryDataSourceVm>([]);
+  copyDataSource: Array<IPrimaryDataSourceVm> = [];
   notPrimaryMembers: Array<IRelatedMemberViewModel> = [];
   buses: Array<IBus> = [];
   isMobileView = false;
+  form: FormGroup;
   get isMobile(): boolean {
     return window.innerWidth < Constants.Grid.large;
   }
@@ -39,8 +42,13 @@ export class PrimaryComponent implements OnInit {
     private fireStoreService: FireStoreService,
     private dialogService: DialogService,
     private notifyService: NotifyService,
-    private translationService: TranslationService
-  ) {}
+    private translationService: TranslationService,
+    private formBuilder: FormBuilder,
+  ) {
+    this.form = this.formBuilder.group({
+      searchText: [''],
+    });
+  }
 
   ngOnInit(): void {
     this.detectMobileView();
@@ -145,6 +153,16 @@ export class PrimaryComponent implements OnInit {
     return this.dataSource.data.map(t => t.totalCost - t.paid).reduce((acc, value) => acc + value, 0);
   }
 
+  filter(event: string): void {
+    const searchText = this.form.value.searchText;
+    if (searchText && searchText != '') {
+      const data = this.copyDataSource.filter(e => e.name.includes(searchText) || e.mobile.includes(searchText));
+      this.dataSource = new MatTableDataSource(data);
+    } else {
+      this.dataSource = new MatTableDataSource(this.copyDataSource);
+    }
+  }
+
   private isPrivateTransport(transportId: string): boolean {
     if (transportId && this.buses.length > 0) {
       const bus = this.buses.find(b => b.id === transportId);
@@ -166,6 +184,7 @@ export class PrimaryComponent implements OnInit {
   private getPrimaryTickets(takeCount = 1): void {
     this.fireStoreService.getPrimarySubscription(takeCount).subscribe(res => {
       const data = res.map(item => ({...item, totalCost: this.getTotalCost(item, this.notPrimaryMembers)}));
+      this.copyDataSource = data;
       this.dataSource = new MatTableDataSource(data);
       this.total = res.length;
       this.dataSource.sort = this.sort;

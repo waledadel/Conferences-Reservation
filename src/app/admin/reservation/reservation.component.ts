@@ -111,7 +111,7 @@ export class ReservationComponent implements OnInit {
     const formValue = this.model.form.value;
     this.fireStoreService.addTicket(formValue).subscribe(() => {
       this.showForm.emit(false);
-      this.notifyService.showNotifier(this.translationService.instant('notifications.bookedSuccessfully'));
+      this.notifyService.showNotifier(this.translationService.instant('notifications.bookedSuccessfully'), 'success', 15000);
       this.model.form.reset();
       this.model.isLoading = false;
     });

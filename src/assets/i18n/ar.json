@@ -64,7 +64,10 @@
         "transportPrice": "تكلفة المواصلات",
         "needBed": "محتاج سرير",
         "privateTransport": "مواصلات خاصة",
-        "isChild": "طفل"
+        "isChild": "طفل",
+        "searchByNameOrMobile": "بحث بالاسم او رقم الموبايل",
+        "reset": "إعادة تعيين",
+        "search": "بحث"
     },
     "languages": {
         "arabic": "العربية",

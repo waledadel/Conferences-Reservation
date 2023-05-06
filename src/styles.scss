@@ -124,14 +124,14 @@ button:focus {
 @media (min-width: 769px) {
   .table-container {
     .mat-elevation-z8 {
-      max-height: 580px;
+      max-height: 545px;
     }
   }
 }
 @media (max-width: 769px) {
   .table-container {
     .mat-elevation-z8 {
-      max-height: 100%;
+      max-height: 93%;
     }
   }
 }
@@ -233,7 +233,17 @@ button:focus {
   }
 }
 
+.width-100 {
+  width: 100px;
+  min-width: 100px;
+  max-width: 100px;
+}
+
 .width-135 {
   width: 135px;
   min-width: 135px;
+}
+
+.mdc-data-table__cell, .mdc-data-table__header-cell {
+  padding: 0 16px 0 14px !important;
 }

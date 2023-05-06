@@ -247,7 +247,8 @@ export class FireStoreService {
             paid: ticket.paid,
             userNotes: ticket.userNotes,
             transportationId: ticket.transportationId,
-            primaryId: ticket.primaryId
+            primaryId: ticket.primaryId,
+            mobile: ticket.mobile
           }))
         ),
         take(takeCount)
