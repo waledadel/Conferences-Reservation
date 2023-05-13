@@ -2,7 +2,7 @@ import { Component, ViewChild, AfterViewInit, OnInit, Inject, HostListener } fro
 import { MatDrawer } from '@angular/material/sidenav';
 
 import { Constants } from '@app/constants';
-import { AdminModel } from './admin.models';
+import { AdminModel, menuItems } from './admin.models';
 import { LanguageService, AuthService, StorageService } from '@app/services';
 import { WINDOW } from 'app/shared/services/window.service';
 
@@ -33,6 +33,10 @@ export class AdminComponent implements OnInit, AfterViewInit {
     const language = this.storageService.getItem(Constants.Languages.languageKey);
     if (language != null) {
       this.model.selectedLanguage = language;
+    }
+    const role = this.storageService.getItem('role');
+    if (role) {
+      this.model.menuItems = menuItems.filter(m => m.roles.includes(+role));
     }
   }
 

@@ -35,6 +35,7 @@ export namespace Constants {
 
     export class Routes {
         public static readonly login = 'login';
+        public static readonly reset = 'reset';
         public static readonly home = 'home';
         public static readonly secure = 'secure';
         public static readonly dashboard = 'dashboard';

@@ -2,8 +2,13 @@ export interface IUser {
     id: string;
     email: string;
     password: string;
-    phoneNumber: string;
-    ssn: string;
-    userName: string;
+    fullName: string;
     createdOn: Date;
+    role: Roles;
+}
+
+
+export enum Roles {
+    admin = 1,
+    servant = 2
 }

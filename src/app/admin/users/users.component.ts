@@ -30,7 +30,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
   }
 
   delete(item: IUser): void {
-    this.dialogService.openConfirmDeleteDialog(item.userName).afterClosed().subscribe((res: {confirmDelete: boolean}) => {
+    this.dialogService.openConfirmDeleteDialog(item.fullName).afterClosed().subscribe((res: {confirmDelete: boolean}) => {
       if (res && res.confirmDelete) {
         this.fireStoreService.delete(`${Constants.RealtimeDatabase.users}/${item.id}`).subscribe(() => {
           this.notifyService.showNotifier('User Deleted Successfully');

@@ -10,6 +10,7 @@ import firebase from 'firebase/compat';
 import { Constants } from '@app/constants';
 import { LogoutComponent } from '../components/logout/logout.component';
 import { NotifyService } from './notify.service';
+import { Roles } from '../models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -27,10 +28,11 @@ export class AuthService {
     this.isLoggedIn = angularFireAuth.authState.pipe(map(user => !!user));
   }
 
-  async login(email: string, password: string): Promise<void> {
+  async login(email: string, password: string, role: Roles): Promise<void> {
     this.angularFireAuth.signInWithEmailAndPassword(email, password).then((data: firebase.auth.UserCredential) => {
       if (data && data.user) {
         localStorage.setItem('userId', data.user.uid);
+        localStorage.setItem('role', role.toString());
         this.router.navigateByUrl(`${Constants.Routes.secure}/${Constants.Routes.primary}`);
       }
     }).catch((error: FirebaseError) => {
@@ -54,6 +56,15 @@ export class AuthService {
       }
     });
   }
+
+  async resetPassword(email: string): Promise<void> {
+    this.angularFireAuth.sendPasswordResetEmail(email).then(() => {
+      this.notifyService.showNotifier('من فضلك تفقد البريد الإلكتروني الخاص بك', 'success', 3000);
+    }).catch((error) => {
+      this.notifyService.showNotifier(error.message, 'danger');
+    });
+  }
+
 
   private showErrorMessage(errorCode: string): void {
     switch (errorCode) {
@@ -86,7 +97,7 @@ export class AuthService {
       case 'auth/invalid-phone-number':
         this.notifyService.showNotifier('The phone number is not a valid phone number!', 'danger');
         break;
-      case 'auth/invalid-email  ':
+      case 'auth/invalid-email':
         this.notifyService.showNotifier('The email address is not a valid email address!', 'danger');
         break;
       case 'auth/cannot-delete-own-user-account':

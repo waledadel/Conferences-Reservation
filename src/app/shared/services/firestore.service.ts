@@ -5,7 +5,7 @@ import { Firestore, collection, addDoc, collectionData, doc, updateDoc, docData 
 import { AngularFirestore, AngularFirestoreCollection, DocumentData, QueryFn } from '@angular/fire/compat/firestore';
 
 import { Constants } from '@app/constants';
-import { ICollectionData, IRelatedMemberViewModel, IPrimaryDataSourceVm, ITicket, ITicketForm, IAllSubscriptionDataSourceVm } from '@app/models';
+import { ICollectionData, IRelatedMemberViewModel, IPrimaryDataSourceVm, ITicket, ITicketForm, IAllSubscriptionDataSourceVm, IUser } from '@app/models';
 import { convertSnaps } from './db-utils';
 
 @Injectable({
@@ -32,6 +32,16 @@ export class FireStoreService {
   getById(path: string): Observable<any> {
     const docRef = doc(this.firestore, path);
     return docData(docRef, { idField: 'id' }) as Observable<any>;
+  }
+
+  getUserByEmail(email: string): Observable<IUser> {
+    return this.angularFirestore
+      .collection<IUser>(Constants.RealtimeDatabase.users, ref =>
+        ref.where('email', '==', email)
+      )
+      .valueChanges({ idField: 'id' }).pipe(
+        map(users => users[0]) // Return the first user in the array
+      );
   }
 
   addDoc<T>(collectionName: string, data: PartialWithFieldValue<any>): Observable<DocumentReference<T>> {

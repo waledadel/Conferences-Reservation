@@ -14,6 +14,11 @@ const routes: Routes = [
     canActivate: [AutoLoginGuard]
   },
   {
+    path: Constants.Routes.reset,
+    loadChildren: () => import('./reset-password/reset-password.module').then(mod => mod.ResetPasswordModule),
+    canActivate: [AutoLoginGuard]
+  },
+  {
     path: Constants.Routes.home,
     loadChildren: () => import('./home/home.module').then(mod => mod.HomeModule),
   },

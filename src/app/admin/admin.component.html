@@ -8,7 +8,7 @@
 <mat-drawer-container class="app-container">
     <mat-drawer #drawer class="app-sidenav" [mode]="model.isMobileView ? 'over' : 'side'">
         <mat-nav-list>
-            <ng-container *ngFor="let item of model.menu">
+            <ng-container *ngFor="let item of model.menuItems">
                 <a [routerLink]="item.url" [routerLinkActiveOptions]="{exact:true}" routerLinkActive="active-link" class="menu-item-link" (click)="onItemClick()">
                     <mat-list-item>
                         <mat-icon>{{item.icon}}</mat-icon>
@@ -16,7 +16,7 @@
                     </mat-list-item>
                 </a>
             </ng-container>
-            <mat-accordion>
+            <!-- <mat-accordion>
                 <mat-expansion-panel>
                   <mat-expansion-panel-header>
                     <mat-panel-title>
@@ -27,7 +27,7 @@
                     <div class="p-3 lang-item" [class.active-lang]="model.arabic === model.selectedLanguage" (click)="changeLanguage(model.arabic)">{{'languages.arabic' | translate}}</div>
                     <div class="p-3 lang-item" [class.active-lang]="model.english === model.selectedLanguage" (click)="changeLanguage(model.english)">{{'languages.english' | translate}}</div>
                 </mat-expansion-panel>
-            </mat-accordion>
+            </mat-accordion> -->
             <mat-list-item (click)="logout()">
                 <mat-icon color="warn">exit_to_app</mat-icon>
                 <span class="px-2 text-danger">{{'common.logout' | translate}} </span>
