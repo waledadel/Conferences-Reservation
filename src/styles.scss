@@ -136,7 +136,11 @@ button:focus {
 @media (max-width: 769px) {
   .table-container {
     .mat-elevation-z8 {
-      max-height: 93%;
+      max-height: 100%;
+      width: 100%;
+      // &.table-wz-advanced {
+      //   filter: brightness(0.4);
+      // }
     }
   }
 }
@@ -257,19 +261,41 @@ mat-mdc-fab.mat-primary, .mat-mdc-mini-fab.mat-primary {
   padding: 0 16px 0 14px !important;
 }
 
-.advanced-filter {
-  border: 1px solid #dcd4d4;
-  border-radius: 10px;
-  margin-inline-start: 8px;
-  width: 222px;
-  height: 630px;
-  .header {
-    background-color: #f1f1f1;
-    padding: 17px 10px;
-    border-radius: 10px 10px 0 0;
+@media (min-width: 769px) {
+  .advanced-filter {
+    border: 1px solid #dcd4d4;
+    border-radius: 10px;
+    margin-inline-start: 8px;
+    width: 222px;
+    height: 630px;
+    .header {
+      background-color: #f1f1f1;
+      padding: 17px 10px;
+      border-radius: 10px 10px 0 0;
+    }
+    .advanced-body {
+      height: 490px;
+      overflow-y: scroll;
+    }
   }
-  .advanced-body {
-    height: 490px;
-    overflow-y: scroll;
+}
+
+@media (max-width: 769px) {
+  .advanced-filter {
+    position: fixed;
+    top: 55px;
+    left: 0;
+    z-index: 1511111111 !important;
+    width: 100%;
+    background-color: white;
+    height: 100%;
+    .header {
+      background-color: #f1f1f1;
+      padding-inline-start: 16px;
+    }
+    .advanced-body {
+      height: 450px;
+      overflow-y: scroll;
+    }
   }
 }
