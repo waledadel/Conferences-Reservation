@@ -1,14 +1,14 @@
 import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatSort } from '@angular/material/sort';
+import { Timestamp } from '@angular/fire/firestore';
 
 import { IBus, IRelatedMemberViewModel, IPrimaryDataSourceVm, ISettings, ITicket, ICostDetailsDataSourceVm } from '@app/models';
 import { DialogService, FireStoreService, NotifyService, TranslationService } from '@app/services';
 import { ManageReservationComponent } from '../reservation/manage-reservation/manage-reservation.component';
 import { Constants } from '@app/constants';
-import { Timestamp } from '@angular/fire/firestore';
 import { CostDetailsComponent } from './cost-details/cost-details.component';
-import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   templateUrl: './primary.component.html'
@@ -30,6 +30,7 @@ export class PrimaryComponent implements OnInit {
   buses: Array<IBus> = [];
   isMobileView = false;
   form: FormGroup;
+  isAdvancedSearchOpened = false;
   get isMobile(): boolean {
     return window.innerWidth < Constants.Grid.large;
   }
@@ -45,9 +46,7 @@ export class PrimaryComponent implements OnInit {
     private translationService: TranslationService,
     private formBuilder: FormBuilder,
   ) {
-    this.form = this.formBuilder.group({
-      searchText: [''],
-    });
+    this.form = this.initFormModels();
   }
 
   ngOnInit(): void {
@@ -153,14 +152,18 @@ export class PrimaryComponent implements OnInit {
     return this.dataSource.data.map(t => t.totalCost - t.paid).reduce((acc, value) => acc + value, 0);
   }
 
-  filter(event: string): void {
-    const searchText = this.form.value.searchText;
-    if (searchText && searchText != '') {
-      const data = this.copyDataSource.filter(e => e.name.includes(searchText) || e.mobile.includes(searchText));
-      this.dataSource = new MatTableDataSource(data);
-    } else {
-      this.dataSource = new MatTableDataSource(this.copyDataSource);
-    }
+  reset(): void {
+    this.form.reset();
+    this.dataSource = new MatTableDataSource(this.copyDataSource);
+  }
+
+  filter(): void {
+    const formValue = this.form.value;
+    this.dataSource.filter = JSON.stringify(formValue);
+  }
+
+  showAdvancedFilter(): void {
+    this.isAdvancedSearchOpened = !this.isAdvancedSearchOpened;
   }
 
   private isPrivateTransport(transportId: string): boolean {
@@ -188,6 +191,7 @@ export class PrimaryComponent implements OnInit {
       this.dataSource = new MatTableDataSource(data);
       this.total = res.length;
       this.dataSource.sort = this.sort;
+      this.initFilterPredicate();
     });
   }
 
@@ -314,5 +318,46 @@ export class PrimaryComponent implements OnInit {
     } else {
       this.displayedColumns = this.desktopColumn;
     }
+  }
+
+  private initFormModels() {
+    return this.formBuilder.group({
+      name: [''],
+      mobile: [''],
+      adultsCount: [0],
+      childrenCount: [0],
+      paid: [0],
+      total: [0],
+      remaining: [0]
+    });
+  }
+
+  private initFilterPredicate(): void {
+    this.dataSource.filterPredicate = (data, filter) => {
+      const searchString = JSON.parse(filter);
+      const mobileFound = data.mobile.toString().trim().toLowerCase().indexOf(searchString.mobile) !== -1;
+      const nameFound = data.name.toString().trim().toLowerCase().indexOf(searchString.name) !== -1;
+      let paidFound = +data.paid === +searchString.paid;
+      let totalFound = +data.totalCost === +searchString.total;
+      let remainingFound = ((+data.totalCost) - (+data.paid)) === +searchString.remaining;
+      let adultscountFound = +data.adultsCount === (+searchString.adultsCount - 1); // We minus 1 for primary count
+      let childrenCountFound = +data.childrenCount === +searchString.childrenCount;
+      if (!searchString.paid || searchString.paid < 1) {
+        paidFound = true;
+      }
+      if (!searchString.total || searchString.total < 1) {
+        totalFound = true;
+      }
+      if (!searchString.adultsCount || searchString.adultsCount < 1) {
+        adultscountFound = true;
+      }
+      if (!searchString.childrenCount || searchString.childrenCount < 1) {
+        childrenCountFound = true;
+      }
+      if (!searchString.remaining || searchString.remaining < 1) {
+        remainingFound = true;
+      }
+      return nameFound && mobileFound && paidFound && totalFound && adultscountFound && childrenCountFound && remainingFound;
+    };
   }
 }

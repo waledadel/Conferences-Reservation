@@ -1,4 +1,4 @@
-import { Component, ViewChild, AfterViewInit, OnInit, Inject, HostListener } from '@angular/core';
+import { Component, ViewChild, OnInit, Inject, HostListener } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
 
 import { Constants } from '@app/constants';
@@ -10,7 +10,7 @@ import { WINDOW } from 'app/shared/services/window.service';
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
 })
-export class AdminComponent implements OnInit, AfterViewInit {
+export class AdminComponent implements OnInit {
 
   @ViewChild('drawer') drawer: MatDrawer;
   model: AdminModel = {} as AdminModel;
@@ -40,16 +40,15 @@ export class AdminComponent implements OnInit, AfterViewInit {
     }
   }
 
-  ngAfterViewInit(): void {
-    if (!this.model.isMobileView) {
-      this.drawer.opened = true;
-    }
-  }
+  // ngAfterViewInit(): void {
+  //   if (!this.model.isMobileView) {
+  //     this.drawer.opened = true;
+  //   }
+  // }
 
   onItemClick(): void {
-    if (this.model.isMobileView) {
-      this.drawer.opened = false;
-    }
+    this.drawer.opened = false;
+    // if (this.model.isMobileView) {}
   }
 
   changeLanguage(lang: string): void {

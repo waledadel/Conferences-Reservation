@@ -6,7 +6,7 @@
 </mat-toolbar>
 
 <mat-drawer-container class="app-container">
-    <mat-drawer #drawer class="app-sidenav" [mode]="model.isMobileView ? 'over' : 'side'">
+    <mat-drawer #drawer class="app-sidenav" [mode]="'over'">
         <mat-nav-list>
             <ng-container *ngFor="let item of model.menuItems">
                 <a [routerLink]="item.url" [routerLinkActiveOptions]="{exact:true}" routerLinkActive="active-link" class="menu-item-link" (click)="onItemClick()">

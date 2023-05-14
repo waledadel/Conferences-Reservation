@@ -142,5 +142,12 @@
         "confirmed": "مؤكد",
         "duplicated": "مكرر",
         "canceled": "ملغي"
+    },
+    "advancedFilter": {
+        "advancedFilter": "البحث المتقدم",
+        "name": "الاسم",
+        "mobile": "رقم الموبايل",
+        "filter": "بحث",
+        "reset": "إعادة تعيين"
     }
 }

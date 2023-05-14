@@ -124,9 +124,14 @@ button:focus {
 @media (min-width: 769px) {
   .table-container {
     .mat-elevation-z8 {
-      max-height: 545px;
+      max-height: 630px;
+      width: 100%;
+      &.table-wz-advanced {
+        width: calc(100% - 230px) !important;
+      }
     }
   }
+  
 }
 @media (max-width: 769px) {
   .table-container {
@@ -225,6 +230,10 @@ button:focus {
   --mat-mdc-radio-checked-ripple-color: #146C94;
 }
 
+mat-mdc-fab.mat-primary, .mat-mdc-mini-fab.mat-primary {
+  --mdc-fab-container-color: #146C94 !important;
+}
+
 .total {
   color: #146C94;
   cursor: pointer;
@@ -246,4 +255,21 @@ button:focus {
 
 .mdc-data-table__cell, .mdc-data-table__header-cell {
   padding: 0 16px 0 14px !important;
+}
+
+.advanced-filter {
+  border: 1px solid #dcd4d4;
+  border-radius: 10px;
+  margin-inline-start: 8px;
+  width: 222px;
+  height: 630px;
+  .header {
+    background-color: #f1f1f1;
+    padding: 17px 10px;
+    border-radius: 10px 10px 0 0;
+  }
+  .advanced-body {
+    height: 490px;
+    overflow-y: scroll;
+  }
 }
