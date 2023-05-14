@@ -129,7 +129,7 @@ export class ReservationComponent implements OnInit {
 
   private getAddressList(): void {
     this.fireStoreService.getAll<IAddress>(Constants.RealtimeDatabase.address).subscribe(data => {
-      this.model.addressList = data;
+      this.model.addressList = data.sort((a, b) => a.name > b.name ? 1 : -1);
     });
   }
 
