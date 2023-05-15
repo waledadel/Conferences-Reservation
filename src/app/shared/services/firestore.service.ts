@@ -263,7 +263,8 @@ export class FireStoreService {
             gender: ticket.gender,
             birthDate: ticket.birthDate,
             ageRange: 0,
-            birthDateMonth: 0
+            birthDateMonth: 0,
+            adminNotes: ticket.adminNotes
           }))
         ),
         take(takeCount)

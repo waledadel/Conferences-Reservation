@@ -82,6 +82,7 @@ export interface IPrimaryDataSourceVm {
     birthDate: Timestamp;
     ageRange: number;
     birthDateMonth: number;
+    adminNotes: string;
 }
 
 

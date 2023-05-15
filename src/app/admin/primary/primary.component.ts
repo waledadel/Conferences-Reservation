@@ -23,7 +23,7 @@ export class PrimaryComponent implements OnInit {
   childReservationPriceMoreThanEight = 0;
   childBedPrice = 0;
   readonly desktopColumn = ['name', 'mobile', 'adultsCount', 'childrenCount', 'roomId', 'transportation',
-  'bookingType', 'birthDate', 'bookingDate', 'gender', 'totalCost', 'paid', 'remaining', 'userNotes', 'bookingStatus', 'actions'];
+  'bookingType', 'birthDate', 'bookingDate', 'gender', 'totalCost', 'paid', 'remaining', 'adminNotes', 'userNotes', 'bookingStatus', 'actions'];
   displayedColumns: string[] = [];
   dataSource = new MatTableDataSource<IPrimaryDataSourceVm>([]);
   copyDataSource: Array<IPrimaryDataSourceVm> = [];

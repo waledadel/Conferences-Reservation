@@ -50,6 +50,7 @@
         "delete": "حذف",
         "noDataFound": "لا توجد بيانات",
         "adminNotes": "ملاحظات المسئول",
+        "userNotes": "ملاحظات المستخدم",
         "logout": "تسجيل الخروج",
         "confirmation": "تأكيد",
         "sureToLogout": "هل أنت متأكد أنك تريد تسجيل الخروج ؟",
