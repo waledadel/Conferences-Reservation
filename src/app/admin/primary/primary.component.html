@@ -20,13 +20,29 @@
                                     <div><b>{{'common.mobile' | translate}}:</b> {{element.mobile}}</div>
                                     <div><b>{{'common.adultsCount' | translate}}:</b> {{element.adultsCount + 1}}</div>
                                     <div><b>{{'common.childrenCount' | translate}}:</b> {{element.childrenCount}}</div>
-                                    <div><b>{{'common.transportationName' | translate}}</b> {{ element.transportationName }} </div>
+                                    <div> <b>{{'common.totalCost' | translate}}:</b>
+                                        <a (click)="viewCostDetails(element)" class="total">
+                                            {{element.totalCost}}
+                                        </a>
+                                    </div>
+                                    <div> <b>{{'common.paid' | translate}}:</b> {{element.paid}}</div>
+                                    <div> <b>{{'common.remaining' | translate}}:</b> {{ element.totalCost - element.paid }}</div>
                                     <div class="d-flex">
                                         <b>{{'common.room' | translate}}:</b>&nbsp;
                                         <ng-container *ngIf="element.room; else empty">
                                             {{ element.room }}
                                         </ng-container>
-                                        <ng-template #empty>---</ng-template>
+                                    </div>
+                                    <div class="d-flex">
+                                        <b>{{'common.gender' | translate}}:</b>&nbsp;
+                                        <ng-container [ngSwitch]="element.gender">
+                                            <ng-container *ngSwitchCase="gender.male">
+                                                {{ 'common.male' | translate }}
+                                            </ng-container>
+                                            <ng-container *ngSwitchDefault>
+                                                {{ 'common.female' | translate }}
+                                            </ng-container>
+                                        </ng-container>
                                     </div>
                                     <div class="d-flex">
                                         <b>{{'common.bookingType' | translate}}:</b> &nbsp;
@@ -39,26 +55,18 @@
                                             </div>
                                         </ng-container>
                                     </div>
+                                    <div><b>{{'common.transportationName' | translate}}</b> {{ element.transportationName }} </div>
+                                    <div><b>{{'common.birthDate' | translate}}:</b> {{element.birthDate.toMillis() | date}}</div>
                                     <div> <b>{{'common.bookingDate' | translate}}:</b> {{element.bookingDate.toMillis() | date:'medium'}}</div>
-                                    <div> <b>{{'common.birthDate' | translate}}:</b> {{element.birthDate.toMillis() | date}}</div>
-                                    <div> <b>{{'common.totalCost' | translate}}:</b>
-                                        <a (click)="viewCostDetails(element)" class="total">
-                                            {{element.totalCost}}
-                                        </a>
-                                    </div>
-                                    <div> <b>{{'common.paid' | translate}}:</b> {{element.paid}}</div>
-                                    <div> <b>{{'common.remaining' | translate}}:</b> {{ element.totalCost - element.paid }}
+                                    <div class="d-flex">
+                                        <b>{{'common.lastUpdateDate' | translate}}:</b>&nbsp;
+                                        <ng-container *ngIf="element.lastUpdateDate; else empty">
+                                            {{element.lastUpdateDate.toMillis() | date:'medium'}}
+                                        </ng-container>
                                     </div>
                                     <div class="d-flex">
-                                        <b>{{'common.gender' | translate}}:</b>&nbsp;
-                                        <ng-container [ngSwitch]="element.gender">
-                                            <ng-container *ngSwitchCase="gender.male">
-                                                {{ 'common.male' | translate }}
-                                            </ng-container>
-                                            <ng-container *ngSwitchDefault>
-                                                {{ 'common.female' | translate }}
-                                            </ng-container>
-                                        </ng-container>
+                                        <b>{{'common.lastUpdatedBy' | translate}}:</b>&nbsp;
+                                        <ng-container *ngIf="element.lastUpdatedBy; else empty">{{element.lastUpdatedBy}}</ng-container>
                                     </div>
                                     <div> <b>{{'common.userNotes' | translate}}:</b>
                                         <ng-container *ngIf="element.userNotes; else empty">
@@ -110,7 +118,7 @@
         
                     <ng-container matColumnDef="name" sticky>
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.name' | translate}}</th>
-                        <td mat-cell *matCellDef="let element" class="width-135">
+                        <td mat-cell *matCellDef="let element" class="width-175">
                             {{element.name}}
                         </td>
                         <td mat-footer-cell *matFooterCellDef>{{'common.total' | translate}}: <b>{{total}}</b> </td>
@@ -257,6 +265,24 @@
                             <ng-container *ngIf="element.adminNotes; else empty">
                                 {{element.adminNotes}}
                             </ng-container>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="lastUpdateDate">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.lastUpdateDate' | translate}}</th>
+                        <td mat-cell *matCellDef="let element" class="width-135">
+                            <ng-container *ngIf="element.lastUpdateDate; else empty">
+                                {{element.lastUpdateDate.toMillis() | date:'medium'}}
+                            </ng-container>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="lastUpdatedBy">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.lastUpdatedBy' | translate}}</th>
+                        <td mat-cell *matCellDef="let element" class="width-135">
+                            <ng-container *ngIf="element.lastUpdatedBy; else empty">{{element.lastUpdatedBy}}</ng-container>
                         </td>
                         <td mat-footer-cell *matFooterCellDef></td>
                     </ng-container>

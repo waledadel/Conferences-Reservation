@@ -72,7 +72,9 @@
         "transportationName": "المواصلات",
         "all": "الكل",
         "birthDateMonth": "عيد الميلاد",
-        "ageRange": "الفئة العمرية"
+        "ageRange": "الفئة العمرية",
+        "lastUpdateDate": "تاريخ آخر تحديث",
+        "lastUpdatedBy": "آخر تحديث بواسطة"
     },
     "languages": {
         "arabic": "العربية",

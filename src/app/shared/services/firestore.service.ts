@@ -3,6 +3,7 @@ import { Observable, first, from, map, take } from 'rxjs';
 import { DocumentReference, PartialWithFieldValue, Query, query, where, CollectionReference } from 'firebase/firestore';
 import { Firestore, collection, addDoc, collectionData, doc, updateDoc, docData } from '@angular/fire/firestore';
 import { AngularFirestore, AngularFirestoreCollection, DocumentData, QueryFn } from '@angular/fire/compat/firestore';
+import { Timestamp } from 'firebase/firestore';
 
 import { Constants } from '@app/constants';
 import { ICollectionData, IRelatedMemberViewModel, IPrimaryDataSourceVm, ITicket, ITicketForm, IAllSubscriptionDataSourceVm, IUser } from '@app/models';
@@ -49,6 +50,7 @@ export class FireStoreService {
   }
 
   updateTicket(item: ITicketForm, removedIds: Array<string>): Observable<unknown> {
+    const currentLoggedInUser = localStorage.getItem('userId');
     const isParticipantsExists = item.participants && item.participants.length > 0;
     const childrenCounts = item.participants?.filter(p => p.isChild).length ?? 0;
     const adultsCounts = item.participants?.filter(p => !p.isChild).length ?? 0;
@@ -75,7 +77,9 @@ export class FireStoreService {
       needsSeparateBed: true,
       isChild: false,
       isMain: true,
-      primaryId: item.id
+      primaryId: item.id,
+      lastUpdateDate: Timestamp.fromDate(new Date()),
+      lastUpdateUserId: currentLoggedInUser ?? ''
     };
     batch.set(primaryRef, primary);
     if (isParticipantsExists) {
@@ -91,7 +95,8 @@ export class FireStoreService {
           adultsCount: adultsCounts,
           childrenCount: childrenCounts,
           isMain: false,
-          primaryId: primary.id
+          primaryId: primary.id,
+          lastUpdateUserId: currentLoggedInUser ?? ''
         };
         const participantRef = this.angularFirestore.doc(`/${Constants.RealtimeDatabase.tickets}/${participant.id}`).ref;
         batch.update(participantRef, {...participant});
@@ -111,7 +116,8 @@ export class FireStoreService {
             adultsCount: adultsCounts,
             childrenCount: childrenCounts,
             isMain: false,
-            primaryId: primary.id
+            primaryId: primary.id,
+            lastUpdateUserId: currentLoggedInUser ?? ''
           };
           const participantRef = this.angularFirestore.doc(`/${Constants.RealtimeDatabase.tickets}/${participant.id}`).ref;
           batch.set(participantRef, {...participant});
@@ -153,7 +159,8 @@ export class FireStoreService {
       needsSeparateBed: true,
       isChild: false,
       isMain: true,
-      primaryId: primaryId
+      primaryId: primaryId,
+      lastUpdateUserId: ''
     };
     const batch = this.angularFirestore.firestore.batch();
     const primaryRef = this.angularFirestore.doc(`/${Constants.RealtimeDatabase.tickets}/${primaryId}`).ref;
@@ -172,7 +179,8 @@ export class FireStoreService {
           adultsCount: adultsCounts,
           childrenCount: childrenCounts,
           isMain: false,
-          primaryId: primaryId
+          primaryId: primaryId,
+          lastUpdateUserId: ''
         };
         const participantRef = this.angularFirestore.doc(`/${Constants.RealtimeDatabase.tickets}/${participant.id}`).ref;
         batch.set(participantRef, participant);
@@ -264,7 +272,10 @@ export class FireStoreService {
             birthDate: ticket.birthDate,
             ageRange: 0,
             birthDateMonth: 0,
-            adminNotes: ticket.adminNotes
+            adminNotes: ticket.adminNotes,
+            lastUpdateUserId: ticket.lastUpdateUserId ?? '',
+            lastUpdateDate: ticket.lastUpdateDate,
+            lastUpdatedBy: ''
           }))
         ),
         take(takeCount)

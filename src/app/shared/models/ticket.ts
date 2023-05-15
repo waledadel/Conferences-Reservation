@@ -23,6 +23,8 @@ export interface ITicket {
     isMain: boolean;
     primaryId: string;
     age?: number;
+    lastUpdateDate?: Timestamp;
+    lastUpdateUserId: string;
 }
 
 export interface IUserInfo {
@@ -83,6 +85,9 @@ export interface IPrimaryDataSourceVm {
     ageRange: number;
     birthDateMonth: number;
     adminNotes: string;
+    lastUpdateDate?: Timestamp;
+    lastUpdateUserId: string;
+    lastUpdatedBy: string;
 }
 
 

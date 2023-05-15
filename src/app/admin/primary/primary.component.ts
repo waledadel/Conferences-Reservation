@@ -5,7 +5,7 @@ import { KeyValue } from '@angular/common';
 import { MatSort } from '@angular/material/sort';
 import { Timestamp } from '@angular/fire/firestore';
 
-import { IBus, IRelatedMemberViewModel, IPrimaryDataSourceVm, ISettings, ITicket, ICostDetailsDataSourceVm, Gender, BookingStatus } from '@app/models';
+import { IBus, IRelatedMemberViewModel, IPrimaryDataSourceVm, ISettings, ITicket, ICostDetailsDataSourceVm, Gender, BookingStatus, IUser } from '@app/models';
 import { DialogService, FireStoreService, NotifyService, TranslationService } from '@app/services';
 import { ManageReservationComponent } from '../reservation/manage-reservation/manage-reservation.component';
 import { Constants } from '@app/constants';
@@ -23,12 +23,14 @@ export class PrimaryComponent implements OnInit {
   childReservationPriceMoreThanEight = 0;
   childBedPrice = 0;
   readonly desktopColumn = ['name', 'mobile', 'adultsCount', 'childrenCount', 'roomId', 'transportation',
-  'bookingType', 'birthDate', 'bookingDate', 'gender', 'totalCost', 'paid', 'remaining', 'adminNotes', 'userNotes', 'bookingStatus', 'actions'];
+  'bookingType', 'birthDate', 'bookingDate', 'gender', 'totalCost', 'paid', 'remaining', 'adminNotes', 'userNotes', 
+  'lastUpdateDate', 'lastUpdatedBy', 'bookingStatus', 'actions'];
   displayedColumns: string[] = [];
   dataSource = new MatTableDataSource<IPrimaryDataSourceVm>([]);
   copyDataSource: Array<IPrimaryDataSourceVm> = [];
   notPrimaryMembers: Array<IRelatedMemberViewModel> = [];
   buses: Array<IBus> = [];
+  users: Array<IUser> = [];
   isMobileView = false;
   form: FormGroup;
   isAdvancedSearchOpened = false;
@@ -90,6 +92,7 @@ export class PrimaryComponent implements OnInit {
 
   ngOnInit(): void {
     this.detectMobileView();
+    this.getAllUsers();
     this.getBuses();
     this.getSettings();
   }
@@ -242,7 +245,8 @@ export class PrimaryComponent implements OnInit {
         totalCost: this.getTotalCost(item, this.notPrimaryMembers),
         transportationName: this.getBusNameById(item.transportationId),
         birthDateMonth: item.birthDate.toDate().getMonth() + 1,
-        ageRange: this.getAgeRange(item.birthDate)
+        ageRange: this.getAgeRange(item.birthDate),
+        lastUpdatedBy: this.getUserById(item.lastUpdateUserId)
       }));
       this.copyDataSource = data;
       this.dataSource = new MatTableDataSource(this.copyDataSource);
@@ -282,6 +286,17 @@ export class PrimaryComponent implements OnInit {
     return '';
   }
 
+  private getUserById(id: string): string {
+    if (id && this.users.length > 0) {
+      const user = this.users.find(b => b.id === id);
+      if (user) {
+        return user.fullName;
+      }
+      return '';
+    }
+    return '';
+  }
+
   private getSettings(): void {
     this.fireStoreService.getAll<ISettings>(Constants.RealtimeDatabase.settings).subscribe(data => {
       if (data && data.length > 0) {
@@ -301,9 +316,23 @@ export class PrimaryComponent implements OnInit {
         if (index > -1 && res.primaryId) {
           this.fireStoreService.getRelatedMembersByPrimaryId(res.primaryId, 1).subscribe(list => {
             if (list && list.length > 0) {
-              this.dataSource.data[index] = {...res, totalCost: this.getTotalCost(res, list)};
+              this.dataSource.data[index] = {
+                ...res,
+                totalCost: this.getTotalCost(res, list),
+                transportationName: this.getBusNameById(res.transportationId),
+                birthDateMonth: res.birthDate.toDate().getMonth() + 1,
+                ageRange: this.getAgeRange(res.birthDate),
+                lastUpdatedBy: this.getUserById(res.lastUpdateUserId)
+              };
             } else {
-              this.dataSource.data[index] = {...res, totalCost: this.getTotalCost(res, this.notPrimaryMembers)};
+              this.dataSource.data[index] = {
+                ...res,
+                totalCost: this.getTotalCost(res, this.notPrimaryMembers),
+                transportationName: this.getBusNameById(res.transportationId),
+                birthDateMonth: res.birthDate.toDate().getMonth() + 1,
+                ageRange: this.getAgeRange(res.birthDate),
+                lastUpdatedBy: this.getUserById(res.lastUpdateUserId)
+              };
             }
             this.dataSource._updateChangeSubscription();
           });
@@ -396,6 +425,12 @@ export class PrimaryComponent implements OnInit {
       return 0;
     }
     return 0;
+  }
+
+  private getAllUsers(): void {
+    this.fireStoreService.getAll<IUser>(Constants.RealtimeDatabase.users).subscribe(data => {
+      this.users = data;
+    });
   }
 
   private detectMobileView(): void {
