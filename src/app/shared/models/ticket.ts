@@ -77,6 +77,11 @@ export interface IPrimaryDataSourceVm {
     transportationId: string;
     primaryId: string;
     mobile: string;
+    transportationName: string;
+    gender: Gender;
+    birthDate: Timestamp;
+    ageRange: number;
+    birthDateMonth: number;
 }
 
 
@@ -118,6 +123,7 @@ export interface IRelatedMemberViewModel {
 }
 
 export enum BookingStatus {
+    all = 0,
     new = 1,
     confirmed = 2,
     duplicated = 3,
@@ -136,6 +142,7 @@ export enum BookingType {
 }
 
 export enum Gender {
+    all = 0,
     male = 1,
     female = 2
 }

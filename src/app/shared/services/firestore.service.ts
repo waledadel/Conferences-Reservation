@@ -258,7 +258,12 @@ export class FireStoreService {
             userNotes: ticket.userNotes,
             transportationId: ticket.transportationId,
             primaryId: ticket.primaryId,
-            mobile: ticket.mobile
+            mobile: ticket.mobile,
+            transportationName: '',
+            gender: ticket.gender,
+            birthDate: ticket.birthDate,
+            ageRange: 0,
+            birthDateMonth: 0
           }))
         ),
         take(takeCount)

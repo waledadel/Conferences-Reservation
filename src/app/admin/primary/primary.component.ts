@@ -1,10 +1,11 @@
 import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { KeyValue } from '@angular/common';
 import { MatSort } from '@angular/material/sort';
 import { Timestamp } from '@angular/fire/firestore';
 
-import { IBus, IRelatedMemberViewModel, IPrimaryDataSourceVm, ISettings, ITicket, ICostDetailsDataSourceVm } from '@app/models';
+import { IBus, IRelatedMemberViewModel, IPrimaryDataSourceVm, ISettings, ITicket, ICostDetailsDataSourceVm, Gender, BookingStatus } from '@app/models';
 import { DialogService, FireStoreService, NotifyService, TranslationService } from '@app/services';
 import { ManageReservationComponent } from '../reservation/manage-reservation/manage-reservation.component';
 import { Constants } from '@app/constants';
@@ -21,8 +22,8 @@ export class PrimaryComponent implements OnInit {
   childReservationPriceLessThanEight = 0;
   childReservationPriceMoreThanEight = 0;
   childBedPrice = 0;
-  readonly desktopColumn = ['name', 'mobile', 'adultsCount', 'childrenCount', 'roomId',
-  'bookingType', 'bookingDate', 'totalCost', 'paid', 'remaining', 'userNotes', 'bookingStatus', 'actions'];
+  readonly desktopColumn = ['name', 'mobile', 'adultsCount', 'childrenCount', 'roomId', 'transportation',
+  'bookingType', 'birthDate', 'bookingDate', 'gender', 'totalCost', 'paid', 'remaining', 'userNotes', 'bookingStatus', 'actions'];
   displayedColumns: string[] = [];
   dataSource = new MatTableDataSource<IPrimaryDataSourceVm>([]);
   copyDataSource: Array<IPrimaryDataSourceVm> = [];
@@ -31,6 +32,44 @@ export class PrimaryComponent implements OnInit {
   isMobileView = false;
   form: FormGroup;
   isAdvancedSearchOpened = false;
+  gender = Gender;
+  genderList: Array<KeyValue<string, number>> = [
+    {key: 'common.all', value: Gender.all},
+    {key: 'common.male', value: Gender.male},
+    {key: 'common.female', value: Gender.female},
+  ];
+  bookingStatusList: Array<KeyValue<string, BookingStatus>> = [
+    {key: 'common.all', value: BookingStatus.all},
+    {key: 'bookingStatus.new', value: BookingStatus.new},
+    {key: 'bookingStatus.confirmed', value: BookingStatus.confirmed},
+    {key: 'bookingStatus.canceled', value: BookingStatus.canceled},
+    {key: 'bookingStatus.duplicated', value: BookingStatus.duplicated},
+  ];
+  ageRanges: Array<KeyValue<string, number>> = [
+    { key: 'الكل', value: 0},
+    {key: '4 - 8', value: 1},
+    {key: '9 - 13', value: 2},
+    {key: '14 - 17', value: 3},
+    {key: '18 - 25', value: 4},
+    {key: '26 - 35', value: 5},
+    {key: '36 - 45', value: 6},
+    {key: '+45', value: 7},
+  ];
+  months: KeyValue<string, number>[] = [
+    { key: 'الكل', value: 0},
+    { key: 'يناير', value: 1},
+    { key: 'فبراير', value: 2},
+    { key: 'مارس', value: 3},
+    { key: 'أبريل', value: 4},
+    { key: 'مايو', value: 5},
+    { key: 'يونيو', value: 6},
+    { key: 'يوليو', value: 7},
+    { key: 'أغسطس', value: 8},
+    { key: 'سبتمبر', value: 9},
+    { key: 'أكتوبر', value: 10},
+    { key: 'نوفمبر', value: 11},
+    { key: 'ديسمبر', value: 12}
+  ];
   get isMobile(): boolean {
     return window.innerWidth < Constants.Grid.large;
   }
@@ -153,13 +192,25 @@ export class PrimaryComponent implements OnInit {
   }
 
   reset(): void {
-    this.form.reset();
-    this.dataSource = new MatTableDataSource(this.copyDataSource);
+    this.form.patchValue({
+      name: '',
+      mobile: '',
+      adultsCount: 0,
+      childrenCount: 0,
+      paid: 0,
+      total: 0,
+      remaining: 0,
+      transportationId: 'all',
+      gender: Gender.all,
+      bookingStatus: BookingStatus.all,
+      birthDateMonth: 0,
+      ageRange: 0
+    });
+    this.dataSource.filter = JSON.stringify(this.form.value);
   }
 
   filter(): void {
-    const formValue = this.form.value;
-    this.dataSource.filter = JSON.stringify(formValue);
+    this.dataSource.filter = JSON.stringify(this.form.value);
   }
 
   showAdvancedFilter(): void {
@@ -186,13 +237,49 @@ export class PrimaryComponent implements OnInit {
 
   private getPrimaryTickets(takeCount = 1): void {
     this.fireStoreService.getPrimarySubscription(takeCount).subscribe(res => {
-      const data = res.map(item => ({...item, totalCost: this.getTotalCost(item, this.notPrimaryMembers)}));
+      const data = res.map(item => ({
+        ...item,
+        totalCost: this.getTotalCost(item, this.notPrimaryMembers),
+        transportationName: this.getBusNameById(item.transportationId),
+        birthDateMonth: item.birthDate.toDate().getMonth() + 1,
+        ageRange: this.getAgeRange(item.birthDate)
+      }));
       this.copyDataSource = data;
-      this.dataSource = new MatTableDataSource(data);
+      this.dataSource = new MatTableDataSource(this.copyDataSource);
       this.total = res.length;
       this.dataSource.sort = this.sort;
       this.initFilterPredicate();
     });
+  }
+
+  private getAgeRange(birthDate: Timestamp): number {
+    const years = new Date().getFullYear() - birthDate.toDate().getFullYear();
+    if (years > 45) {
+      return 7;
+    } else if (years >= 36 && years <= 45) {
+      return 6;
+    } else if (years >= 26 && years <= 35) {
+      return 5;
+    } else if (years >= 18 && years <= 25) {
+      return 4;
+    } else if (years >= 14 && years <= 17) {
+      return 3;
+    } else if (years >= 9 && years <= 13) {
+      return 2;
+    } else {
+      return 1;
+    }
+  }
+
+  private getBusNameById(id: string): string {
+    if (id && this.buses.length > 0) {
+      const bus = this.buses.find(b => b.id === id);
+      if (bus) {
+        return bus.name;
+      }
+      return '';
+    }
+    return '';
   }
 
   private getSettings(): void {
@@ -328,7 +415,12 @@ export class PrimaryComponent implements OnInit {
       childrenCount: [0],
       paid: [0],
       total: [0],
-      remaining: [0]
+      remaining: [0],
+      transportationId: ['all'],
+      gender: [Gender.all],
+      bookingStatus: BookingStatus.all,
+      birthDateMonth: [0],
+      ageRange: [0]
     });
   }
 
@@ -337,11 +429,31 @@ export class PrimaryComponent implements OnInit {
       const searchString = JSON.parse(filter);
       const mobileFound = data.mobile.toString().trim().toLowerCase().indexOf(searchString.mobile) !== -1;
       const nameFound = data.name.toString().trim().toLowerCase().indexOf(searchString.name) !== -1;
+      let transportationFound = data.transportationId === searchString.transportationId;
+      let ageRangeFound = data.ageRange === searchString.ageRange;
+      let birthDateMonthFound = data.birthDateMonth === searchString.birthDateMonth;
+      let bookingStatusFound = data.bookingStatus === searchString.bookingStatus;
+      let genderFound = data.gender === searchString.gender;
       let paidFound = +data.paid === +searchString.paid;
       let totalFound = +data.totalCost === +searchString.total;
       let remainingFound = ((+data.totalCost) - (+data.paid)) === +searchString.remaining;
-      let adultscountFound = +data.adultsCount === (+searchString.adultsCount - 1); // We minus 1 for primary count
+      let adultsCountFound = +data.adultsCount === (+searchString.adultsCount - 1); // We minus 1 for primary count
       let childrenCountFound = +data.childrenCount === +searchString.childrenCount;
+      if (!searchString.ageRange || searchString.ageRange < 1) {
+        ageRangeFound = true;
+      }
+      if (!searchString.birthDateMonth || searchString.birthDateMonth < 1) {
+        birthDateMonthFound = true;
+      }
+      if (!searchString.bookingStatus || searchString.bookingStatus === BookingStatus.all) {
+        bookingStatusFound = true;
+      }
+      if (!searchString.gender || searchString.gender === Gender.all) {
+        genderFound = true;
+      }
+      if (!searchString.transportationId || searchString.transportationId == 'all') {
+        transportationFound = true;
+      }
       if (!searchString.paid || searchString.paid < 1) {
         paidFound = true;
       }
@@ -349,7 +461,7 @@ export class PrimaryComponent implements OnInit {
         totalFound = true;
       }
       if (!searchString.adultsCount || searchString.adultsCount < 1) {
-        adultscountFound = true;
+        adultsCountFound = true;
       }
       if (!searchString.childrenCount || searchString.childrenCount < 1) {
         childrenCountFound = true;
@@ -357,7 +469,8 @@ export class PrimaryComponent implements OnInit {
       if (!searchString.remaining || searchString.remaining < 1) {
         remainingFound = true;
       }
-      return nameFound && mobileFound && paidFound && totalFound && adultscountFound && childrenCountFound && remainingFound;
+      return nameFound && mobileFound && transportationFound && genderFound && bookingStatusFound && paidFound && totalFound 
+        && ageRangeFound && birthDateMonthFound && adultsCountFound && childrenCountFound && remainingFound;
     };
   }
 }

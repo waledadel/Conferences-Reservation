@@ -67,7 +67,11 @@
         "isChild": "طفل",
         "searchByNameOrMobile": "بحث بالاسم او رقم الموبايل",
         "reset": "إعادة تعيين",
-        "search": "بحث"
+        "search": "بحث",
+        "transportationName": "المواصلات",
+        "all": "الكل",
+        "birthDateMonth": "عيد الميلاد",
+        "ageRange": "الفئة العمرية"
     },
     "languages": {
         "arabic": "العربية",
@@ -149,5 +153,11 @@
         "mobile": "رقم الموبايل",
         "filter": "بحث",
         "reset": "إعادة تعيين"
+    },
+    "table": {
+        "mobile": "الموبايل",
+        "bookingStatus": "الحالة",
+        "adultsCount": "البالغين",
+        "childrenCount": "الأطفال"
     }
 }
