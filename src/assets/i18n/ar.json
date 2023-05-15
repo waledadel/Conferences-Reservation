@@ -74,7 +74,8 @@
         "birthDateMonth": "عيد الميلاد",
         "ageRange": "الفئة العمرية",
         "lastUpdateDate": "تاريخ آخر تحديث",
-        "lastUpdatedBy": "آخر تحديث بواسطة"
+        "lastUpdatedBy": "آخر تحديث بواسطة",
+        "send": "إرسال"
     },
     "languages": {
         "arabic": "العربية",
