@@ -345,7 +345,7 @@
                         <mat-icon>close</mat-icon>
                     </button>
                 </div>
-                <form [formGroup]="form" novalidate class="row mx-0 mt-3">
+                <form [formGroup]="form" novalidate class="row mx-0 mt-3 filter-form">
                     <div class="advanced-body w-100">
                         <mat-form-field class="col-12">
                             <mat-label>{{'advancedFilter.name' | translate}}</mat-label>
@@ -377,7 +377,7 @@
                                 </ng-container>
                             </mat-select>
                         </mat-form-field>
-                        <mat-form-field  class="col-12">
+                        <mat-form-field class="col-12">
                             <mat-label>{{'common.bookingStatus' | translate}}</mat-label>
                             <mat-select formControlName="bookingStatus">
                                 <ng-container *ngFor="let item of bookingStatusList">
@@ -385,7 +385,7 @@
                                 </ng-container>
                             </mat-select>
                         </mat-form-field>
-                        <mat-form-field  class="col-12">
+                        <mat-form-field class="col-12">
                             <mat-label>{{'common.birthDateMonth' | translate}}</mat-label>
                             <mat-select formControlName="birthDateMonth">
                                 <ng-container *ngFor="let item of months">
@@ -393,7 +393,7 @@
                                 </ng-container>
                             </mat-select>
                         </mat-form-field>
-                        <mat-form-field  class="col-12">
+                        <mat-form-field class="col-12">
                             <mat-label>{{'common.ageRange' | translate}}</mat-label>
                             <mat-select formControlName="ageRange">
                                 <ng-container *ngFor="let item of ageRanges">
