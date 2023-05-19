@@ -214,6 +214,9 @@ export class PrimaryComponent implements OnInit {
 
   filter(): void {
     this.dataSource.filter = JSON.stringify(this.form.value);
+    if (this.isMobileView) {
+      this.isAdvancedSearchOpened = false;
+    }
   }
 
   showAdvancedFilter(): void {
