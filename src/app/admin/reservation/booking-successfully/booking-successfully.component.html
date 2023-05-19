@@ -1,0 +1,18 @@
+<div mat-dialog-title class="d-flex justify-content-between align-content-center">
+    <div class="font-weight-bold">{{'common.confirmBooking' | translate}}</div>
+    <button class="p-0 d-flex justify-content-center align-items-center" (click)="close()">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+<div mat-dialog-content>
+    <div class="px-0 py-3">
+        <img src="assets/images/successful.png" alt="img" loading="lazy" />
+        <div class="pt-3 text-success">{{'notifications.bookedSuccessfully' | translate}}</div>
+    </div>
+</div>
+
+<div mat-dialog-actions>
+    <button mat-flat-button type="button" color="primary" (click)="close()" cdkFocusInitial>
+        {{'common.ok' | translate}}
+    </button>
+</div>

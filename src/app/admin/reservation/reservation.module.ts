@@ -14,11 +14,15 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { ManageReservationComponent } from './manage-reservation/manage-reservation.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { ConfirmBookingComponent } from './confirm-booking/confirm-booking.component';
+import { BookingSuccessfullyComponent } from './booking-successfully/booking-successfully.component';
 
 
 const components = [
   ReservationComponent,
-  ManageReservationComponent
+  ManageReservationComponent,
+  ConfirmBookingComponent,
+  BookingSuccessfullyComponent
 ];
 
 const modules = [

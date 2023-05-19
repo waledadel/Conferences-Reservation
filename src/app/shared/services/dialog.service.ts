@@ -1,3 +1,5 @@
+import { BookingSuccessfullyComponent } from './../../admin/reservation/booking-successfully/booking-successfully.component';
+import { ConfirmBookingComponent } from './../../admin/reservation/confirm-booking/confirm-booking.component';
 import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
@@ -17,6 +19,21 @@ export class DialogService {
       panelClass: 'customDialogPanelClass-sm',
       disableClose: true,
       data: itemName
+    });
+  }
+
+  openConfirmBookingDialog(isGrouping: boolean): MatDialogRef<unknown, any> {
+    return this.dialog.open(ConfirmBookingComponent, {
+      panelClass: 'customDialogPanelClass-md',
+      disableClose: true,
+      data: isGrouping
+    });
+  }
+
+  openSuccessfullyBookingDialog(): MatDialogRef<unknown, any> {
+    return this.dialog.open(BookingSuccessfullyComponent, {
+      panelClass: 'customDialogPanelClass-md',
+      disableClose: true
     });
   }
 

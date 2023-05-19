@@ -25,7 +25,10 @@
         "no": "لا",
         "needChildBed": "هل تريد سرير منفصل للطفل ؟",
         "confirmDelete": "تأكيد الحذف",
+        "confirmBooking": "تأكيد الحجز",
         "sureToDelete": "هل أنت متأكد أنك تريد حذف هذا العنصر ؟",
+        "sureToBook": "أنت علي وشك القيام بحجز <b> { isGrouping, select, true{مجموعة} other{فرد} } </b>",
+        "completeBooking": "هل تريد إكمال عملية الحجز ؟",
         "cancel": "إلغاء",
         "maximumPersons": "الحد الأقصي هو 5 أشخاص",
         "save": "حفظ",
@@ -75,7 +78,8 @@
         "ageRange": "الفئة العمرية",
         "lastUpdateDate": "تاريخ آخر تحديث",
         "lastUpdatedBy": "آخر تحديث بواسطة",
-        "send": "إرسال"
+        "send": "إرسال",
+        "ok": "موافق"
     },
     "languages": {
         "arabic": "العربية",

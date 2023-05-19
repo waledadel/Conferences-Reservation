@@ -85,7 +85,12 @@ export class ReservationComponent implements OnInit {
       if (this.model.isEditMode) {
         this.update();
       } else {
-        this.add();
+        const isGrouping = this.model.selectedType === BookingType.group;
+        this.dialogService.openConfirmBookingDialog(isGrouping).afterClosed().subscribe((res: {confirmBooking: boolean}) => {
+          if (res && res.confirmBooking) {
+            this.add();
+          }
+        });
       }
     }
   }
@@ -111,7 +116,8 @@ export class ReservationComponent implements OnInit {
     const formValue = this.model.form.value;
     this.fireStoreService.addTicket(formValue).subscribe(() => {
       this.showForm.emit(false);
-      this.notifyService.showNotifier(this.translationService.instant('notifications.bookedSuccessfully'), 'success', 15000);
+      this.dialogService.openSuccessfullyBookingDialog();
+      // this.notifyService.showNotifier(this.translationService.instant('notifications.bookedSuccessfully'), 'success', 15000);
       this.model.form.reset();
       this.model.isLoading = false;
     });
