@@ -210,6 +210,9 @@ export class PrimaryComponent implements OnInit {
       ageRange: 0
     });
     this.dataSource.filter = JSON.stringify(this.form.value);
+    if (this.isMobileView) {
+      this.isAdvancedSearchOpened = false;
+    }
   }
 
   filter(): void {
