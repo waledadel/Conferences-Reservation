@@ -79,7 +79,8 @@
         "lastUpdateDate": "تاريخ آخر تحديث",
         "lastUpdatedBy": "آخر تحديث بواسطة",
         "send": "إرسال",
-        "ok": "موافق"
+        "ok": "موافق",
+        "servants": "الخدام"
     },
     "languages": {
         "arabic": "العربية",
@@ -90,7 +91,7 @@
         "all": "كل المشتركين",
         "rooms": "الغرف",
         "buses": "الإتوبيسات",
-        "statistics": "إحصائيات",
+        "statistics": "الإحصائيات",
         "settings": "إعدادات",
         "address": "العنوان"
     },

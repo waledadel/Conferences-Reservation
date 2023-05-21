@@ -30,7 +30,8 @@ export class ManageAddressComponent implements OnInit {
     this.patchForm();
   }
 
-  save(categoryForm: FormGroupDirective): void {
+  save(event: Event, categoryForm: FormGroupDirective): void {
+    categoryForm.onSubmit(event);
     if (this.form.valid) {
       if (this.data) {
         this.update();

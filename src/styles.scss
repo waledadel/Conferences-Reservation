@@ -141,6 +141,9 @@ button:focus {
       // &.table-wz-advanced {
       //   filter: brightness(0.4);
       // }
+      .mat-mdc-header-row {
+        display: none;
+      }
     }
   }
 }
@@ -304,4 +307,10 @@ mat-mdc-fab.mat-primary, .mat-mdc-mini-fab.mat-primary {
       overflow-y: scroll;
     }
   }
+}
+
+.mobile-fab-button {
+  position: fixed !important;
+  bottom: 20px;
+  right: 20px;
 }

@@ -16,7 +16,7 @@
     </form>
 </div>
 <div mat-dialog-actions>
-    <button color="primary" mat-flat-button type="button" cdkFocusInitial (click)="save(categoryForm)">
+    <button color="primary" mat-flat-button type="button" cdkFocusInitial (click)="save($event, categoryForm)">
         <span> {{ 'common.save' | translate }}</span>
     </button>
 </div>

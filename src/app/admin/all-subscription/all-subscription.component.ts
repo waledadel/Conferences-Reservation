@@ -5,6 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Constants } from '@app/constants';
 import { IAddress, IAllSubscriptionDataSourceVm } from '@app/models';
 import { FireStoreService } from '@app/services';
+import { AdminService } from '../admin.service';
 
 @Component({
   templateUrl: './all-subscription.component.html'
@@ -26,11 +27,15 @@ export class AllSubscriptionComponent implements OnInit {
     this.detectMobileView();
   }
 
-  constructor(private fireStoreService: FireStoreService) {}
+  constructor(
+    private fireStoreService: FireStoreService, 
+    private adminService: AdminService
+  ) {}
 
   ngOnInit(): void {
     this.detectMobileView();
     this.getAddress();
+    this.adminService.updatePageTitle('كل المشتركين');
   }
 
   private getAddress(): void {

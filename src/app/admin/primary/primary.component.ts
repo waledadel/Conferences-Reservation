@@ -10,6 +10,7 @@ import { DialogService, FireStoreService, NotifyService, TranslationService } fr
 import { ManageReservationComponent } from '../reservation/manage-reservation/manage-reservation.component';
 import { Constants } from '@app/constants';
 import { CostDetailsComponent } from './cost-details/cost-details.component';
+import { AdminService } from '../admin.service';
 
 @Component({
   templateUrl: './primary.component.html'
@@ -86,6 +87,7 @@ export class PrimaryComponent implements OnInit {
     private notifyService: NotifyService,
     private translationService: TranslationService,
     private formBuilder: FormBuilder,
+    private adminService: AdminService
   ) {
     this.form = this.initFormModels();
   }
@@ -95,6 +97,7 @@ export class PrimaryComponent implements OnInit {
     this.getAllUsers();
     this.getBuses();
     this.getSettings();
+    this.adminService.updatePageTitle('الإشتراكات الرئيسية');
   }
 
   update(item: Partial<ITicket>): void {

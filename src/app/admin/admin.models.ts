@@ -8,6 +8,7 @@ export class AdminModel {
   selectedLanguage: string;
   isMobileView = false;
   menuItems: Array<IMenu> = [];
+  pageTitle = '';
 
   constructor() {
     this.selectedLanguage = this.arabic;
@@ -71,7 +72,7 @@ export const menuItems: Array<IMenu> = [
   },
   {
     icon: 'groups',
-    text: 'common.users',
+    text: 'common.servants',
     url:  Constants.Routes.users,
     roles: [Roles.admin]
   }

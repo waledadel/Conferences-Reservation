@@ -1,34 +1,41 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { Constants } from '@app/constants';
 import { IBus } from '@app/models';
 import { NotifyService, DialogService, TranslationService, FireStoreService } from '@app/services';
 import { ManageBusComponent } from './manage-bus/manage-bus.component';
+import { AdminService } from '../admin.service';
 
 @Component({
   templateUrl: './buses.component.html'
 })
-export class BusesComponent implements OnInit, AfterViewInit {
+export class BusesComponent implements OnInit {
 
-  displayedColumns: string[] = ['name', 'price', 'actions'];
+  readonly desktopColumn = ['name', 'price', 'actions'];
+  displayedColumns: string[] = [];
   dataSource: MatTableDataSource<IBus> = new MatTableDataSource<IBus>([]);
-  @ViewChild(MatPaginator) paginator: MatPaginator = {} as MatPaginator;
+  isMobileView = false;
+  get isMobile(): boolean {
+    return window.innerWidth < Constants.Grid.large;
+  }
   
   constructor(
     private fireStoreService: FireStoreService,
     private dialogService: DialogService,
     private notifyService: NotifyService,
     private translationService: TranslationService,
+    private adminService: AdminService
   ) {}
 
   ngOnInit(): void {
+    this.detectMobileView();
     this.getBuses();
+    this.adminService.updatePageTitle('الإتوبيسات');
   }
 
-  ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
+  @HostListener('window:resize', ['$event']) onWindowResize(): void {
+    this.detectMobileView();
   }
 
   add(): void {
@@ -66,4 +73,12 @@ export class BusesComponent implements OnInit, AfterViewInit {
     });
   }
 
+  private detectMobileView(): void {
+    this.isMobileView = this.isMobile;
+    if (this.isMobileView) {
+      this.displayedColumns = ['mobileView'];
+    } else {
+      this.displayedColumns = this.desktopColumn;
+    }
+  }
 }

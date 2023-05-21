@@ -1,34 +1,40 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { Constants } from '@app/constants';
 import { IAddress } from '@app/models';
 import { NotifyService, DialogService, FireStoreService, TranslationService } from '@app/services';
 import { ManageAddressComponent } from './manage-address/manage-address.component';
+import { AdminService } from '../admin.service';
 
 @Component({
   templateUrl: './address.component.html'
 })
-export class AddressComponent implements OnInit, AfterViewInit {
+export class AddressComponent implements OnInit {
 
   displayedColumns: string[] = ['name', 'actions'];
   dataSource: MatTableDataSource<IAddress> = new MatTableDataSource<IAddress>([]);
-  @ViewChild(MatPaginator) paginator: MatPaginator = {} as MatPaginator;
+  isMobileView = false;
+  get isMobile(): boolean {
+    return window.innerWidth < Constants.Grid.large;
+  }
   
   constructor(
     private fireStoreService: FireStoreService,
     private dialogService: DialogService,
     private notifyService: NotifyService,
-    private translationService: TranslationService
+    private translationService: TranslationService,
+    private adminService: AdminService
   ) {}
 
   ngOnInit(): void {
+    this.detectMobileView();
     this.getAddress();
+    this.adminService.updatePageTitle('العنوان');
   }
 
-  ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
+  @HostListener('window:resize', ['$event']) onWindowResize(): void {
+    this.detectMobileView();
   }
 
   add(): void {
@@ -62,7 +68,11 @@ export class AddressComponent implements OnInit, AfterViewInit {
 
   private getAddress(): void {
     this.fireStoreService.getAll<IAddress>(Constants.RealtimeDatabase.address).subscribe(data => {
-      this.dataSource.data = data;
+      this.dataSource.data = data.sort((a, b) => a.name > b.name ? 1 : -1);
     });
+  }
+
+  private detectMobileView(): void {
+    this.isMobileView = this.isMobile;
   }
 }

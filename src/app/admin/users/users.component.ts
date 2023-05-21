@@ -5,6 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Constants } from '@app/constants';
 import { IUser } from '@app/models';
 import { NotifyService, DialogService, FireStoreService } from '@app/services';
+import { AdminService } from '../admin.service';
 
 @Component({
   templateUrl: './users.component.html'
@@ -18,11 +19,13 @@ export class UsersComponent implements OnInit, AfterViewInit {
   constructor(
     private fireStoreService: FireStoreService,
     private dialogService: DialogService,
-    private notifyService: NotifyService
+    private notifyService: NotifyService,
+    private adminService: AdminService
   ) {}
 
   ngOnInit(): void {
     this.getAllUsers();
+    this.adminService.updatePageTitle('الخدام');
   }
 
   ngAfterViewInit(): void {

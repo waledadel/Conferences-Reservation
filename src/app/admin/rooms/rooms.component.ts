@@ -6,6 +6,7 @@ import { Constants } from '@app/constants';
 import { IRoom } from '@app/models';
 import { NotifyService, DialogService, TranslationService, FireStoreService } from '@app/services';
 import { ManageRoomsComponent } from './manage-rooms/manage-rooms.component';
+import { AdminService } from '../admin.service';
 
 @Component({
   templateUrl: './rooms.component.html',
@@ -21,11 +22,13 @@ export class RoomsComponent implements OnInit, AfterViewInit {
     private fireStoreService: FireStoreService,
     private dialogService: DialogService,
     private notifyService: NotifyService,
-    private translationService: TranslationService
+    private translationService: TranslationService,
+    private adminService: AdminService
   ) {}
 
   ngOnInit(): void {
     this.getRooms();
+    this.adminService.updatePageTitle('الغرف');
   }
 
   ngAfterViewInit(): void {

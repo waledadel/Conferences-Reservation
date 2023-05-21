@@ -2,12 +2,13 @@
     <button mat-icon-button (click)="drawer.toggle()">
         <mat-icon>menu</mat-icon>
     </button>
-    <span>{{'common.conferencesReservation' | translate}}</span>
+    <span *ngIf="model.pageTitle != ''">{{model.pageTitle}}</span>
 </mat-toolbar>
 
 <mat-drawer-container class="app-container">
     <mat-drawer #drawer class="app-sidenav" [mode]="'over'">
         <mat-nav-list>
+            <!-- <div mat-subheader class="primary">{{'common.conferencesReservation' | translate}}</div> -->
             <ng-container *ngFor="let item of model.menuItems">
                 <a [routerLink]="item.url" [routerLinkActiveOptions]="{exact:true}" routerLinkActive="active-link" class="menu-item-link" (click)="onItemClick()">
                     <mat-list-item>

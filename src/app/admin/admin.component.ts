@@ -5,6 +5,7 @@ import { Constants } from '@app/constants';
 import { AdminModel, menuItems } from './admin.models';
 import { LanguageService, AuthService, StorageService } from '@app/services';
 import { WINDOW } from 'app/shared/services/window.service';
+import { AdminService } from './admin.service';
 
 @Component({
   templateUrl: './admin.component.html',
@@ -19,6 +20,7 @@ export class AdminComponent implements OnInit {
     private authService: AuthService,
     private LanguageService: LanguageService,
     private storageService: StorageService,
+    private adminService: AdminService,
     @Inject(WINDOW) private window: Window
   ) {
     this.drawer = {} as MatDrawer;
@@ -38,6 +40,9 @@ export class AdminComponent implements OnInit {
     if (role) {
       this.model.menuItems = menuItems.filter(m => m.roles.includes(+role));
     }
+    this.adminService.title.subscribe(res => {
+      this.model.pageTitle = res;
+    });
   }
 
   // ngAfterViewInit(): void {

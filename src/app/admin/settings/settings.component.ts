@@ -7,6 +7,7 @@ import { ISettings } from '@app/models';
 import { Constants } from '@app/constants';
 import { FireStoreService, NotifyService, StorageService, TranslationService } from '@app/services';
 import { SettingsModel } from './settings.models';
+import { AdminService } from '../admin.service';
 
 @Component({
   templateUrl: './settings.component.html',
@@ -22,7 +23,8 @@ export class SettingsComponent implements OnInit {
     private notifyService: NotifyService,
     private storageService: StorageService,
     private translationService: TranslationService,
-    private angularFireStorage: AngularFireStorage
+    private angularFireStorage: AngularFireStorage,
+    private adminService: AdminService
   ) {
     this.model = new SettingsModel();
     this.model.form = this.initFormModels();
@@ -32,6 +34,7 @@ export class SettingsComponent implements OnInit {
     this.model.isArabic = this.storageService.getItem(Constants.Languages.languageKey) === Constants.Languages.ar;
     this.setEditorOptions();
     this.getSavedSettings();
+    this.adminService.updatePageTitle('الإعدادات');
   }
 
   onSelectedImage(selectedFile: any): void {
