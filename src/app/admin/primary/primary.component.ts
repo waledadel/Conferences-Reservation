@@ -18,7 +18,6 @@ import { AdminService } from '../admin.service';
 export class PrimaryComponent implements OnInit {
 
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
-  total = 0;
   adultReservationPrice = 0;
   childReservationPriceLessThanEight = 0;
   childReservationPriceMoreThanEight = 0;
@@ -28,7 +27,6 @@ export class PrimaryComponent implements OnInit {
   'lastUpdateDate', 'lastUpdatedBy', 'bookingStatus', 'actions'];
   displayedColumns: string[] = [];
   dataSource = new MatTableDataSource<IPrimaryDataSourceVm>([]);
-  copyDataSource: Array<IPrimaryDataSourceVm> = [];
   notPrimaryMembers: Array<IRelatedMemberViewModel> = [];
   buses: Array<IBus> = [];
   users: Array<IUser> = [];
@@ -257,9 +255,7 @@ export class PrimaryComponent implements OnInit {
         ageRange: this.getAgeRange(item.birthDate),
         lastUpdatedBy: this.getUserById(item.lastUpdateUserId)
       }));
-      this.copyDataSource = data;
-      this.dataSource = new MatTableDataSource(this.copyDataSource);
-      this.total = res.length;
+      this.dataSource = new MatTableDataSource(data);
       this.dataSource.sort = this.sort;
       this.initFilterPredicate();
     });
@@ -355,7 +351,6 @@ export class PrimaryComponent implements OnInit {
     if (index > -1) {
       this.dataSource.data.splice(index, 1);
       this.dataSource._updateChangeSubscription();
-      this.total -= 1;
     }
   }
 

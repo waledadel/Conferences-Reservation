@@ -314,3 +314,11 @@ mat-mdc-fab.mat-primary, .mat-mdc-mini-fab.mat-primary {
   bottom: 20px;
   right: 20px;
 }
+
+.mobile-filter-button {
+  position: fixed !important;
+  top: 3px;
+  left: 10px;
+  z-index: 10 !important;
+  color: #fff !important;
+}
