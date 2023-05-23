@@ -80,7 +80,9 @@
         "lastUpdatedBy": "آخر تحديث بواسطة",
         "send": "إرسال",
         "ok": "موافق",
-        "servants": "الخدام"
+        "servants": "الخدام",
+        "fromAge": "من سن (عمر)",
+        "toAge": "إلي سن (عمر)"
     },
     "languages": {
         "arabic": "العربية",

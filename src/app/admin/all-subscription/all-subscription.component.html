@@ -15,6 +15,7 @@
                   <div><b>{{'common.name' | translate}}:</b> {{element.name}}</div>
                   <div><b>{{'common.mobile' | translate}}:</b> {{ element.mobile }}</div>
                   <div><b>{{'common.birthDate' | translate}}:</b> {{ element.birthDate.toMillis() | date }}</div>
+                  <div><b>{{'common.age' | translate}}:</b> {{element.age}}</div>
                   <div class="d-flex flex-row">
                     <b>{{'common.gender' | translate}}:</b>&nbsp;
                     <ng-container [ngSwitch]="element.gender">
@@ -27,7 +28,7 @@
                     </ng-container>
                   </div>
                   <div><b>{{'menu.address' | translate}}:</b> {{element.address}}</div>
-                  <div><b>{{'common.age' | translate}}:</b> {{element.age}}</div>
+                  <div><b>{{'common.transportationName' | translate}}:</b> {{element.transportationName}}</div>
                   <div class="d-flex">
                     <b>{{'common.room' | translate}}:</b>&nbsp;
                     <ng-container *ngIf="element.room; else empty">
@@ -116,20 +117,17 @@
             <td mat-cell *matCellDef="let element" class="col-1">{{element.age}}</td>
             <td mat-footer-cell *matFooterCellDef></td>
           </ng-container>
-    
-          <ng-container matColumnDef="room">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.room' | translate}}</th>
-            <td mat-cell *matCellDef="let element" class="col-3">
-              <ng-container *ngIf="element.room; else empty">
-                {{ element.room }}
-              </ng-container>
-              <ng-template #empty>---</ng-template>
-            </td>
+
+          <ng-container matColumnDef="transportation">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.transportationName' | translate}}</th>
+            <td mat-cell *matCellDef="let element">{{ element.transportationName }}</td>
             <td mat-footer-cell *matFooterCellDef></td>
           </ng-container>
-    
+
           <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.bookingStatus' | translate}}</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{'common.bookingStatus' | translate}}
+            </th>
             <td mat-cell *matCellDef="let element" class="col-1">
               <ng-container [ngSwitch]="element.bookingStatus">
                 <div *ngSwitchCase="2">
@@ -148,10 +146,44 @@
             </td>
             <td mat-footer-cell *matFooterCellDef></td>
           </ng-container>
+    
+          <ng-container matColumnDef="room">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.room' | translate}}</th>
+            <td mat-cell *matCellDef="let element" class="col-3">
+              <ng-container *ngIf="element.room; else empty">
+                {{ element.room }}
+              </ng-container>
+              <ng-template #empty>---</ng-template>
+            </td>
+            <td mat-footer-cell *matFooterCellDef></td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef class="text-center">
+                <button mat-icon-button color="primary" (click)="showAdvancedFilter()">
+                    <mat-icon>filter_list</mat-icon>
+                </button>
+            </th>
+            <td mat-cell *matCellDef="let element"></td>
+            <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+
           <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
           <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></tr>
         </table>
+      </div>
+      <button *ngIf="isMobileView" mat-icon-button color="primary" (click)="showAdvancedFilter()" class="mobile-filter-button">
+        <mat-icon>filter_list</mat-icon>
+      </button>
+      <div *ngIf="isAdvancedSearchOpened" class="advanced-filter">
+          <div class="header d-flex justify-content-between align-items-center">
+              <div>{{ 'advancedFilter.advancedFilter' | translate }}</div>
+              <button *ngIf="isMobileView" mat-icon-button (click)="showAdvancedFilter()">
+                  <mat-icon>close</mat-icon>
+              </button>
+          </div>
+          <app-advanced-search (filterChanged)="onFilterChanged($event)" [hideMainProp]="true"></app-advanced-search>
       </div>
     </div>
   </div>

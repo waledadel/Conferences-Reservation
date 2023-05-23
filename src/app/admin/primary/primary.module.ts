@@ -5,6 +5,7 @@ import { PrimaryComponent } from './primary.component';
 import { SharedModule } from 'app/shared/shared.module';
 import { ReservationModule } from '../reservation/reservation.module';
 import { CostDetailsComponent } from './cost-details/cost-details.component';
+import { AdvancedSearchModule } from '../advanced-search/advanced-search.module';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { CostDetailsComponent } from './cost-details/cost-details.component';
   imports: [
     SharedModule,
     ReservationModule,
-    PrimaryRoutingModule
+    PrimaryRoutingModule,
+    AdvancedSearchModule
   ]
 })
 export class PrimaryModule { }

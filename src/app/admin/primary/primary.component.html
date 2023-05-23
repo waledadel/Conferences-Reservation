@@ -1,11 +1,11 @@
-<div class="container-fluid table-container" [class.px-0]="isMobileView">
-    <div class="w-100" [ngClass]="isMobileView ? 'h-100' : 'mt-2'">
+<div class="container-fluid table-container" [class.px-0]="model.isMobileView">
+    <div class="w-100" [ngClass]="model.isMobileView ? 'h-100' : 'mt-2'">
         <div class="w-100 d-flex h-100">
-            <div *ngIf="dataSource && dataSource.data.length < 1" class="w-100">
+            <div *ngIf="model.dataSource && model.dataSource.data.length < 1" class="w-100">
                 <app-empty-data></app-empty-data>
             </div>
-            <div [hidden]="dataSource && dataSource.data.length < 1" class="mat-elevation-z8" [class.table-wz-advanced]="isAdvancedSearchOpened">
-                <table mat-table [dataSource]="dataSource" matSort matSortActive="name" matSortDirection="asc"
+            <div [hidden]="model.dataSource && model.dataSource.data.length < 1" class="mat-elevation-z8" [class.table-wz-advanced]="model.isAdvancedSearchOpened">
+                <table mat-table [dataSource]="model.dataSource" matSort matSortActive="name" matSortDirection="asc"
                     matSortDisableClear="true">
                     <ng-container matColumnDef="mobileView">
                         <th mat-header-cell *matHeaderCellDef></th>
@@ -32,7 +32,7 @@
                                     <div class="d-flex">
                                         <b>{{'common.gender' | translate}}:</b>&nbsp;
                                         <ng-container [ngSwitch]="element.gender">
-                                            <ng-container *ngSwitchCase="gender.male">
+                                            <ng-container *ngSwitchCase="model.gender.male">
                                                 {{ 'common.male' | translate }}
                                             </ng-container>
                                             <ng-container *ngSwitchDefault>
@@ -52,6 +52,7 @@
                                         </ng-container>
                                     </div>
                                     <div><b>{{'common.transportationName' | translate}}</b> {{ element.transportationName }} </div>
+                                    <div><b>{{'common.age' | translate}}</b> {{ element.age }} </div>
                                     <div><b>{{'common.birthDate' | translate}}:</b> {{element.birthDate.toMillis() | date}}</div>
                                     <div> <b>{{'common.bookingDate' | translate}}:</b> {{element.bookingDate.toMillis() | date:'medium'}}</div>
                                     <div class="d-flex">
@@ -109,7 +110,7 @@
                                 </div>
                             </div>
                         </td>
-                        <td mat-footer-cell *matFooterCellDef>{{'common.total' | translate}}: <b>{{dataSource.data.length}}</b> </td>
+                        <td mat-footer-cell *matFooterCellDef>{{'common.total' | translate}}: <b>{{model.dataSource.data.length}}</b> </td>
                     </ng-container>
         
                     <ng-container matColumnDef="name" sticky>
@@ -117,7 +118,7 @@
                         <td mat-cell *matCellDef="let element" class="width-175">
                             {{element.name}}
                         </td>
-                        <td mat-footer-cell *matFooterCellDef>{{'common.total' | translate}}: <b>{{dataSource.data.length}}</b> </td>
+                        <td mat-footer-cell *matFooterCellDef>{{'common.total' | translate}}: <b>{{model.dataSource.data.length}}</b> </td>
                     </ng-container>
         
                     <ng-container matColumnDef="mobile">
@@ -177,6 +178,12 @@
                         <td mat-footer-cell *matFooterCellDef></td>
                     </ng-container>
 
+                    <ng-container matColumnDef="age">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.age' | translate}}</th>
+                        <td mat-cell *matCellDef="let element">{{ element.age }}</td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
                     <ng-container matColumnDef="bookingDate">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.bookingDate' | translate}}</th>
                         <td mat-cell *matCellDef="let element" class="width-135">{{ element.bookingDate.toMillis() | date:'medium' }}</td>
@@ -187,7 +194,7 @@
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.gender' | translate}}</th>
                         <td mat-cell *matCellDef="let element">
                             <ng-container [ngSwitch]="element.gender">
-                                <ng-container *ngSwitchCase="gender.male">
+                                <ng-container *ngSwitchCase="model.gender.male">
                                     {{ 'common.male' | translate }}
                                 </ng-container>
                                 <ng-container *ngSwitchDefault>
@@ -308,12 +315,9 @@
         
                     <ng-container matColumnDef="actions" stickyEnd>
                         <th mat-header-cell *matHeaderCellDef class="text-center">
-                            <button *ngIf="!isAdvancedSearchOpened" mat-icon-button (click)="showAdvancedFilter()">
+                            <button mat-icon-button color="primary" (click)="showAdvancedFilter()">
                                 <mat-icon>filter_list</mat-icon>
                             </button>
-                            <button *ngIf="isAdvancedSearchOpened" mat-mini-fab color="primary" (click)="showAdvancedFilter()">
-                                <mat-icon>filter_list</mat-icon>
-                              </button>
                         </th>
                         <td mat-cell *matCellDef="let element">
                             <button mat-icon-button color="primary" [matMenuTriggerFor]="menu">
@@ -329,112 +333,25 @@
                         <td mat-footer-cell *matFooterCellDef></td>
                     </ng-container>
         
-                    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                    <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></tr>
+                    <tr mat-header-row *matHeaderRowDef="model.displayedColumns; sticky: true"></tr>
+                    <tr mat-row *matRowDef="let row; columns: model.displayedColumns;"></tr>
+                    <tr mat-footer-row *matFooterRowDef="model.displayedColumns; sticky: true"></tr>
                 </table>
             </div>
-            <button *ngIf="isMobileView" mat-icon-button color="primary" (click)="showAdvancedFilter()" class="mobile-filter-button">
+            <button *ngIf="model.isMobileView" mat-icon-button color="primary" (click)="showAdvancedFilter()" class="mobile-filter-button">
                 <mat-icon>filter_list</mat-icon>
             </button>
-            <div *ngIf="isAdvancedSearchOpened" class="advanced-filter">
+            <div *ngIf="model.isAdvancedSearchOpened" class="advanced-filter">
                 <div class="header d-flex justify-content-between align-items-center">
                     <div>{{ 'advancedFilter.advancedFilter' | translate }}</div>
-                    <button *ngIf="isMobileView" mat-icon-button (click)="showAdvancedFilter()">
+                    <button *ngIf="model.isMobileView" mat-icon-button (click)="showAdvancedFilter()">
                         <mat-icon>close</mat-icon>
                     </button>
                 </div>
-                <form [formGroup]="form" novalidate class="row mx-0 mt-3 filter-form">
-                    <div class="advanced-body w-100">
-                        <mat-form-field class="col-12">
-                            <mat-label>{{'advancedFilter.name' | translate}}</mat-label>
-                            <input type="text" matInput formControlName="name">
-                        </mat-form-field>
-                        <mat-form-field class="col-12">
-                            <mat-label>{{'advancedFilter.mobile' | translate}}</mat-label>
-                            <input type="text" matInput formControlName="mobile">
-                        </mat-form-field>
-                        <mat-form-field class="col-12">
-                            <mat-label>{{'home.transportation' | translate}}</mat-label>
-                            <mat-select formControlName="transportationId">
-                                <mat-option [value]="'all'">{{'common.all' | translate}}</mat-option>
-                                <ng-container *ngFor="let item of buses">
-                                    <mat-option [value]="item.id">
-                                        {{ item.name }} 
-                                        <!-- <span *ngIf="item.price > 0">{{ item.price }} {{'common.egp' | translate}}</span> -->
-                                    </mat-option>
-                                </ng-container>
-                            </mat-select>
-                        </mat-form-field>
-                        <mat-form-field class="col-12">
-                            <mat-label>{{'common.gender' | translate}}</mat-label>
-                            <mat-select formControlName="gender">
-                                <ng-container *ngFor="let item of genderList">
-                                    <mat-option [value]="item.value">
-                                        {{ item.key | translate }} 
-                                    </mat-option>
-                                </ng-container>
-                            </mat-select>
-                        </mat-form-field>
-                        <mat-form-field class="col-12">
-                            <mat-label>{{'common.bookingStatus' | translate}}</mat-label>
-                            <mat-select formControlName="bookingStatus">
-                                <ng-container *ngFor="let item of bookingStatusList">
-                                    <mat-option [value]="item.value">{{ item.key | translate }}</mat-option>
-                                </ng-container>
-                            </mat-select>
-                        </mat-form-field>
-                        <mat-form-field class="col-12">
-                            <mat-label>{{'common.birthDateMonth' | translate}}</mat-label>
-                            <mat-select formControlName="birthDateMonth">
-                                <ng-container *ngFor="let item of months">
-                                    <mat-option [value]="item.value">{{ item.key | translate }}</mat-option>
-                                </ng-container>
-                            </mat-select>
-                        </mat-form-field>
-                        <mat-form-field class="col-12">
-                            <mat-label>{{'common.ageRange' | translate}}</mat-label>
-                            <mat-select formControlName="ageRange">
-                                <ng-container *ngFor="let item of ageRanges">
-                                    <mat-option [value]="item.value">{{ item.key | translate }}</mat-option>
-                                </ng-container>
-                            </mat-select>
-                        </mat-form-field>
-                        <mat-form-field class="col-12">
-                            <mat-label>{{'common.adultsCount' | translate}}</mat-label>
-                            <input type="number" matInput formControlName="adultsCount" inputmode="numeric">
-                        </mat-form-field>
-                        <mat-form-field class="col-12">
-                            <mat-label>{{'common.childrenCount' | translate}}</mat-label>
-                            <input type="number" matInput formControlName="childrenCount" inputmode="numeric">
-                        </mat-form-field>
-                        <mat-form-field class="col-12">
-                            <mat-label>{{'common.paid' | translate}}</mat-label>
-                            <input type="number" matInput formControlName="paid" inputmode="numeric">
-                        </mat-form-field>
-                        <mat-form-field class="col-12">
-                            <mat-label>{{'common.totalCost' | translate}}</mat-label>
-                            <input type="number" matInput formControlName="total" inputmode="numeric">
-                        </mat-form-field>
-                        <mat-form-field class="col-12">
-                            <mat-label>{{'common.remaining' | translate}}</mat-label>
-                            <input type="number" matInput formControlName="remaining" inputmode="numeric">
-                        </mat-form-field>
-                    </div>
-                    <div class="d-flex justify-content-lg-around justify-content-end align-items-center w-100 border-top pt-3">
-                        <button color="primary" mat-flat-button type="submit" cdkFocusInitial (click)="filter()">
-                            <span> {{ 'advancedFilter.filter' | translate }}</span>
-                        </button>
-                        <button color="primary" mat-stroked-button type="button" (click)="reset()" [class.mx-3]="isMobileView">
-                            <span> {{ 'advancedFilter.reset' | translate }}</span>
-                        </button>
-                    </div>
-                </form>
+                <app-advanced-search (filterChanged)="onFilterChanged($event)"></app-advanced-search>
             </div>
         </div>
     </div>
-
-    
 </div>
 
 <ng-template #empty>

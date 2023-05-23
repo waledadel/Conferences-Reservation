@@ -233,12 +233,15 @@ export class FireStoreService {
             birthDate: ticket.birthDate,
             roomId: ticket.roomId,
             bookingStatus: ticket.bookingStatus,
-            age: new Date().getFullYear() - ticket.birthDate.toDate().getFullYear(),
+            age: this.getAge(ticket.birthDate),
             gender: ticket.gender,
             isMain: ticket.isMain,
             isChild: ticket.isChild,
             addressId: ticket.addressId,
-            address: ''
+            address: '',
+            transportationId: ticket.transportationId,
+            transportationName: '',
+            birthDateMonth: ticket.birthDate.toDate().getMonth() + 1
           }))
         ),
         take(1)
@@ -270,8 +273,8 @@ export class FireStoreService {
             transportationName: '',
             gender: ticket.gender,
             birthDate: ticket.birthDate,
-            ageRange: 0,
-            birthDateMonth: 0,
+            age: this.getAge(ticket.birthDate),
+            birthDateMonth: ticket.birthDate.toDate().getMonth() + 1,
             adminNotes: ticket.adminNotes,
             lastUpdateUserId: ticket.lastUpdateUserId ?? '',
             lastUpdateDate: ticket.lastUpdateDate,
@@ -343,5 +346,10 @@ export class FireStoreService {
 
   private getCollection(collectionName: string): CollectionReference<DocumentData> {
     return collection(this.firestore, collectionName);
+  }
+
+  
+  private getAge(birthDate: Timestamp): number {
+    return new Date().getFullYear() - birthDate.toDate().getFullYear();
   }
 }

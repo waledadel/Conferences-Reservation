@@ -82,7 +82,7 @@ export interface IPrimaryDataSourceVm {
     transportationName: string;
     gender: Gender;
     birthDate: Timestamp;
-    ageRange: number;
+    age: number;
     birthDateMonth: number;
     adminNotes: string;
     lastUpdateDate?: Timestamp;
@@ -105,6 +105,9 @@ export interface IAllSubscriptionDataSourceVm {
     roomId: string;
     addressId: string;
     address: string;
+    transportationId: string;
+    transportationName: string;
+    birthDateMonth: number;
 }
 
 export interface ICostDetailsDataSourceVm {
