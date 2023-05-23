@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 
@@ -7,6 +7,7 @@ import { BookingStatus, Gender, IAddress, IAllSubscriptionDataSourceVm, IBus } f
 import { FireStoreService } from '@app/services';
 import { AdminService } from '../admin.service';
 import { IAdvancedFilterForm } from '../advanced-search/advanced-search.models';
+import { WINDOW } from 'app/shared/services/window.service';
 
 @Component({
   templateUrl: './all-subscription.component.html'
@@ -32,7 +33,8 @@ export class AllSubscriptionComponent implements OnInit {
 
   constructor(
     private fireStoreService: FireStoreService, 
-    private adminService: AdminService
+    private adminService: AdminService,
+    @Inject(WINDOW) private window: Window
   ) {}
 
   ngOnInit(): void {
@@ -40,6 +42,10 @@ export class AllSubscriptionComponent implements OnInit {
     this.getBuses();
     this.getAddress();
     this.adminService.updatePageTitle('كل المشتركين');
+  }
+
+  openWhatsApp(number: string): void {
+    this.window.open(`${Constants.SocialMedia.whatsApp}+2${number}`, '_blank');
   }
 
   showAdvancedFilter(): void {

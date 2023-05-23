@@ -13,7 +13,14 @@
               <div class="d-flex justify-content-between align-items-start">
                 <div>
                   <div><b>{{'common.name' | translate}}:</b> {{element.name}}</div>
-                  <div><b>{{'common.mobile' | translate}}:</b> {{ element.mobile }}</div>
+                  <div><b>{{'common.mobile' | translate}}:</b> 
+                    <div class="d-flex">
+                      {{ element.mobile }}
+                      <a href="javascript:void(0)" (click)="openWhatsApp(element.mobile)" class="px-2">
+                        <i class="fa-brands fa-whatsapp whats-app-icon"></i>
+                      </a>
+                    </div>
+                  </div>
                   <div><b>{{'common.birthDate' | translate}}:</b> {{ element.birthDate.toMillis() | date }}</div>
                   <div><b>{{'common.age' | translate}}:</b> {{element.age}}</div>
                   <div class="d-flex flex-row">
@@ -79,7 +86,12 @@
     
           <ng-container matColumnDef="mobile">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.mobile' | translate}}</th>
-            <td mat-cell *matCellDef="let element" class="width-135">{{ element.mobile }}</td>
+            <td mat-cell *matCellDef="let element" class="width-135">
+              {{ element.mobile }}
+              <a href="javascript:void(0)" (click)="openWhatsApp(element.mobile)">
+                <i class="fa-brands fa-whatsapp whats-app-icon"></i>
+              </a>
+            </td>
             <td mat-footer-cell *matFooterCellDef></td>
           </ng-container>
     

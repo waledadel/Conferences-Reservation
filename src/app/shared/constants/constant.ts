@@ -57,4 +57,8 @@ export namespace Constants {
     export class Images {
         public static readonly defaultSettingImg = 'assets/images/cover.jpg';
     }
+
+    export class SocialMedia {
+        static readonly whatsApp = 'whatsapp://send?text=&phone='; // 'https://wa.me/'; 
+    }
 }

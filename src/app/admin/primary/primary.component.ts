@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { Timestamp } from '@angular/fire/firestore';
@@ -11,6 +11,7 @@ import { CostDetailsComponent } from './cost-details/cost-details.component';
 import { AdminService } from '../admin.service';
 import { IAdvancedFilterForm } from '../advanced-search/advanced-search.models';
 import { PrimaryModel } from './primary.models';
+import { WINDOW } from 'app/shared/services/window.service';
 
 @Component({
   templateUrl: './primary.component.html'
@@ -32,7 +33,8 @@ export class PrimaryComponent implements OnInit {
     private dialogService: DialogService,
     private notifyService: NotifyService,
     private translationService: TranslationService,
-    private adminService: AdminService
+    private adminService: AdminService,
+    @Inject(WINDOW) private window: Window
   ) {
     this.model = new PrimaryModel();
   }
@@ -151,6 +153,10 @@ export class PrimaryComponent implements OnInit {
 
   showAdvancedFilter(): void {
     this.model.isAdvancedSearchOpened = !this.model.isAdvancedSearchOpened;
+  }
+
+  openWhatsApp(number: string): void {
+    this.window.open(`${Constants.SocialMedia.whatsApp}+2${number}`, '_blank');
   }
 
   private isPrivateTransport(transportId: string): boolean {

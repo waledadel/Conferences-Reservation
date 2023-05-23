@@ -26,6 +26,7 @@ body {
   background-color: #ECEFEF !important;
   width: 100%;
   overflow: hidden;
+  user-select: none;
 }
 
 [lang="ar"]body {
@@ -321,4 +322,9 @@ mat-mdc-fab.mat-primary, .mat-mdc-mini-fab.mat-primary {
   left: 10px;
   z-index: 10 !important;
   color: #fff !important;
+}
+
+.whats-app-icon {
+  color: #25D366;
+  cursor: pointer;
 }
