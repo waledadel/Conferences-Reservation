@@ -13,10 +13,11 @@
               <div class="d-flex justify-content-between align-items-start">
                 <div>
                   <div><b>{{'common.name' | translate}}:</b> {{element.name}}</div>
-                  <div><b>{{'common.mobile' | translate}}:</b> 
+                  <div class="d-flex">
+                    <b>{{'common.mobile' | translate}}:</b> 
                     <div class="d-flex">
-                      {{ element.mobile }}
-                      <a href="javascript:void(0)" (click)="openWhatsApp(element.mobile)" class="px-2">
+                      <div class="px-2">{{ element.mobile }}</div>
+                      <a href="javascript:void(0)" (click)="openWhatsApp(element.mobile)">
                         <i class="fa-brands fa-whatsapp whats-app-icon"></i>
                       </a>
                     </div>
