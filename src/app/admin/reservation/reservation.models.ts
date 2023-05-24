@@ -38,6 +38,6 @@ export class ReservationModel {
     const now = new Date();
     this.maxDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
     this.adultMinDate = new Date(now.getFullYear() - 90, now.getMonth(), now.getDate());
-    this.childMinDate = new Date(now.getFullYear() - 12, now.getMonth(), now.getDate());
+    this.childMinDate = new Date(now.getFullYear() - 11, now.getMonth(), now.getDate());
   }
 }
