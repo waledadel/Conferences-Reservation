@@ -1,0 +1,14 @@
+<div *ngIf="mobile != ''" class="d-flex justify-content-between align-items-center flex-lg-row flex-column">
+    <a href="tel:{{mobile}}" class="call-app-icon">
+        <i class="fa-solid fa-phone"></i>
+    </a>
+    <a href="javascript:void(0)" (click)="openTelegram()" class="telegram-app-icon pt-lg-0 pt-3">
+        <i class="fa-brands fa-telegram"></i>
+    </a>
+    <a href="javascript:void(0)" (click)="openWhatsApp()" class="whats-app-icon pt-lg-0 pt-3">
+        <i class="fa-brands fa-whatsapp whats-app-icon"></i>
+    </a>
+    <a href="javascript:void(0)" (click)="openViber()" class="viber-app-icon pt-lg-0 pt-3">
+        <i class="fa-brands fa-viber"></i>
+    </a>
+</div>

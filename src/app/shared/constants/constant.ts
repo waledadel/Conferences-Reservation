@@ -59,6 +59,8 @@ export namespace Constants {
     }
 
     export class SocialMedia {
-        static readonly whatsApp = 'whatsapp://send?text=&phone='; // 'https://wa.me/'; 
+        static readonly whatsApp = 'whatsapp://send?text=&phone=';
+        static readonly viber = 'viber://chat?number=';
+        static readonly telegram = 'tg://resolve?phone='; 
     }
 }

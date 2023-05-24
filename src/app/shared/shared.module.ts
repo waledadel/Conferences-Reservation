@@ -8,13 +8,15 @@ import { ConfirmDeleteComponent } from './components/confirm-delete/confirm-dele
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { LogoutComponent } from './components/logout/logout.component';
 import { MaterialModule } from './material/material.module';
+import { SocialMediaComponent } from './components/social-media/social-media.component';
 
 
 const components = [
   EmptyDataComponent,
   ConfirmDeleteComponent,
   PageNotFoundComponent,
-  LogoutComponent
+  LogoutComponent,
+  SocialMediaComponent
 ];
 
 const modules = [
