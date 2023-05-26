@@ -22,7 +22,7 @@ export class SocialMediaComponent {
 
   openViber(): void {
     if (this.mobile != '') {
-      this.window.open(`${Constants.SocialMedia.viber}+2${this.mobile}`, '_blank');
+      this.window.open(`${Constants.SocialMedia.viber}2${this.mobile}`, '_blank');
     }
   }
 
