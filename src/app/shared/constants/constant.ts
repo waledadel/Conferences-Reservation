@@ -50,7 +50,7 @@ export namespace Constants {
     }
 
     export class Regex {
-        public static readonly arabicLetters = /[\u0600-\u06FF\s]/;
+        public static readonly arabicLetters = /^[\u0600-\u06FF\s]+$/;
         public static readonly mobileNumber = /^01[0125][0-9]{8}$/;
     }
 
