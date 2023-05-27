@@ -85,6 +85,17 @@ button:focus {
     max-width: 100% !important;
     min-width: 100% !important;
   }
+  .customDialogPanelClass-lg, .customDialogPanelClass-xlg {
+    min-height: 100%;
+    height: 100%;
+    .mat-mdc-dialog-container {
+      padding-top: 0 !important;
+    }
+    .mat-mdc-dialog-content {
+      max-height: 83vh !important;
+      height: 83vh !important;
+    }
+  }
 }
 
 .mat-mdc-dialog-actions {
@@ -324,3 +335,6 @@ mat-mdc-fab.mat-primary, .mat-mdc-mini-fab.mat-primary {
   color: #fff !important;
 }
 
+.font-size-18 {
+  font-size: 18px;
+}

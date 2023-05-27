@@ -8,7 +8,6 @@
 <mat-drawer-container class="app-container">
     <mat-drawer #drawer class="app-sidenav" [mode]="'over'">
         <mat-nav-list>
-            <!-- <div mat-subheader class="primary">{{'common.conferencesReservation' | translate}}</div> -->
             <ng-container *ngFor="let item of model.menuItems">
                 <a [routerLink]="item.url" [routerLinkActiveOptions]="{exact:true}" routerLinkActive="active-link" class="menu-item-link" (click)="onItemClick()">
                     <mat-list-item>
@@ -17,18 +16,6 @@
                     </mat-list-item>
                 </a>
             </ng-container>
-            <!-- <mat-accordion>
-                <mat-expansion-panel>
-                  <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        <mat-icon>language</mat-icon>
-                        <span class="px-2">{{'common.language' | translate}}</span>
-                    </mat-panel-title>
-                  </mat-expansion-panel-header>
-                    <div class="p-3 lang-item" [class.active-lang]="model.arabic === model.selectedLanguage" (click)="changeLanguage(model.arabic)">{{'languages.arabic' | translate}}</div>
-                    <div class="p-3 lang-item" [class.active-lang]="model.english === model.selectedLanguage" (click)="changeLanguage(model.english)">{{'languages.english' | translate}}</div>
-                </mat-expansion-panel>
-            </mat-accordion> -->
             <mat-list-item (click)="logout()">
                 <mat-icon color="warn">exit_to_app</mat-icon>
                 <span class="px-2 text-danger">{{'common.logout' | translate}} </span>

@@ -3,7 +3,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { Timestamp } from '@angular/fire/firestore';
 
-import { IBus, IRelatedMemberViewModel, IPrimaryDataSourceVm, ISettings, ITicket, ICostDetailsDataSourceVm, Gender, BookingStatus, IUser } from '@app/models';
+import { IBus, IRelatedMemberViewModel, IPrimaryDataSourceVm, ISettings, ITicket, ICostDetailsDataSourceVm, Gender, BookingStatus, IUser, BookingType } from '@app/models';
 import { DialogService, FireStoreService, NotifyService, TranslationService } from '@app/services';
 import { ManageReservationComponent } from '../reservation/manage-reservation/manage-reservation.component';
 import { Constants } from '@app/constants';
@@ -11,6 +11,7 @@ import { CostDetailsComponent } from './cost-details/cost-details.component';
 import { AdminService } from '../admin.service';
 import { IAdvancedFilterForm } from '../advanced-search/advanced-search.models';
 import { PrimaryModel } from './primary.models';
+import { ExportMembersComponent, IExportMembers } from '../export-members/export-members.component';
 
 @Component({
   templateUrl: './primary.component.html'
@@ -43,6 +44,59 @@ export class PrimaryComponent implements OnInit {
     this.getBuses();
     this.getSettings();
     this.adminService.updatePageTitle('الإشتراكات الرئيسية');
+  }
+
+  openExportModal(): void {
+    this.dialogService.openAddEditDialog(ExportMembersComponent, 'lg', true, true)
+    .afterClosed().subscribe((res: {exportData: boolean, options: Array<IExportMembers>}) => {
+      if (res && res.exportData && res.options.filter(o => o.isChecked).length > 0) {
+        let exportData: Array<any> = [];
+        const selectedColumns = res.options.filter(op => op.isChecked);
+        this.model.dataSource.data.forEach(item => {
+          let keyField: keyof IPrimaryDataSourceVm;
+          let exportObj = {} as any;
+          for (const key in item) {
+            keyField = key as keyof IPrimaryDataSourceVm;
+            const selectedOption = selectedColumns.find(c => c.columnName === keyField);
+            if (selectedOption) {
+              const genderField: keyof IPrimaryDataSourceVm = 'gender';
+              const bookingStatusField: keyof IPrimaryDataSourceVm = 'bookingStatus';
+              const bookingTypeField: keyof IPrimaryDataSourceVm = 'bookingType';
+              const birthDateField: keyof IPrimaryDataSourceVm = 'birthDate';
+              const lastUpdateDateField: keyof IPrimaryDataSourceVm = 'lastUpdateDate';
+              if (keyField === genderField) {
+                exportObj[selectedOption.key] = item[keyField] === Gender.female ? 'أنثي' : 'ذكر';
+              } else if (keyField === birthDateField) {
+                exportObj[selectedOption.key] = item[keyField].toDate();
+              } else if (item[keyField] != null && keyField === lastUpdateDateField) {
+                exportObj[selectedOption.key] = item[keyField]?.toDate();
+              }else if (keyField === bookingTypeField) {
+                exportObj[selectedOption.key] = item[keyField] === BookingType.group ? 'مجموعة' : 'فرد';
+              } else if (keyField === bookingStatusField) {
+                switch (item[keyField]) {
+                  case BookingStatus.confirmed:
+                    exportObj[selectedOption.key] = 'مؤكد';
+                    break;
+                  case BookingStatus.duplicated:
+                    exportObj[selectedOption.key] = 'مكرر';
+                    break;
+                  case BookingStatus.canceled:
+                    exportObj[selectedOption.key] = 'ملغي';
+                    break;
+                  default:
+                    exportObj[selectedOption.key] = 'جديد';
+                    break;
+                }
+              } else {
+                exportObj[selectedOption.key] = item[keyField]?.toLocaleString().trim();
+              }
+            }
+          }
+          exportData.push(exportObj);
+        });
+        this.adminService.exportAsExcelFile(exportData, 'الإشتراكات الرئيسية');
+      }
+    });
   }
 
   update(item: Partial<ITicket>): void {
@@ -144,9 +198,7 @@ export class PrimaryComponent implements OnInit {
 
   onFilterChanged(event: IAdvancedFilterForm): void {
     this.model.dataSource.filter = JSON.stringify(event);
-    if (this.model.isMobileView) {
-      this.model.isAdvancedSearchOpened = false;
-    }
+    this.model.isAdvancedSearchOpened = false;
   }
 
   showAdvancedFilter(): void {

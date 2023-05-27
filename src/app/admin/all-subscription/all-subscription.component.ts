@@ -4,9 +4,10 @@ import { MatTableDataSource } from '@angular/material/table';
 
 import { Constants } from '@app/constants';
 import { BookingStatus, Gender, IAddress, IAllSubscriptionDataSourceVm, IBus } from '@app/models';
-import { FireStoreService } from '@app/services';
+import { DialogService, FireStoreService } from '@app/services';
 import { AdminService } from '../admin.service';
 import { IAdvancedFilterForm } from '../advanced-search/advanced-search.models';
+import { ExportMembersComponent, IExportMembers } from '../export-members/export-members.component';
 
 @Component({
   templateUrl: './all-subscription.component.html'
@@ -32,7 +33,8 @@ export class AllSubscriptionComponent implements OnInit {
 
   constructor(
     private fireStoreService: FireStoreService, 
-    private adminService: AdminService
+    private adminService: AdminService,
+    private dialogService: DialogService
   ) {}
 
   ngOnInit(): void {
@@ -42,15 +44,61 @@ export class AllSubscriptionComponent implements OnInit {
     this.adminService.updatePageTitle('كل المشتركين');
   }
 
+  
+  openExportModal(): void {
+    this.dialogService.openAddEditDialog(ExportMembersComponent, 'lg', true, false)
+    .afterClosed().subscribe((res: {exportData: boolean, options: Array<IExportMembers>}) => {
+      if (res && res.exportData && res.options.filter(o => o.isChecked).length > 0) {
+        let exportData: Array<any> = [];
+        const selectedColumns = res.options.filter(op => op.isChecked);
+        this.dataSource.data.forEach(item => {
+          let keyField: keyof IAllSubscriptionDataSourceVm;
+          let exportObj = {} as any;
+          for (const key in item) {
+            keyField = key as keyof IAllSubscriptionDataSourceVm;
+            const selectedOption = selectedColumns.find(c => c.columnName === keyField);
+            if (selectedOption) {
+              const genderField: keyof IAllSubscriptionDataSourceVm = 'gender';
+              const bookingStatusField: keyof IAllSubscriptionDataSourceVm = 'bookingStatus';
+              const birthDateField: keyof IAllSubscriptionDataSourceVm = 'birthDate';
+              if (keyField === genderField) {
+                exportObj[selectedOption.key] = item[keyField] === Gender.female ? 'أنثي' : 'ذكر';
+              } else if (keyField === birthDateField) {
+                exportObj[selectedOption.key] = item[keyField].toDate();
+              } else if (keyField === bookingStatusField) {
+                switch (item[keyField]) {
+                  case BookingStatus.confirmed:
+                    exportObj[selectedOption.key] = 'مؤكد';
+                    break;
+                  case BookingStatus.duplicated:
+                    exportObj[selectedOption.key] = 'مكرر';
+                    break;
+                  case BookingStatus.canceled:
+                    exportObj[selectedOption.key] = 'ملغي';
+                    break;
+                  default:
+                    exportObj[selectedOption.key] = 'جديد';
+                    break;
+                }
+              } else {
+                exportObj[selectedOption.key] = item[keyField]?.toLocaleString().trim();
+              }
+            }
+          }
+          exportData.push(exportObj);
+        });
+        this.adminService.exportAsExcelFile(exportData, 'كل المشتركين');
+      }
+    });
+  }
+
   showAdvancedFilter(): void {
     this.isAdvancedSearchOpened = !this.isAdvancedSearchOpened;
   }
 
   onFilterChanged(event: IAdvancedFilterForm): void {
     this.dataSource.filter = JSON.stringify(event);
-    if (this.isMobileView) {
-      this.isAdvancedSearchOpened = false;
-    }
+    this.isAdvancedSearchOpened = false;
   }
 
   private getAddress(): void {

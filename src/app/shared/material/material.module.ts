@@ -19,13 +19,13 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 // import { MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 // import { A11yModule } from '@angular/cdk/a11y';
 // import { ScrollingModule } from '@angular/cdk/scrolling';
 // import { CdkTableModule } from '@angular/cdk/table';
 // import { CdkTreeModule } from '@angular/cdk/tree';
 // import { MatButtonToggleModule } from '@angular/material/button-toggle';
-// import { MatCheckboxModule } from '@angular/material/checkbox';
 // import { MatDividerModule } from '@angular/material/divider';
 // import { MatProgressBarModule } from '@angular/material/progress-bar';
 // import { PortalModule } from '@angular/cdk/portal';
@@ -66,13 +66,13 @@ const modules = [
   MatToolbarModule,
   MatFormFieldModule,
   MatTooltipModule,
+  MatCheckboxModule,
   // MatProgressSpinnerModule,
   // ScrollingModule,
   // A11yModule,
   // CdkTableModule,
   // CdkTreeModule,
   // MatButtonToggleModule,
-  // MatCheckboxModule,
   // MatProgressBarModule,
   // MatDividerModule,
   // PortalModule,

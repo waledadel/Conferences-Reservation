@@ -4,6 +4,7 @@ import { AllSubscriptionComponent } from './all-subscription.component';
 import { AllSubscriptionRoutingModule } from './all-subscription-routing.module';
 import { SharedModule } from 'app/shared/shared.module';
 import { AdvancedSearchModule } from './../advanced-search/advanced-search.module';
+import { ExportMembersModule } from '../export-members/export-members.module';
 
 
 @NgModule({
@@ -13,7 +14,8 @@ import { AdvancedSearchModule } from './../advanced-search/advanced-search.modul
   imports: [
     SharedModule,
     AllSubscriptionRoutingModule,
-    AdvancedSearchModule
+    AdvancedSearchModule,
+    ExportMembersModule
   ]
 })
 export class AllSubscriptionModule { }

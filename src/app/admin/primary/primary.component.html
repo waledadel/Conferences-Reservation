@@ -5,7 +5,7 @@
                 <app-empty-data></app-empty-data>
             </div>
             <div [hidden]="model.dataSource && model.dataSource.data.length < 1" class="mat-elevation-z8" [class.table-wz-advanced]="model.isAdvancedSearchOpened">
-                <table mat-table [dataSource]="model.dataSource" matSort matSortActive="name" matSortDirection="asc"
+                <table mat-table [dataSource]="model.dataSource" matSort matSortActive="bookingDate" matSortDirection="desc"
                     matSortDisableClear="true">
                     <ng-container matColumnDef="mobileView">
                         <th mat-header-cell *matHeaderCellDef></th>
@@ -114,9 +114,16 @@
                                 </div>
                             </div>
                         </td>
-                        <td mat-footer-cell *matFooterCellDef>{{'common.total' | translate}}: <b>{{model.dataSource.data.length}}</b> </td>
+                        <td mat-footer-cell *matFooterCellDef class="px-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="pr-3">{{'common.total' | translate}}: <b>{{model.dataSource.data.length}}</b></div>
+                                <button mat-icon-button color="primary" class="d-flex justify-content-center align-items-center" (click)="openExportModal()">
+                                  <i class="fa-solid fa-download font-size-18"></i>
+                                </button>
+                            </div>
+                        </td>
                     </ng-container>
-        
+
                     <ng-container matColumnDef="name" sticky>
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.name' | translate}}</th>
                         <td mat-cell *matCellDef="let element" class="width-175">
@@ -337,7 +344,11 @@
                                     translate}}</button>
                             </mat-menu>
                         </td>
-                        <td mat-footer-cell *matFooterCellDef></td>
+                        <td mat-footer-cell *matFooterCellDef>
+                            <button mat-icon-button color="primary" class="d-flex justify-content-center align-items-center" (click)="openExportModal()">
+                                <i class="fa-solid fa-download font-size-18"></i>
+                            </button>
+                        </td>
                     </ng-container>
         
                     <tr mat-header-row *matHeaderRowDef="model.displayedColumns; sticky: true"></tr>

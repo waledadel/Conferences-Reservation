@@ -32,10 +32,6 @@ export class AdminComponent implements OnInit {
 
   ngOnInit(): void {
     this.initModel();
-    const language = this.storageService.getItem(Constants.Languages.languageKey);
-    if (language != null) {
-      this.model.selectedLanguage = language;
-    }
     const role = this.storageService.getItem('role');
     if (role) {
       this.model.menuItems = menuItems.filter(m => m.roles.includes(+role));
@@ -45,15 +41,8 @@ export class AdminComponent implements OnInit {
     });
   }
 
-  // ngAfterViewInit(): void {
-  //   if (!this.model.isMobileView) {
-  //     this.drawer.opened = true;
-  //   }
-  // }
-
   onItemClick(): void {
     this.drawer.opened = false;
-    // if (this.model.isMobileView) {}
   }
 
   changeLanguage(lang: string): void {

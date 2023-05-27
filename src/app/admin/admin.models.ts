@@ -3,16 +3,9 @@ import { Roles } from "app/shared/models/user";
 
 export class AdminModel {
   panelOpenState = false;
-  arabic = Constants.Languages.ar;
-  english = Constants.Languages.en;
-  selectedLanguage: string;
   isMobileView = false;
   menuItems: Array<IMenu> = [];
   pageTitle = '';
-
-  constructor() {
-    this.selectedLanguage = this.arabic;
-  }
 }
 
 export interface IMenu {

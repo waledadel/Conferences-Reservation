@@ -10,9 +10,7 @@
             <table mat-table [dataSource]="dataSource" matSort matSortActive="name">
 
                 <ng-container matColumnDef="mobileView">
-                    <th mat-header-cell *matHeaderCellDef>
-                        {{'common.total' | translate}}:  {{total}}
-                    </th>
+                    <th mat-header-cell *matHeaderCellDef></th>
                     <td mat-cell *matCellDef="let element" class="py-2">
                         <div class="d-flex flex-column">
                             <div> <b>{{'common.name' | translate}}:</b> {{element.name}}</div>
@@ -39,6 +37,9 @@
                             </div>
                         </div>
                     </td>
+                    <td mat-footer-cell *matFooterCellDef>
+                        التكلفة الكلية: <b>{{total}}</b>
+                    </td>
                 </ng-container>
 
                 <ng-container matColumnDef="name">
@@ -50,16 +51,21 @@
                             <mat-icon *ngIf="element.isChild" color="primary" class="mx-2">child_care</mat-icon>
                         </div>
                     </td>
+                    <td mat-footer-cell *matFooterCellDef>
+                        التكلفة الكلية: <b>{{total}}</b>
+                    </td>
                 </ng-container>
 
                 <ng-container matColumnDef="reservationPrice">
                     <th mat-header-cell *matHeaderCellDef>{{'common.reservationPrice' | translate}}</th>
                     <td mat-cell *matCellDef="let element">{{ element.reservationPrice}}</td>
+                    <td mat-footer-cell *matFooterCellDef></td>
                 </ng-container>
 
                 <ng-container matColumnDef="bedPrice">
                     <th mat-header-cell *matHeaderCellDef>{{'common.bedPrice' | translate}}</th>
                     <td mat-cell *matCellDef="let element">{{ element.bedPrice }}</td>
+                    <td mat-footer-cell *matFooterCellDef></td>
                 </ng-container>
 
                 <ng-container matColumnDef="transportPrice">
@@ -67,6 +73,7 @@
                     <td mat-cell *matCellDef="let element">
                         {{element.transportPrice}}
                     </td>
+                    <td mat-footer-cell *matFooterCellDef></td>
                 </ng-container>
 
                 <ng-container matColumnDef="needBed">
@@ -76,6 +83,7 @@
                             <i class="fa-solid fa-square-check text-success"></i>
                         </ng-container>
                     </td>
+                    <td mat-footer-cell *matFooterCellDef></td>
                 </ng-container>
 
                 <ng-container matColumnDef="privateTransport">
@@ -85,6 +93,7 @@
                             <i class="fa-solid fa-square-check text-success"></i>
                         </ng-container>
                     </td>
+                    <td mat-footer-cell *matFooterCellDef></td>
                 </ng-container>
 
                 <ng-container matColumnDef="isChild">
@@ -94,14 +103,13 @@
                             <i class="fa-solid fa-square-check text-success"></i>
                         </ng-container>
                     </td>
+                    <td mat-footer-cell *matFooterCellDef></td>
                 </ng-container>
 
                 <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></tr>
             </table>
-            <div *ngIf="!isMobileView" class="d-flex justify-content-start p-3">
-                {{'common.totalCost' | translate}}: {{total}}
-            </div>
         </div>
     </div>
 </div>

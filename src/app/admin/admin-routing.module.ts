@@ -18,7 +18,7 @@ const routes: Routes = [
       },
       {
         path: Constants.Routes.primary,
-        loadChildren: () => import('./primary/primary.module').then(mod => mod.PrimaryModule),
+        loadChildren: () => import('./primary/primary.module').then(mod => mod.PrimaryModule)
       },
       {
         path: Constants.Routes.all,
@@ -54,8 +54,7 @@ const routes: Routes = [
         pathMatch: 'full'
       }
     ]
-  },
-  
+  }
 ];
 
 @NgModule({

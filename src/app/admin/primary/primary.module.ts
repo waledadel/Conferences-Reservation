@@ -6,6 +6,7 @@ import { SharedModule } from 'app/shared/shared.module';
 import { ReservationModule } from '../reservation/reservation.module';
 import { CostDetailsComponent } from './cost-details/cost-details.component';
 import { AdvancedSearchModule } from '../advanced-search/advanced-search.module';
+import { ExportMembersModule } from '../export-members/export-members.module';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { AdvancedSearchModule } from '../advanced-search/advanced-search.module'
     SharedModule,
     ReservationModule,
     PrimaryRoutingModule,
-    AdvancedSearchModule
+    AdvancedSearchModule,
+    ExportMembersModule
   ]
 })
 export class PrimaryModule { }
