@@ -15,7 +15,6 @@ import { ExportMembersComponent, IExportMembers } from '../export-members/export
 export class AllSubscriptionComponent implements OnInit {
 
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
-  total = 0;
   readonly desktopColumns = ['name', 'mobile', 'birthDate', 'age', 'address', 'transportation', 'gender', 'status', 'room', 'actions'];
   displayedColumns: string[] = [];
   dataSource = new MatTableDataSource<IAllSubscriptionDataSourceVm>([]);
@@ -116,7 +115,6 @@ export class AllSubscriptionComponent implements OnInit {
         transportationName: this.getBusNameById(item.transportationId)
       }));
       this.dataSource = new MatTableDataSource(data);
-      this.total = res.length;
       this.dataSource.sort = this.sort;
       this.initFilterPredicate();
     });

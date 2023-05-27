@@ -68,7 +68,7 @@
             </td>
             <td mat-footer-cell *matFooterCellDef class="px-0">
               <div class="d-flex justify-content-between align-items-center">
-                <div class="pr-3">{{'common.total' | translate}}: <b>{{total}}</b></div>
+                <div class="pr-3">{{'common.total' | translate}}: <b>{{dataSource.data.length}}</b></div>
                 <button mat-icon-button color="primary" class="d-flex justify-content-center align-items-center" (click)="openExportModal()">
                   <i class="fa-solid fa-download font-size-18"></i>
                 </button>
@@ -87,7 +87,7 @@
                 </div>
               </div>
             </td>
-            <td mat-footer-cell *matFooterCellDef>{{'common.total' | translate}}: <b>{{total}}</b> </td>
+            <td mat-footer-cell *matFooterCellDef>{{'common.total' | translate}}: <b>{{dataSource.data.length}}</b> </td>
           </ng-container>
     
           <ng-container matColumnDef="mobile">
