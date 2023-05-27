@@ -52,7 +52,8 @@ export class PrimaryComponent implements OnInit {
       if (res && res.exportData && res.options.filter(o => o.isChecked).length > 0) {
         let exportData: Array<any> = [];
         const selectedColumns = res.options.filter(op => op.isChecked);
-        this.model.dataSource.data.forEach(item => {
+        const dataSource = this.model.filteredData.length > 0 ? this.model.filteredData : this.model.dataSource.data;
+        dataSource.forEach(item => {
           let keyField: keyof IPrimaryDataSourceVm;
           let exportObj = {} as any;
           for (const key in item) {
@@ -197,7 +198,24 @@ export class PrimaryComponent implements OnInit {
   }
 
   onFilterChanged(event: IAdvancedFilterForm): void {
-    this.model.dataSource.filter = JSON.stringify(event);
+    const name = event.name
+    const mobile = event.mobile;
+    const adultsCount = event.adultsCount;
+    const childrenCount = event.childrenCount;
+    const transportationId = event.transportationId;
+    const bookingStatus = event.bookingStatus;
+    const birthDateMonth = event.birthDateMonth;
+    const fromAge = event.fromAge;
+    const toAge = event.toAge;
+    const total = event.total;
+    const remaining = event.remaining;
+    const gender = event.gender;
+    const paid = event.paid;
+    // create string of our searching values and split if by '$'
+    const filterValue = `${name}$${mobile}$${adultsCount}$${childrenCount}$${transportationId}$${bookingStatus}$${birthDateMonth}$${fromAge}$${toAge}$${total}$${remaining}$${gender}$${paid}`;
+    this.model.dataSource.filter = filterValue.trim().toLowerCase();
+    this.model.total = this.model.dataSource.filteredData.length;
+    this.model.filteredData = this.model.dataSource.filteredData;
     this.model.isAdvancedSearchOpened = false;
   }
 
@@ -232,8 +250,9 @@ export class PrimaryComponent implements OnInit {
         lastUpdatedBy: this.getUserById(item.lastUpdateUserId)
       }));
       this.model.dataSource = new MatTableDataSource(data);
+      this.model.total = data.length;
       this.model.dataSource.sort = this.sort;
-      this.initFilterPredicate();
+      this.model.dataSource.filterPredicate = this.getFilterPredicate();
     });
   }
 
@@ -283,7 +302,8 @@ export class PrimaryComponent implements OnInit {
                 totalCost: this.getTotalCost(res, list),
                 transportationName: this.getBusNameById(res.transportationId),
                 birthDateMonth: res.birthDate.toDate().getMonth() + 1,
-                lastUpdatedBy: this.getUserById(res.lastUpdateUserId)
+                lastUpdatedBy: this.getUserById(res.lastUpdateUserId),
+                age: this.fireStoreService.getAge(res.birthDate)
               };
             } else {
               this.model.dataSource.data[index] = {
@@ -291,7 +311,8 @@ export class PrimaryComponent implements OnInit {
                 totalCost: this.getTotalCost(res, this.model.notPrimaryMembers),
                 transportationName: this.getBusNameById(res.transportationId),
                 birthDateMonth: res.birthDate.toDate().getMonth() + 1,
-                lastUpdatedBy: this.getUserById(res.lastUpdateUserId)
+                lastUpdatedBy: this.getUserById(res.lastUpdateUserId),
+                age: this.fireStoreService.getAge(res.birthDate)
               };
             }
             this.model.dataSource._updateChangeSubscription();
@@ -401,57 +422,68 @@ export class PrimaryComponent implements OnInit {
     }
   }
 
-  private initFilterPredicate(): void {
-    this.model.dataSource.filterPredicate = (data, filter) => {
-      const searchString = JSON.parse(filter);
-      const mobileFound = data.mobile.toString().trim().toLowerCase().indexOf(searchString.mobile) !== -1;
-      const nameFound = data.name.toString().trim().toLowerCase().indexOf(searchString.name) !== -1;
-      let transportationFound = data.transportationId === searchString.transportationId;
-      let fromAgeFound = +data.age >= +searchString.fromAge;
-      let toAgeFound = +data.age < +searchString.toAge;
-      let birthDateMonthFound = data.birthDateMonth === searchString.birthDateMonth;
-      let bookingStatusFound = data.bookingStatus === searchString.bookingStatus;
-      let genderFound = data.gender === searchString.gender;
-      let paidFound = +data.paid === +searchString.paid;
-      let totalFound = +data.totalCost === +searchString.total;
-      let remainingFound = ((+data.totalCost) - (+data.paid)) === +searchString.remaining;
-      let adultsCountFound = +data.adultsCount === (+searchString.adultsCount - 1); // We minus 1 for primary count
-      let childrenCountFound = +data.childrenCount === +searchString.childrenCount;
-      if (!searchString.fromAge || searchString.fromAge < 1) {
-        fromAgeFound = true;
-      }
-      if (!searchString.toAge || searchString.toAge < 1) {
-        toAgeFound = true;
-      }
-      if (!searchString.birthDateMonth || searchString.birthDateMonth < 1) {
-        birthDateMonthFound = true;
-      }
-      if (!searchString.bookingStatus || searchString.bookingStatus === BookingStatus.all) {
-        bookingStatusFound = true;
-      }
-      if (!searchString.gender || searchString.gender === Gender.all) {
-        genderFound = true;
-      }
-      if (!searchString.transportationId || searchString.transportationId == 'all') {
-        transportationFound = true;
-      }
-      if (!searchString.paid || searchString.paid < 1) {
-        paidFound = true;
-      }
-      if (!searchString.total || searchString.total < 1) {
-        totalFound = true;
-      }
-      if (!searchString.adultsCount || searchString.adultsCount < 1) {
-        adultsCountFound = true;
-      }
-      if (!searchString.childrenCount || searchString.childrenCount < 1) {
-        childrenCountFound = true;
-      }
-      if (!searchString.remaining || searchString.remaining < 1) {
-        remainingFound = true;
-      }
-      return nameFound && mobileFound && transportationFound && genderFound && bookingStatusFound && paidFound && totalFound 
-        && fromAgeFound && toAgeFound && birthDateMonthFound && adultsCountFound && childrenCountFound && remainingFound;
+   getFilterPredicate(): ((data: IPrimaryDataSourceVm, filter: string) => boolean) {
+    return (row: IPrimaryDataSourceVm, filters: string) => {
+      // split string per '$' to array
+      const filterArray = filters.split('$');
+      const name = filterArray[0];
+      const mobile = filterArray[1];
+      const adultsCount = filterArray[2];
+      const childrenCount = filterArray[3];
+      const transportationId = filterArray[4];
+      const bookingStatus = filterArray[5];
+      const birthDateMonth = filterArray[6];
+      const fromAge = filterArray[7];
+      const toAge = filterArray[8];
+      const total = filterArray[9];
+      const remaining = filterArray[10];
+      const gender = filterArray[11];
+      const paid = filterArray[12];
+      const matchFilter = [];
+      // Fetch data from row
+      const columnName = row.name;
+      const columnMobile = row.mobile;
+      const columnAdultsCount = row.adultsCount;
+      const columnChildrenCount = row.childrenCount;
+      const columnTransportationId = row.transportationId;
+      const columnBookingStatus = row.bookingStatus;
+      const columnBirthDateMonth = row.birthDateMonth;
+      const columnAge = row.age;
+      const columnTotal = row.totalCost;
+      const columnGender = row.gender;
+      const columnPaid = row.paid;
+      // verify fetching data by our searching values
+      const customFilterName = columnName.toLowerCase().includes(name);
+      const customFilterMobile = columnMobile.toLowerCase().includes(mobile);
+      // We minus 1 for primary count
+      const customFilterAdultsCount = (+adultsCount > 0) ? +columnAdultsCount === (+adultsCount - 1) : true; 
+      const customFilterChildrenCount = (+childrenCount > 0) ? +columnChildrenCount === +childrenCount : true;
+      const customFilterFromAge = (+fromAge > 0) ? +columnAge >= +fromAge : true;
+      const customFilterToAge = (+toAge > 0) ? +columnAge <= +toAge : true;
+      const customFilterTransportationId = (transportationId !== 'all') ? columnTransportationId === transportationId : true;
+      const customFilterBirthDateMonth = (+birthDateMonth > 0) ? +columnBirthDateMonth === +birthDateMonth : true;
+      const customFilterBookingStatus = (+bookingStatus !== BookingStatus.all) ? +columnBookingStatus === +bookingStatus : true;
+      const customFilterGender = (+gender !== Gender.all) ? +columnGender === +gender : true;
+      const customFilterTotal = (+total > 0) ? +columnTotal === +total : true;
+      const customFilterPaid = (+paid > 0) ? +columnPaid === +paid : true;
+      const customFilterRemaining = (+remaining > 0) ? +columnTotal - +columnPaid === +remaining : true;
+      // push boolean values into array
+      matchFilter.push(customFilterName);
+      matchFilter.push(customFilterMobile);
+      matchFilter.push(customFilterAdultsCount);
+      matchFilter.push(customFilterChildrenCount);
+      matchFilter.push(customFilterFromAge);
+      matchFilter.push(customFilterToAge);
+      matchFilter.push(customFilterTransportationId);
+      matchFilter.push(customFilterBirthDateMonth);
+      matchFilter.push(customFilterBookingStatus);
+      matchFilter.push(customFilterGender);
+      matchFilter.push(customFilterTotal);
+      matchFilter.push(customFilterPaid);
+      matchFilter.push(customFilterRemaining);
+      // return true if all values in array is true
+      // else return false
+      return matchFilter.every(Boolean);
     };
   }
 }

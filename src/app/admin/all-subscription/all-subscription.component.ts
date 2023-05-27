@@ -8,6 +8,7 @@ import { DialogService, FireStoreService } from '@app/services';
 import { AdminService } from '../admin.service';
 import { IAdvancedFilterForm } from '../advanced-search/advanced-search.models';
 import { ExportMembersComponent, IExportMembers } from '../export-members/export-members.component';
+import { AllSubscriptionModel } from './all-subscription.models';
 
 @Component({
   templateUrl: './all-subscription.component.html'
@@ -15,13 +16,7 @@ import { ExportMembersComponent, IExportMembers } from '../export-members/export
 export class AllSubscriptionComponent implements OnInit {
 
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
-  readonly desktopColumns = ['name', 'mobile', 'birthDate', 'age', 'address', 'transportation', 'gender', 'status', 'room', 'actions'];
-  displayedColumns: string[] = [];
-  dataSource = new MatTableDataSource<IAllSubscriptionDataSourceVm>([]);
-  addressList: Array<IAddress> = [];
-  buses: Array<IBus> = [];
-  isMobileView = false;
-  isAdvancedSearchOpened = false;
+  model: AllSubscriptionModel;
   get isMobile(): boolean {
     return window.innerWidth < Constants.Grid.large;
   }
@@ -34,7 +29,9 @@ export class AllSubscriptionComponent implements OnInit {
     private fireStoreService: FireStoreService, 
     private adminService: AdminService,
     private dialogService: DialogService
-  ) {}
+  ) {
+    this.model = new AllSubscriptionModel();
+  }
 
   ngOnInit(): void {
     this.detectMobileView();
@@ -50,7 +47,8 @@ export class AllSubscriptionComponent implements OnInit {
       if (res && res.exportData && res.options.filter(o => o.isChecked).length > 0) {
         let exportData: Array<any> = [];
         const selectedColumns = res.options.filter(op => op.isChecked);
-        this.dataSource.data.forEach(item => {
+        const dataSource = this.model.filteredData.length > 0 ? this.model.filteredData : this.model.dataSource.data;
+        dataSource.forEach(item => {
           let keyField: keyof IAllSubscriptionDataSourceVm;
           let exportObj = {} as any;
           for (const key in item) {
@@ -92,17 +90,29 @@ export class AllSubscriptionComponent implements OnInit {
   }
 
   showAdvancedFilter(): void {
-    this.isAdvancedSearchOpened = !this.isAdvancedSearchOpened;
+    this.model.isAdvancedSearchOpened = !this.model.isAdvancedSearchOpened;
   }
 
   onFilterChanged(event: IAdvancedFilterForm): void {
-    this.dataSource.filter = JSON.stringify(event);
-    this.isAdvancedSearchOpened = false;
+    const name = event.name
+    const mobile = event.mobile;
+    const transportationId = event.transportationId;
+    const bookingStatus = event.bookingStatus;
+    const birthDateMonth = event.birthDateMonth;
+    const fromAge = event.fromAge;
+    const toAge = event.toAge;
+    const gender = event.gender;
+    // create string of our searching values and split if by '$'
+    const filterValue = `${name}$${mobile}$${transportationId}$${bookingStatus}$${birthDateMonth}$${fromAge}$${toAge}$${gender}`;
+    this.model.dataSource.filter = filterValue.trim().toLowerCase();
+    this.model.total = this.model.dataSource.filteredData.length;
+    this.model.filteredData = this.model.dataSource.filteredData;
+    this.model.isAdvancedSearchOpened = false;
   }
 
   private getAddress(): void {
     this.fireStoreService.getAll<IAddress>(Constants.RealtimeDatabase.address).subscribe(data => {
-      this.addressList = data;
+      this.model.addressList = data;
       this.getTickets();
     });
   }
@@ -114,15 +124,16 @@ export class AllSubscriptionComponent implements OnInit {
         address: this.getAddressById(item.addressId),
         transportationName: this.getBusNameById(item.transportationId)
       }));
-      this.dataSource = new MatTableDataSource(data);
-      this.dataSource.sort = this.sort;
-      this.initFilterPredicate();
+      this.model.dataSource = new MatTableDataSource(data);
+      this.model.dataSource.sort = this.sort;
+      this.model.total = data.length;
+      this.model.dataSource.filterPredicate = this.getFilterPredicate();
     });
   }
 
   private getAddressById(addressId: string): string {
-    if (addressId && this.addressList.length > 0) {
-      const address = this.addressList.find(a => a.id === addressId);
+    if (addressId && this.model.addressList.length > 0) {
+      const address = this.model.addressList.find(a => a.id === addressId);
       if (address) {
         return address.name;
       }
@@ -132,23 +143,23 @@ export class AllSubscriptionComponent implements OnInit {
   }
 
   private detectMobileView(): void {
-    this.isMobileView = this.isMobile;
-    if (this.isMobileView) {
-      this.displayedColumns = ['mobileView'];
+    this.model.isMobileView = this.isMobile;
+    if (this.model.isMobileView) {
+      this.model.displayedColumns = ['mobileView'];
     } else {
-      this.displayedColumns = this.desktopColumns;
+      this.model.displayedColumns = this.model.desktopColumns;
     }
   }
 
   private getBuses(): void {
     this.fireStoreService.getAll<IBus>(Constants.RealtimeDatabase.buses).subscribe(data => {
-      this.buses = data;
+      this.model.buses = data;
     });
   }
 
   private getBusNameById(id: string): string {
-    if (id && this.buses.length > 0) {
-      const bus = this.buses.find(b => b.id === id);
+    if (id && this.model.buses.length > 0) {
+      const bus = this.model.buses.find(b => b.id === id);
       if (bus) {
         return bus.name;
       }
@@ -157,37 +168,49 @@ export class AllSubscriptionComponent implements OnInit {
     return '';
   }
 
-  private initFilterPredicate(): void {
-    this.dataSource.filterPredicate = (data, filter) => {
-      const searchString = JSON.parse(filter);
-      const mobileFound = data.mobile.toString().trim().toLowerCase().indexOf(searchString.mobile) !== -1;
-      const nameFound = data.name.toString().trim().toLowerCase().indexOf(searchString.name) !== -1;
-      let transportationFound = data.transportationId === searchString.transportationId;
-      let fromAgeFound = +data.age >= +searchString.fromAge;
-      let toAgeFound = +data.age <= +searchString.toAge;
-      let birthDateMonthFound = data.birthDateMonth === searchString.birthDateMonth;
-      let bookingStatusFound = data.bookingStatus === searchString.bookingStatus;
-      let genderFound = data.gender === searchString.gender;
-      if (!searchString.fromAge || searchString.fromAge < 1) {
-        fromAgeFound = true;
-      }
-      if (!searchString.toAge || searchString.toAge < 1) {
-        toAgeFound = true;
-      }
-      if (!searchString.birthDateMonth || searchString.birthDateMonth < 1) {
-        birthDateMonthFound = true;
-      }
-      if (!searchString.bookingStatus || searchString.bookingStatus === BookingStatus.all) {
-        bookingStatusFound = true;
-      }
-      if (!searchString.gender || searchString.gender === Gender.all) {
-        genderFound = true;
-      }
-      if (!searchString.transportationId || searchString.transportationId == 'all') {
-        transportationFound = true;
-      }
-      return nameFound && mobileFound && transportationFound && genderFound && bookingStatusFound
-        && fromAgeFound && toAgeFound && birthDateMonthFound;
+  getFilterPredicate(): ((data: IAllSubscriptionDataSourceVm, filter: string) => boolean) {
+    return (row: IAllSubscriptionDataSourceVm, filters: string) => {
+      // split string per '$' to array
+      const filterArray = filters.split('$');
+      const name = filterArray[0];
+      const mobile = filterArray[1];
+      const transportationId = filterArray[2];
+      const bookingStatus = filterArray[3];
+      const birthDateMonth = filterArray[4];
+      const fromAge = filterArray[5];
+      const toAge = filterArray[6];
+      const gender = filterArray[7];
+      const matchFilter = [];
+      // Fetch data from row
+      const columnName = row.name;
+      const columnMobile = row.mobile;
+      const columnTransportationId = row.transportationId;
+      const columnBookingStatus = row.bookingStatus;
+      const columnBirthDateMonth = row.birthDateMonth;
+      const columnAge = row.age;
+      const columnGender = row.gender;
+      // verify fetching data by our searching values
+      const customFilterName = columnName.toLowerCase().includes(name);
+      const customFilterMobile = columnMobile.toLowerCase().includes(mobile);
+      // We minus 1 for primary count
+      const customFilterFromAge = (+fromAge > 0) ? +columnAge >= +fromAge : true;
+      const customFilterToAge = (+toAge > 0) ? +columnAge <= +toAge : true;
+      const customFilterTransportationId = (transportationId !== 'all') ? columnTransportationId === transportationId : true;
+      const customFilterBirthDateMonth = (+birthDateMonth > 0) ? +columnBirthDateMonth === +birthDateMonth : true;
+      const customFilterBookingStatus = (+bookingStatus !== BookingStatus.all) ? +columnBookingStatus === +bookingStatus : true;
+      const customFilterGender = (+gender !== Gender.all) ? +columnGender === +gender : true;
+      // push boolean values into array
+      matchFilter.push(customFilterName);
+      matchFilter.push(customFilterMobile);
+      matchFilter.push(customFilterFromAge);
+      matchFilter.push(customFilterToAge);
+      matchFilter.push(customFilterTransportationId);
+      matchFilter.push(customFilterBirthDateMonth);
+      matchFilter.push(customFilterBookingStatus);
+      matchFilter.push(customFilterGender);
+      // return true if all values in array is true
+      // else return false
+      return matchFilter.every(Boolean);
     };
   }
 }

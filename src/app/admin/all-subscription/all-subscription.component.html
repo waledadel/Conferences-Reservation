@@ -1,11 +1,11 @@
-<div class="container-fluid table-container" [class.px-0]="isMobileView">
-  <div class="w-100" [ngClass]="isMobileView ? 'h-100' : 'mt-2'">
+<div class="container-fluid table-container" [class.px-0]="model.isMobileView">
+  <div class="w-100" [ngClass]="model.isMobileView ? 'h-100' : 'mt-2'">
     <div class="w-100 d-flex h-100">
-      <div *ngIf="dataSource && dataSource.data.length < 1" class="w-100">
+      <div *ngIf="model.dataSource && model.dataSource.data.length < 1" class="w-100">
         <app-empty-data></app-empty-data>
       </div>
-      <div [hidden]="dataSource && dataSource.data.length < 1" class="mat-elevation-z8">
-        <table mat-table [dataSource]="dataSource" matSort matSortActive="name" matSortDirection="asc"
+      <div [hidden]="model.dataSource && model.dataSource.data.length < 1" class="mat-elevation-z8">
+        <table mat-table [dataSource]="model.dataSource" matSort matSortActive="name" matSortDirection="asc"
           matSortDisableClear="true">
           <ng-container matColumnDef="mobileView">
             <th mat-header-cell *matHeaderCellDef></th>
@@ -68,7 +68,7 @@
             </td>
             <td mat-footer-cell *matFooterCellDef class="px-0">
               <div class="d-flex justify-content-between align-items-center">
-                <div class="pr-3">{{'common.total' | translate}}: <b>{{dataSource.data.length}}</b></div>
+                <div class="pr-3">{{'common.total' | translate}}: <b>{{model.total}}</b></div>
                 <button mat-icon-button color="primary" class="d-flex justify-content-center align-items-center" (click)="openExportModal()">
                   <i class="fa-solid fa-download font-size-18"></i>
                 </button>
@@ -87,7 +87,7 @@
                 </div>
               </div>
             </td>
-            <td mat-footer-cell *matFooterCellDef>{{'common.total' | translate}}: <b>{{dataSource.data.length}}</b> </td>
+            <td mat-footer-cell *matFooterCellDef>{{'common.total' | translate}}: <b>{{model.total}}</b> </td>
           </ng-container>
     
           <ng-container matColumnDef="mobile">
@@ -190,18 +190,18 @@
             </td>
         </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-          <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></tr>
+          <tr mat-header-row *matHeaderRowDef="model.displayedColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: model.displayedColumns;"></tr>
+          <tr mat-footer-row *matFooterRowDef="model.displayedColumns; sticky: true"></tr>
         </table>
       </div>
-      <button *ngIf="isMobileView" mat-icon-button color="primary" (click)="showAdvancedFilter()" class="mobile-filter-button">
+      <button *ngIf="model.isMobileView" mat-icon-button color="primary" (click)="showAdvancedFilter()" class="mobile-filter-button">
         <mat-icon>filter_list</mat-icon>
       </button>
-      <div *ngIf="isAdvancedSearchOpened" class="advanced-filter">
+      <div *ngIf="model.isAdvancedSearchOpened" class="advanced-filter">
           <div class="header d-flex justify-content-between align-items-center">
               <div>{{ 'advancedFilter.advancedFilter' | translate }}</div>
-              <button *ngIf="isMobileView" mat-icon-button (click)="showAdvancedFilter()">
+              <button *ngIf="model.isMobileView" mat-icon-button (click)="showAdvancedFilter()">
                   <mat-icon>close</mat-icon>
               </button>
           </div>

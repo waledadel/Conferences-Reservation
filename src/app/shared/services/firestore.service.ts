@@ -331,6 +331,10 @@ export class FireStoreService {
   //   return this.angularFirestore.collection(Constants.RealtimeDatabase.tickets).get().pipe(map(snaps => snaps.size));
   // }
 
+  getAge(birthDate: Timestamp): number {
+    return new Date().getFullYear() - birthDate.toDate().getFullYear();
+  }
+
   collection<T>(path: string, queryFn?: QueryFn): AngularFirestoreCollection<T> {
     return this.angularFirestore.collection(path, queryFn);
   }
@@ -346,10 +350,5 @@ export class FireStoreService {
 
   private getCollection(collectionName: string): CollectionReference<DocumentData> {
     return collection(this.firestore, collectionName);
-  }
-
-  
-  private getAge(birthDate: Timestamp): number {
-    return new Date().getFullYear() - birthDate.toDate().getFullYear();
   }
 }

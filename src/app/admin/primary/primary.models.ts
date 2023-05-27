@@ -12,10 +12,12 @@ export class PrimaryModel {
   'lastUpdateDate', 'lastUpdatedBy', 'bookingStatus', 'actions'];
   displayedColumns: string[] = [];
   dataSource = new MatTableDataSource<IPrimaryDataSourceVm>([]);
+  filteredData: Array<IPrimaryDataSourceVm> = [];
   notPrimaryMembers: Array<IRelatedMemberViewModel> = [];
   buses: Array<IBus> = [];
   users: Array<IUser> = [];
   isMobileView = false;
   isAdvancedSearchOpened = false;
   gender = Gender;
+  total = 0;
 }
