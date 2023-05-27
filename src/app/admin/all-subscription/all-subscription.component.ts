@@ -164,7 +164,7 @@ export class AllSubscriptionComponent implements OnInit {
       const nameFound = data.name.toString().trim().toLowerCase().indexOf(searchString.name) !== -1;
       let transportationFound = data.transportationId === searchString.transportationId;
       let fromAgeFound = +data.age >= +searchString.fromAge;
-      let toAgeFound = +data.age < +searchString.toAge;
+      let toAgeFound = +data.age <= +searchString.toAge;
       let birthDateMonthFound = data.birthDateMonth === searchString.birthDateMonth;
       let bookingStatusFound = data.bookingStatus === searchString.bookingStatus;
       let genderFound = data.gender === searchString.gender;
