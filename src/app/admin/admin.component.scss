@@ -3,9 +3,21 @@
 }
 
 .app-container {
-    height: calc(100% - 64px);
     margin: 0;
-}  
+}
+
+@media (min-width: 769px) {
+    .app-container {
+        height: calc(100% - 64px);
+    }  
+}
+
+@media (max-width: 769px) {
+    .app-container {
+        height: calc(100% - 56px);
+    } 
+}
+
 .app-sidenav {
     width: 230px;
 }

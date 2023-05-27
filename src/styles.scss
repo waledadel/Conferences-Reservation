@@ -92,8 +92,8 @@ button:focus {
       padding-top: 0 !important;
     }
     .mat-mdc-dialog-content {
-      max-height: 83vh !important;
-      height: 83vh !important;
+      max-height: unset !important;
+      height: calc(100% - 105px) !important;
     }
   }
 }
@@ -312,7 +312,7 @@ mat-mdc-fab.mat-primary, .mat-mdc-mini-fab.mat-primary {
       padding-inline-start: 16px;
     }
     .filter-form {
-      height: calc(100% - 265px);
+      height: calc(100% - 185px);
     }
     .advanced-body {
       height: 100%;
