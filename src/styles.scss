@@ -320,6 +320,10 @@ mat-mdc-fab.mat-primary, .mat-mdc-mini-fab.mat-primary {
       height: 100%;
       overflow-y: scroll;
     }
+    .filter-footer {
+      position: fixed;
+      bottom: 8px;
+    }
   }
 }
 
