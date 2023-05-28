@@ -34,7 +34,8 @@
             ],
             "scripts": [],
             "allowedCommonJsDependencies": [
-              "@messageformat/core"
+              "@messageformat/core",
+              "file-saver"
             ],
             "serviceWorker": true,
             "ngswConfigPath": "ngsw-config.json"

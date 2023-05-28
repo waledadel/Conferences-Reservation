@@ -313,6 +313,8 @@ mat-mdc-fab.mat-primary, .mat-mdc-mini-fab.mat-primary {
     }
     .filter-form {
       height: calc(100% - 185px);
+      max-height: calc(100% - 185px) !important;
+      overflow-y: scroll;
     }
     .advanced-body {
       height: 100%;
