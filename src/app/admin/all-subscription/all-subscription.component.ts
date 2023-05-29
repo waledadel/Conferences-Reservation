@@ -9,6 +9,7 @@ import { AdminService } from '../admin.service';
 import { IAdvancedFilterForm } from '../advanced-search/advanced-search.models';
 import { ExportMembersComponent, IExportMembers } from '../export-members/export-members.component';
 import { AllSubscriptionModel } from './all-subscription.models';
+import { AdvancedSearchComponent } from '../advanced-search/advanced-search.component';
 
 @Component({
   templateUrl: './all-subscription.component.html'
@@ -90,24 +91,25 @@ export class AllSubscriptionComponent implements OnInit {
   }
 
   showAdvancedFilter(): void {
-    this.model.isAdvancedSearchOpened = !this.model.isAdvancedSearchOpened;
-  }
-
-  onFilterChanged(event: IAdvancedFilterForm): void {
-    const name = event.name
-    const mobile = event.mobile;
-    const transportationId = event.transportationId;
-    const bookingStatus = event.bookingStatus;
-    const birthDateMonth = event.birthDateMonth;
-    const fromAge = event.fromAge;
-    const toAge = event.toAge;
-    const gender = event.gender;
-    // create string of our searching values and split if by '$'
-    const filterValue = `${name}$${mobile}$${transportationId}$${bookingStatus}$${birthDateMonth}$${fromAge}$${toAge}$${gender}`;
-    this.model.dataSource.filter = filterValue.trim().toLowerCase();
-    this.model.total = this.model.dataSource.filteredData.length;
-    this.model.filteredData = this.model.dataSource.filteredData;
-    this.model.isAdvancedSearchOpened = false;
+    const filter = this.model.previousFilter != null ? this.model.previousFilter : null;
+    this.dialogService.openAddEditDialog(AdvancedSearchComponent, 'lg', true, filter)
+    .afterClosed().subscribe((res: IAdvancedFilterForm) => {
+      if (res) {
+        const name = res.name
+        const mobile = res.mobile;
+        const transportationId = res.transportationId;
+        const bookingStatus = res.bookingStatus;
+        const birthDateMonth = res.birthDateMonth;
+        const fromAge = res.fromAge;
+        const toAge = res.toAge;
+        const gender = res.gender;
+        // create string of our searching values and split if by '$'
+        const filterValue = `${name}$${mobile}$${transportationId}$${bookingStatus}$${birthDateMonth}$${fromAge}$${toAge}$${gender}`;
+        this.model.dataSource.filter = filterValue.trim().toLowerCase();
+        this.model.total = this.model.dataSource.filteredData.length;
+        this.model.filteredData = this.model.dataSource.filteredData;
+      }
+    });
   }
 
   private getAddress(): void {

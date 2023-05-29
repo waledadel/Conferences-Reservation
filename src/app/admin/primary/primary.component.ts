@@ -12,6 +12,7 @@ import { AdminService } from '../admin.service';
 import { IAdvancedFilterForm } from '../advanced-search/advanced-search.models';
 import { PrimaryModel } from './primary.models';
 import { ExportMembersComponent, IExportMembers } from '../export-members/export-members.component';
+import { AdvancedSearchComponent } from '../advanced-search/advanced-search.component';
 
 @Component({
   templateUrl: './primary.component.html'
@@ -197,30 +198,32 @@ export class PrimaryComponent implements OnInit {
     return this.model.dataSource.data.map(t => t.totalCost - t.paid).reduce((acc, value) => acc + value, 0);
   }
 
-  onFilterChanged(event: IAdvancedFilterForm): void {
-    const name = event.name
-    const mobile = event.mobile;
-    const adultsCount = event.adultsCount;
-    const childrenCount = event.childrenCount;
-    const transportationId = event.transportationId;
-    const bookingStatus = event.bookingStatus;
-    const birthDateMonth = event.birthDateMonth;
-    const fromAge = event.fromAge;
-    const toAge = event.toAge;
-    const total = event.total;
-    const remaining = event.remaining;
-    const gender = event.gender;
-    const paid = event.paid;
-    // create string of our searching values and split if by '$'
-    const filterValue = `${name}$${mobile}$${adultsCount}$${childrenCount}$${transportationId}$${bookingStatus}$${birthDateMonth}$${fromAge}$${toAge}$${total}$${remaining}$${gender}$${paid}`;
-    this.model.dataSource.filter = filterValue.trim().toLowerCase();
-    this.model.total = this.model.dataSource.filteredData.length;
-    this.model.filteredData = this.model.dataSource.filteredData;
-    this.model.isAdvancedSearchOpened = false;
-  }
-
   showAdvancedFilter(): void {
-    this.model.isAdvancedSearchOpened = !this.model.isAdvancedSearchOpened;
+    const filter = this.model.previousFilter != null ? this.model.previousFilter : null;
+    this.dialogService.openAddEditDialog(AdvancedSearchComponent, 'lg', true, filter)
+    .afterClosed().subscribe((res: IAdvancedFilterForm) => {
+      if (res) {
+        this.model.previousFilter = res;
+        const name = res.name
+        const mobile = res.mobile;
+        const adultsCount = res.adultsCount;
+        const childrenCount = res.childrenCount;
+        const transportationId = res.transportationId;
+        const bookingStatus = res.bookingStatus;
+        const birthDateMonth = res.birthDateMonth;
+        const fromAge = res.fromAge;
+        const toAge = res.toAge;
+        const total = res.total;
+        const remaining = res.remaining;
+        const gender = res.gender;
+        const paid = res.paid;
+        // create string of our searching values and split if by '$'
+        const filterValue = `${name}$${mobile}$${adultsCount}$${childrenCount}$${transportationId}$${bookingStatus}$${birthDateMonth}$${fromAge}$${toAge}$${total}$${remaining}$${gender}$${paid}`;
+        this.model.dataSource.filter = filterValue.trim(); //.toLowerCase();
+        this.model.total = this.model.dataSource.filteredData.length;
+        this.model.filteredData = this.model.dataSource.filteredData;
+      }
+    });
   }
 
   private isPrivateTransport(transportId: string): boolean {
@@ -454,19 +457,19 @@ export class PrimaryComponent implements OnInit {
       const columnPaid = row.paid;
       // verify fetching data by our searching values
       const customFilterName = columnName.toLowerCase().includes(name);
-      const customFilterMobile = columnMobile.toLowerCase().includes(mobile);
+      const customFilterMobile = columnMobile.includes(mobile);
       // We minus 1 for primary count
-      const customFilterAdultsCount = (+adultsCount > 0) ? +columnAdultsCount === (+adultsCount - 1) : true; 
-      const customFilterChildrenCount = (+childrenCount > 0) ? +columnChildrenCount === +childrenCount : true;
-      const customFilterFromAge = (+fromAge > 0) ? +columnAge >= +fromAge : true;
-      const customFilterToAge = (+toAge > 0) ? +columnAge <= +toAge : true;
-      const customFilterTransportationId = (transportationId !== 'all') ? columnTransportationId === transportationId : true;
-      const customFilterBirthDateMonth = (+birthDateMonth > 0) ? +columnBirthDateMonth === +birthDateMonth : true;
-      const customFilterBookingStatus = (+bookingStatus !== BookingStatus.all) ? +columnBookingStatus === +bookingStatus : true;
-      const customFilterGender = (+gender !== Gender.all) ? +columnGender === +gender : true;
-      const customFilterTotal = (+total > 0) ? +columnTotal === +total : true;
-      const customFilterPaid = (+paid > 0) ? +columnPaid === +paid : true;
-      const customFilterRemaining = (+remaining > 0) ? +columnTotal - +columnPaid === +remaining : true;
+      const customFilterAdultsCount = +adultsCount > 0 ? +columnAdultsCount === (+adultsCount - 1) : true; 
+      const customFilterChildrenCount = +childrenCount > 0 ? +columnChildrenCount === +childrenCount : true;
+      const customFilterFromAge = +fromAge > 0 ? +columnAge >= +fromAge : true;
+      const customFilterToAge = +toAge > 0 ? +columnAge <= +toAge : true;
+      const customFilterTransportationId = transportationId != 'all' ? columnTransportationId === transportationId : true;
+      const customFilterBirthDateMonth = +birthDateMonth > 0 ? +columnBirthDateMonth === +birthDateMonth : true;
+      const customFilterBookingStatus = +bookingStatus != BookingStatus.all ? +columnBookingStatus === +bookingStatus : true;
+      const customFilterGender = +gender != Gender.all ? +columnGender === +gender : true;
+      const customFilterTotal = +total > 0 ? +columnTotal === +total : true;
+      const customFilterPaid = +paid > 0 ? +columnPaid === +paid : true;
+      const customFilterRemaining = +remaining > 0 ? +columnTotal - +columnPaid === +remaining : true;
       // push boolean values into array
       matchFilter.push(customFilterName);
       matchFilter.push(customFilterMobile);

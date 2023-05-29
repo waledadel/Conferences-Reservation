@@ -8,6 +8,7 @@ export class AdvancedSearchModel {
   buses: Array<IBus> = [];
   isMobileView = false;
   isAgePanelStateOpened = false;
+  showPrimaryOptions = false;
   readonly genderList: Array<KeyValue<string, number>> = [
     {key: 'common.all', value: Gender.all},
     {key: 'common.male', value: Gender.male},

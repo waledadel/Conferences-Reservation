@@ -4,7 +4,7 @@
             <div *ngIf="model.dataSource && model.dataSource.data.length < 1" class="w-100">
                 <app-empty-data></app-empty-data>
             </div>
-            <div [hidden]="model.dataSource && model.dataSource.data.length < 1" class="mat-elevation-z8" [class.table-wz-advanced]="model.isAdvancedSearchOpened">
+            <div [hidden]="model.dataSource && model.dataSource.data.length < 1" class="mat-elevation-z8">
                 <table mat-table [dataSource]="model.dataSource" matSort matSortActive="bookingDate" matSortDirection="desc"
                     matSortDisableClear="true">
                     <ng-container matColumnDef="mobileView">
@@ -359,15 +359,6 @@
             <button *ngIf="model.isMobileView" mat-icon-button color="primary" (click)="showAdvancedFilter()" class="mobile-filter-button">
                 <mat-icon>filter_list</mat-icon>
             </button>
-            <div *ngIf="model.isAdvancedSearchOpened" class="advanced-filter">
-                <div class="header d-flex justify-content-between align-items-center">
-                    <div>{{ 'advancedFilter.advancedFilter' | translate }}</div>
-                    <button *ngIf="model.isMobileView" mat-icon-button (click)="showAdvancedFilter()">
-                        <mat-icon>close</mat-icon>
-                    </button>
-                </div>
-                <app-advanced-search (filterChanged)="onFilterChanged($event)"></app-advanced-search>
-            </div>
         </div>
     </div>
 </div>

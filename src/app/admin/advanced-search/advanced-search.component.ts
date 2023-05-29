@@ -1,5 +1,7 @@
-import { Component, HostListener, OnInit, Output, Input, EventEmitter } from '@angular/core';
+import { Component, HostListener, OnInit, Inject } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
+import { Router } from '@angular/router';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 import { Constants } from '@app/constants';
 import { AdvancedSearchModel, IAdvancedFilterForm } from './advanced-search.models';
@@ -7,14 +9,11 @@ import { BookingStatus, Gender, IBus } from '@app/models';
 import { FireStoreService } from '@app/services';
 
 @Component({
-  selector: 'app-advanced-search',
   templateUrl: './advanced-search.component.html',
   styleUrls: ['./advanced-search.component.scss']
 })
 export class AdvancedSearchComponent implements OnInit {
 
-  @Output() filterChanged = new EventEmitter<IAdvancedFilterForm>();
-  @Input() hideMainProp = false;
   model: AdvancedSearchModel;
   get isMobile(): boolean {
     return window.innerWidth < Constants.Grid.large;
@@ -26,7 +25,10 @@ export class AdvancedSearchComponent implements OnInit {
 
   constructor(
     private fireStoreService: FireStoreService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private dialogRef: MatDialogRef<AdvancedSearchComponent>,
+    private router: Router,
+    @Inject(MAT_DIALOG_DATA) private perviousFilter: IAdvancedFilterForm
   ) {
     this.model = new AdvancedSearchModel();
   }
@@ -35,6 +37,12 @@ export class AdvancedSearchComponent implements OnInit {
     this.model.form = this.initFormModels();
     this.detectMobileView();
     this.getBuses();
+    this.patchFromValue();
+    this.model.showPrimaryOptions = this.router.url.includes('primary');
+  }
+
+  close(): void {
+    this.dialogRef.close();
   }
 
   reset(): void {
@@ -53,11 +61,11 @@ export class AdvancedSearchComponent implements OnInit {
       fromAge: 0,
       toAge: 0
     });
-    this.filterChanged.emit(this.model.form.value);
+    this.filter();
   }
 
   filter(): void {
-    this.filterChanged.emit(this.model.form.value);
+    this.dialogRef.close(this.model.form.value)
   }
 
   private initFormModels() {
@@ -71,7 +79,7 @@ export class AdvancedSearchComponent implements OnInit {
       remaining: [0],
       transportationId: ['all'],
       gender: [Gender.all],
-      bookingStatus: BookingStatus.all,
+      bookingStatus: [BookingStatus.all],
       birthDateMonth: [0],
       fromAge: [0],
       toAge: [0],
@@ -86,5 +94,25 @@ export class AdvancedSearchComponent implements OnInit {
 
   private detectMobileView(): void {
     this.model.isMobileView = this.isMobile;
+  }
+
+  private patchFromValue(): void {
+    if (this.perviousFilter && this.perviousFilter != null) {
+      this.model.form.patchValue({
+        name: this.perviousFilter.name,
+        mobile: this.perviousFilter.mobile,
+        adultsCount: this.perviousFilter.adultsCount,
+        childrenCount: this.perviousFilter.childrenCount,
+        paid: this.perviousFilter.paid,
+        total: this.perviousFilter.total,
+        remaining: this.perviousFilter.remaining,
+        transportationId: this.perviousFilter.transportationId,
+        gender: this.perviousFilter.gender,
+        bookingStatus: this.perviousFilter.bookingStatus,
+        birthDateMonth: this.perviousFilter.birthDateMonth,
+        fromAge: this.perviousFilter.fromAge,
+        toAge: this.perviousFilter.toAge,
+      });
+    }
   }
 }

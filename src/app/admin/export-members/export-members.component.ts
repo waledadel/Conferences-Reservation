@@ -22,7 +22,7 @@ export class ExportMembersComponent implements OnInit {
     return this.options.filter(o => o.isChecked).length < 1;
   };
   constructor(
-    public dialogRef: MatDialogRef<ExportMembersComponent>,
+    private dialogRef: MatDialogRef<ExportMembersComponent>,
     @Inject(MAT_DIALOG_DATA) public showCustomizableOptions: boolean) {
   }
 

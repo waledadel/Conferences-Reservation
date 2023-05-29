@@ -1,101 +1,113 @@
-<form [formGroup]="model.form" novalidate class="row mx-0 mt-3 filter-form">
-    <div class="advanced-body w-100">
-        <mat-form-field class="col-12">
-            <mat-label>{{'advancedFilter.name' | translate}}</mat-label>
-            <input type="text" matInput formControlName="name">
-        </mat-form-field>
-        <mat-form-field class="col-12">
-            <mat-label>{{'advancedFilter.mobile' | translate}}</mat-label>
-            <input type="text" matInput formControlName="mobile">
-        </mat-form-field>
-        <mat-form-field class="col-12">
-            <mat-label>{{'home.transportation' | translate}}</mat-label>
-            <mat-select formControlName="transportationId">
-                <mat-option [value]="'all'">{{'common.all' | translate}}</mat-option>
-                <ng-container *ngFor="let item of model.buses">
-                    <mat-option [value]="item.id">
-                        {{ item.name }} 
-                        <!-- <span *ngIf="item.price > 0">{{ item.price }} {{'common.egp' | translate}}</span> -->
-                    </mat-option>
-                </ng-container>
-            </mat-select>
-        </mat-form-field>
-        <mat-form-field class="col-12">
-            <mat-label>{{'common.gender' | translate}}</mat-label>
-            <mat-select formControlName="gender">
-                <ng-container *ngFor="let item of model.genderList">
-                    <mat-option [value]="item.value">
-                        {{ item.key | translate }} 
-                    </mat-option>
-                </ng-container>
-            </mat-select>
-        </mat-form-field>
-        <mat-form-field class="col-12">
-            <mat-label>{{'common.bookingStatus' | translate}}</mat-label>
-            <mat-select formControlName="bookingStatus">
-                <ng-container *ngFor="let item of model.bookingStatusList">
-                    <mat-option [value]="item.value">{{ item.key | translate }}</mat-option>
-                </ng-container>
-            </mat-select>
-        </mat-form-field>
-        <mat-form-field class="col-12">
-            <mat-label>{{'common.birthDateMonth' | translate}}</mat-label>
-            <mat-select formControlName="birthDateMonth">
-                <ng-container *ngFor="let item of model.months">
-                    <mat-option [value]="item.value">{{ item.key | translate }}</mat-option>
-                </ng-container>
-            </mat-select>
-        </mat-form-field>
-        <div class="col-12 mb-3">
-            <mat-accordion>
-                <mat-expansion-panel>
-                    <mat-expansion-panel-header>
-                        <mat-panel-title>
-                            {{'common.ageRange' | translate}}
-                        </mat-panel-title>
-                    </mat-expansion-panel-header>
-                    <div class="px-3">
-                        <mat-form-field class="w-100">
-                            <mat-label>{{'common.fromAge' | translate}}</mat-label>
-                            <input type="number" matInput formControlName="fromAge" inputmode="numeric">
-                        </mat-form-field>
-                        <mat-form-field class="w-100">
-                            <mat-label>{{'common.toAge' | translate}}</mat-label>
-                            <input type="number" matInput formControlName="toAge" inputmode="numeric">
-                        </mat-form-field>
-                    </div>
-                </mat-expansion-panel>
-            </mat-accordion>
-        </div>
-        <ng-container *ngIf="!hideMainProp">
-            <mat-form-field class="col-12">
-                <mat-label>{{'common.adultsCount' | translate}}</mat-label>
-                <input type="number" matInput formControlName="adultsCount" inputmode="numeric">
-            </mat-form-field>
-            <mat-form-field class="col-12">
-                <mat-label>{{'common.childrenCount' | translate}}</mat-label>
-                <input type="number" matInput formControlName="childrenCount" inputmode="numeric">
-            </mat-form-field>
-            <mat-form-field class="col-12">
-                <mat-label>{{'common.paid' | translate}}</mat-label>
-                <input type="number" matInput formControlName="paid" inputmode="numeric">
-            </mat-form-field>
-            <mat-form-field class="col-12">
-                <mat-label>{{'common.totalCost' | translate}}</mat-label>
-                <input type="number" matInput formControlName="total" inputmode="numeric">
-            </mat-form-field>
-            <mat-form-field class="col-12">
-                <mat-label>{{'common.remaining' | translate}}</mat-label>
-                <input type="number" matInput formControlName="remaining" inputmode="numeric">
-            </mat-form-field>
-        </ng-container>
-    </div>
-</form>
-<div class="d-flex justify-content-lg-around justify-content-end align-items-center w-100 border-top pt-3 filter-footer">
-    <button color="primary" mat-flat-button type="submit" cdkFocusInitial (click)="filter()">
-        <span> {{ 'advancedFilter.filter' | translate }}</span>
+<div mat-dialog-title class="d-flex justify-content-between align-content-center">
+    <div class="font-weight-bold">{{'advancedFilter.advancedFilter' | translate}}</div>
+    <button class="p-0 d-flex justify-content-center align-items-center" (click)="close()">
+        <mat-icon>close</mat-icon>
     </button>
-    <button color="primary" mat-stroked-button type="button" (click)="reset()" [class.mx-3]="model.isMobileView">
-        <span> {{ 'advancedFilter.reset' | translate }}</span>
+</div>
+
+<div mat-dialog-content>
+    <div class="bg-white border rounded">
+        <form [formGroup]="model.form" novalidate class="row mx-0 py-3">
+            <div class="advanced-body w-100">
+                <mat-form-field class="col-lg-6 col-12">
+                    <mat-label>{{'advancedFilter.name' | translate}}</mat-label>
+                    <input type="text" matInput formControlName="name">
+                </mat-form-field>
+                <mat-form-field class="col-lg-6 col-12">
+                    <mat-label>{{'advancedFilter.mobile' | translate}}</mat-label>
+                    <input type="text" matInput formControlName="mobile">
+                </mat-form-field>
+                <mat-form-field class="col-lg-6 col-12">
+                    <mat-label>{{'home.transportation' | translate}}</mat-label>
+                    <mat-select formControlName="transportationId">
+                        <mat-option [value]="'all'">{{'common.all' | translate}}</mat-option>
+                        <ng-container *ngFor="let item of model.buses">
+                            <mat-option [value]="item.id">
+                                {{ item.name }} 
+                                <span *ngIf="item.price > 0">{{ item.price }} {{'common.egp' | translate}}</span>
+                            </mat-option>
+                        </ng-container>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field class="col-lg-6 col-12">
+                    <mat-label>{{'common.gender' | translate}}</mat-label>
+                    <mat-select formControlName="gender">
+                        <ng-container *ngFor="let item of model.genderList">
+                            <mat-option [value]="item.value">
+                                {{ item.key | translate }} 
+                            </mat-option>
+                        </ng-container>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field class="col-lg-6 col-12">
+                    <mat-label>{{'common.bookingStatus' | translate}}</mat-label>
+                    <mat-select formControlName="bookingStatus">
+                        <ng-container *ngFor="let item of model.bookingStatusList">
+                            <mat-option [value]="item.value">{{ item.key | translate }}</mat-option>
+                        </ng-container>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field class="col-lg-6 col-12">
+                    <mat-label>{{'common.birthDateMonth' | translate}}</mat-label>
+                    <mat-select formControlName="birthDateMonth">
+                        <ng-container *ngFor="let item of model.months">
+                            <mat-option [value]="item.value">{{ item.key | translate }}</mat-option>
+                        </ng-container>
+                    </mat-select>
+                </mat-form-field>
+                <ng-container *ngIf="model.showPrimaryOptions">
+                    <mat-form-field class="col-lg-6 col-12">
+                        <mat-label>{{'common.adultsCount' | translate}}</mat-label>
+                        <input type="number" matInput formControlName="adultsCount" inputmode="numeric">
+                    </mat-form-field>
+                    <mat-form-field class="col-lg-6 col-12">
+                        <mat-label>{{'common.childrenCount' | translate}}</mat-label>
+                        <input type="number" matInput formControlName="childrenCount" inputmode="numeric">
+                    </mat-form-field>
+                    <mat-form-field class="col-lg-6 col-12">
+                        <mat-label>{{'common.paid' | translate}}</mat-label>
+                        <input type="number" matInput formControlName="paid" inputmode="numeric">
+                    </mat-form-field>
+                    <mat-form-field class="col-lg-6 col-12">
+                        <mat-label>{{'common.totalCost' | translate}}</mat-label>
+                        <input type="number" matInput formControlName="total" inputmode="numeric">
+                    </mat-form-field>
+                    <mat-form-field class="col-lg-6 col-12">
+                        <mat-label>{{'common.remaining' | translate}}</mat-label>
+                        <input type="number" matInput formControlName="remaining" inputmode="numeric">
+                    </mat-form-field>
+                </ng-container>
+                <div class="col-lg-6 col-12 mb-3">
+                    <mat-accordion class="w-100">
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    {{'common.ageRange' | translate}}
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <div class="px-3">
+                                <mat-form-field class="w-100">
+                                    <mat-label>{{'common.fromAge' | translate}}</mat-label>
+                                    <input type="number" matInput formControlName="fromAge" inputmode="numeric">
+                                </mat-form-field>
+                                <mat-form-field class="w-100">
+                                    <mat-label>{{'common.toAge' | translate}}</mat-label>
+                                    <input type="number" matInput formControlName="toAge" inputmode="numeric">
+                                </mat-form-field>
+                            </div>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div mat-dialog-actions>
+    <button mat-stroked-button type="button" color="primary" (click)="reset()">
+        {{ 'advancedFilter.reset' | translate }}
+    </button>
+    <button mat-flat-button color="primary" (click)="filter()" cdkFocusInitial>
+        {{'advancedFilter.filter' | translate}}
     </button>
 </div>

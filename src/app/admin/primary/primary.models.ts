@@ -1,6 +1,7 @@
 import { MatTableDataSource } from '@angular/material/table';
 
 import { Gender, IBus, IPrimaryDataSourceVm, IRelatedMemberViewModel, IUser } from '@app/models';
+import { IAdvancedFilterForm } from '../advanced-search/advanced-search.models';
 
 export class PrimaryModel {
   adultReservationPrice = 0;
@@ -17,7 +18,7 @@ export class PrimaryModel {
   buses: Array<IBus> = [];
   users: Array<IUser> = [];
   isMobileView = false;
-  isAdvancedSearchOpened = false;
   gender = Gender;
   total = 0;
+  previousFilter!: IAdvancedFilterForm;
 }
