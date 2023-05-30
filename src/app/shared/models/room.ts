@@ -1,8 +1,12 @@
 export interface IRoom {
     id: string;
-    rest: number;
-    name: string;
-    type: string;
+    room: number;
+    building: number;
     floor: number;
-    building: string;
+    sizeName: string;
+    size: number;
+    displayedName: string;
+    current: number;
+    available: number;
+    notUsed: number;
 }
