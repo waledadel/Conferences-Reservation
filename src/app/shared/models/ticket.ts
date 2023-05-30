@@ -136,7 +136,8 @@ export enum BookingStatus {
     new = 1,
     confirmed = 2,
     duplicated = 3,
-    canceled = 4
+    canceled = 4,
+    waiting = 5
 }
 
 export enum SocialStatus {

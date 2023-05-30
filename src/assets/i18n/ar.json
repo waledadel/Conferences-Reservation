@@ -156,7 +156,8 @@
         "new": "جديد",
         "confirmed": "مؤكد",
         "duplicated": "مكرر",
-        "canceled": "ملغي"
+        "canceled": "ملغي",
+        "waiting": "قائمة الإنتظار"
     },
     "advancedFilter": {
         "advancedFilter": "البحث المتقدم",

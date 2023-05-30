@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, first, from, map, take } from 'rxjs';
 import { DocumentReference, PartialWithFieldValue, Query, query, where, CollectionReference } from 'firebase/firestore';
-import { Firestore, collection, addDoc, collectionData, doc, updateDoc, docData } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, collectionData, doc, updateDoc, docData, getCountFromServer } from '@angular/fire/firestore';
 import { AngularFirestore, AngularFirestoreCollection, DocumentData, QueryFn } from '@angular/fire/compat/firestore';
 import { Timestamp } from 'firebase/firestore';
 
@@ -325,6 +325,12 @@ export class FireStoreService {
         ),
         take(takeCount)
       );
+  }
+
+  async getTicketCount(): Promise<number> {
+    const coll = collection(this.firestore, Constants.RealtimeDatabase.tickets);
+    const snapshot = await getCountFromServer(coll);
+    return snapshot.data().count;
   }
 
   // getTicketCount(): Observable<number> {

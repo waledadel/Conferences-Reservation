@@ -20,6 +20,7 @@ export class AdvancedSearchModel {
     {key: 'bookingStatus.confirmed', value: BookingStatus.confirmed},
     {key: 'bookingStatus.canceled', value: BookingStatus.canceled},
     {key: 'bookingStatus.duplicated', value: BookingStatus.duplicated},
+    {key: 'bookingStatus.waiting', value: BookingStatus.waiting},
   ];
   readonly months: KeyValue<string, number>[] = [
     { key: 'الكل', value: 0},

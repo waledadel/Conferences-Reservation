@@ -18,6 +18,9 @@ export class HomeComponent implements OnInit {
   currentDate = new Date();
   isReservationStart = false;
   isReservationEnd = false;
+  availableTicketCount = 0;
+  isWaitingNow = false;
+  existingTicketCount = 0;
 
   constructor(private fireStoreService: FireStoreService) {
     this.settings = {} as Observable<Array<ISettings>>;
@@ -28,7 +31,12 @@ export class HomeComponent implements OnInit {
     this.settings.subscribe(res => {
       this.isReservationStart = this.currentDate > res[0].startReservationDate.toDate() ;
       this.isReservationEnd = this.currentDate > res[0].endReservationDate.toDate();
+      this.availableTicketCount = res[0].availableTicketsCount;
     });
+    this.fireStoreService.getTicketCount().then(total => {
+      this.existingTicketCount = total;
+    });
+    this.isWaitingNow = this.existingTicketCount >= this.availableTicketCount;
   }
 
   onTabChanged(index: number): void {

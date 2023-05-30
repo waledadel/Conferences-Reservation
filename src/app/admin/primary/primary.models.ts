@@ -1,6 +1,6 @@
 import { MatTableDataSource } from '@angular/material/table';
 
-import { Gender, IBus, IPrimaryDataSourceVm, IRelatedMemberViewModel, IUser } from '@app/models';
+import { BookingStatus, Gender, IBus, IPrimaryDataSourceVm, IRelatedMemberViewModel, IUser } from '@app/models';
 import { IAdvancedFilterForm } from '../advanced-search/advanced-search.models';
 
 export class PrimaryModel {
@@ -21,4 +21,5 @@ export class PrimaryModel {
   gender = Gender;
   total = 0;
   previousFilter!: IAdvancedFilterForm;
+  bookingStatus = BookingStatus;
 }

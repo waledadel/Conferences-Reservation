@@ -1,6 +1,6 @@
 import { MatTableDataSource } from '@angular/material/table';
 
-import { IAddress, IAllSubscriptionDataSourceVm, IBus } from '@app/models';
+import { IAddress, IAllSubscriptionDataSourceVm, IBus, BookingStatus } from '@app/models';
 import { IAdvancedFilterForm } from '../advanced-search/advanced-search.models';
 
 export class AllSubscriptionModel {
@@ -13,4 +13,5 @@ export class AllSubscriptionModel {
   isMobileView = false;
   total = 0;
   previousFilter!: IAdvancedFilterForm;
+  bookingStatus = BookingStatus;
 }

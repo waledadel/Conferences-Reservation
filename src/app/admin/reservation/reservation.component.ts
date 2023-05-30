@@ -16,6 +16,8 @@ import { DialogService, FireStoreService, NotifyService, StorageService, Transla
 export class ReservationComponent implements OnInit {
 
   @Input() canManageReservation = false;
+  @Input() availableTicketCount = 0;
+  @Input() existingTicketCount = 0;
   @Input() reservationData: Array<ITicket> = [];
   @Input() set type (val: BookingType) {
     this.model.selectedType = val;
@@ -113,11 +115,16 @@ export class ReservationComponent implements OnInit {
   }
 
   private add(): void {
+    const currentReservationCount = this.model.form.value.participants.length + 1;
+    if ((this.existingTicketCount + currentReservationCount) > this.availableTicketCount) {
+      this.model.form.patchValue({
+        bookingStatus: BookingStatus.waiting
+      });
+    }
     const formValue = this.model.form.value;
     this.fireStoreService.addTicket(formValue).subscribe(() => {
       this.showForm.emit(false);
       this.dialogService.openSuccessfullyBookingDialog();
-      // this.notifyService.showNotifier(this.translationService.instant('notifications.bookedSuccessfully'), 'success', 15000);
       this.model.form.reset();
       this.model.isLoading = false;
     });
