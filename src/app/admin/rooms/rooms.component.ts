@@ -46,9 +46,10 @@ export class RoomsComponent implements OnInit {
   readExcelFile(event: Event): void {
     this.showLoading = true;
     this.showErrorMessage = false;
+    this.dataSource = new MatTableDataSource<IRoom>([]);
     const fileInput = event.target as HTMLInputElement;
-    const file = fileInput.files?.[0];
-    if (file) {
+    const selectedFile = fileInput.files?.[0];
+    if (selectedFile && selectedFile.name.includes('.xlsx')) {
       const reader = new FileReader();
       reader.onload = (event: any) => {
         const binaryString = event.target.result;
@@ -87,7 +88,10 @@ export class RoomsComponent implements OnInit {
         }
         this.showLoading = false;
       };
-      reader.readAsBinaryString(file);
+      reader.readAsBinaryString(selectedFile);
+    } else {
+      this.showLoading = false;
+      this.showErrorMessage = true;
     }
   }
 
