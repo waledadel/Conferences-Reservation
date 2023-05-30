@@ -85,6 +85,9 @@ export class PrimaryComponent implements OnInit {
                   case BookingStatus.canceled:
                     exportObj[selectedOption.key] = 'ملغي';
                     break;
+                  case BookingStatus.waiting:
+                      exportObj[selectedOption.key] = 'قائمة إنتظار';
+                      break;
                   default:
                     exportObj[selectedOption.key] = 'جديد';
                     break;

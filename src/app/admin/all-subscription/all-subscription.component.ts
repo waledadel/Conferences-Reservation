@@ -74,6 +74,9 @@ export class AllSubscriptionComponent implements OnInit {
                   case BookingStatus.canceled:
                     exportObj[selectedOption.key] = 'ملغي';
                     break;
+                  case BookingStatus.waiting:
+                      exportObj[selectedOption.key] = 'قائمة إنتظار';
+                      break;
                   default:
                     exportObj[selectedOption.key] = 'جديد';
                     break;
@@ -95,6 +98,7 @@ export class AllSubscriptionComponent implements OnInit {
     this.dialogService.openAddEditDialog(AdvancedSearchComponent, 'lg', true, filter)
     .afterClosed().subscribe((res: IAdvancedFilterForm) => {
       if (res) {
+        this.model.previousFilter = res;
         const name = res.name
         const mobile = res.mobile;
         const transportationId = res.transportationId;
@@ -105,7 +109,7 @@ export class AllSubscriptionComponent implements OnInit {
         const gender = res.gender;
         // create string of our searching values and split if by '$'
         const filterValue = `${name}$${mobile}$${transportationId}$${bookingStatus}$${birthDateMonth}$${fromAge}$${toAge}$${gender}`;
-        this.model.dataSource.filter = filterValue.trim().toLowerCase();
+        this.model.dataSource.filter = filterValue.trim();
         this.model.total = this.model.dataSource.filteredData.length;
         this.model.filteredData = this.model.dataSource.filteredData;
       }
@@ -195,12 +199,12 @@ export class AllSubscriptionComponent implements OnInit {
       const customFilterName = columnName.toLowerCase().includes(name);
       const customFilterMobile = columnMobile.toLowerCase().includes(mobile);
       // We minus 1 for primary count
-      const customFilterFromAge = (+fromAge > 0) ? +columnAge >= +fromAge : true;
-      const customFilterToAge = (+toAge > 0) ? +columnAge <= +toAge : true;
-      const customFilterTransportationId = (transportationId !== 'all') ? columnTransportationId === transportationId : true;
-      const customFilterBirthDateMonth = (+birthDateMonth > 0) ? +columnBirthDateMonth === +birthDateMonth : true;
-      const customFilterBookingStatus = (+bookingStatus !== BookingStatus.all) ? +columnBookingStatus === +bookingStatus : true;
-      const customFilterGender = (+gender !== Gender.all) ? +columnGender === +gender : true;
+      const customFilterFromAge = +fromAge > 0 ? +columnAge >= +fromAge : true;
+      const customFilterToAge = +toAge > 0 ? +columnAge <= +toAge : true;
+      const customFilterTransportationId = transportationId != 'all' ? columnTransportationId === transportationId : true;
+      const customFilterBirthDateMonth = +birthDateMonth > 0 ? +columnBirthDateMonth === +birthDateMonth : true;
+      const customFilterBookingStatus = +bookingStatus != BookingStatus.all ? +columnBookingStatus === +bookingStatus : true;
+      const customFilterGender = +gender != Gender.all ? +columnGender === +gender : true;
       // push boolean values into array
       matchFilter.push(customFilterName);
       matchFilter.push(customFilterMobile);
