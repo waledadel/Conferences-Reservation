@@ -95,7 +95,7 @@ export class SettingsComponent implements OnInit {
       reservationPrice: [null, [Validators.required, Validators.min(1)]],
       childReservationPriceMoreThanEight: [null, [Validators.required, Validators.min(1)]],
       childReservationPriceLessThanEight: [null, [Validators.required, Validators.min(1)]],
-      childBedPrice: [null, [Validators.required, Validators.min(1)]],
+      childBedPrice: [null, [Validators.required, Validators.min(0)]],
       waitingListCount: [null, [Validators.required, Validators.min(1)]],
       availableTicketsCount: [null, [Validators.required, Validators.min(1)]],
       waitingListMessage: ['', Validators.required],

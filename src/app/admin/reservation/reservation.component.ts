@@ -261,7 +261,13 @@ export class ReservationComponent implements OnInit {
 
   private getChildReservationPrice(birthDate?: Timestamp): number {
     if (birthDate) {
-      const childYears = new Date().getFullYear() - birthDate.toDate().getFullYear();
+      const today = new Date();
+      const userBirthDate = birthDate.toDate();
+      let childYears = today.getFullYear() - userBirthDate.getFullYear();
+      const monthDiff = today.getMonth() - userBirthDate.getMonth();
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < userBirthDate.getDate())) {
+        childYears--;
+      }
       if (childYears >= 8 && childYears < 12) {
         return this.model.childReservationPriceMoreThanEight;
       } else if(childYears >= 4 && childYears < 8) {
