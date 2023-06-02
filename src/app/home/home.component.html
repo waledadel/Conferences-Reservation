@@ -24,16 +24,16 @@
                 <mat-tab [label]="'home.individualBooking' | translate">
                     <ng-container *ngIf="selectedTabIndex < 1">
                         <ng-container *ngIf="(settings | async) as setting">
-                            <div *ngIf="isWaitingNow" class="alert alert-danger" [innerHtml]="setting[0].waitingListMessage"></div>
+                            <div *ngIf="enableWaitingList" class="alert alert-danger" [innerHtml]="setting[0].waitingListMessage"></div>
                         </ng-container>
                         <app-reservation [type]="bookingType.individual" (showForm)="showTicketForm($event)" 
-                            [availableTicketCount]="availableTicketCount" [existingTicketCount]="existingTicketCount"></app-reservation>
+                            [enableWaitingList]="enableWaitingList"></app-reservation>
                     </ng-container>
                 </mat-tab>
                 <mat-tab [label]="'home.groupBooking' | translate">
                     <ng-container *ngIf="selectedTabIndex > 0">
                         <ng-container *ngIf="(settings | async) as setting">
-                            <div *ngIf="isWaitingNow" class="alert alert-danger" [innerHtml]="setting[0].waitingListMessage"></div>
+                            <div *ngIf="enableWaitingList" class="alert alert-danger" [innerHtml]="setting[0].waitingListMessage"></div>
                         </ng-container>
                         <div class="alert alert-info">
                             <div>
@@ -47,7 +47,7 @@
                             </div>
                         </div>
                         <app-reservation [type]="bookingType.group" (showForm)="showTicketForm($event)" 
-                            [availableTicketCount]="availableTicketCount" [existingTicketCount]="existingTicketCount"></app-reservation>
+                            [enableWaitingList]="enableWaitingList"></app-reservation>
                     </ng-container>
                 </mat-tab>
             </mat-tab-group>

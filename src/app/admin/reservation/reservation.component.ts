@@ -16,8 +16,7 @@ import { DialogService, FireStoreService, NotifyService, StorageService, Transla
 export class ReservationComponent implements OnInit {
 
   @Input() canManageReservation = false;
-  @Input() availableTicketCount = 0;
-  @Input() existingTicketCount = 0;
+  @Input() enableWaitingList = false;
   @Input() reservationData: Array<ITicket> = [];
   @Input() set type (val: BookingType) {
     this.model.selectedType = val;
@@ -115,8 +114,7 @@ export class ReservationComponent implements OnInit {
   }
 
   private add(): void {
-    const currentReservationCount = this.model.form.value.participants.length + 1;
-    if ((this.existingTicketCount + currentReservationCount) > this.availableTicketCount) {
+    if (this.enableWaitingList) {
       this.model.form.patchValue({
         bookingStatus: BookingStatus.waiting
       });

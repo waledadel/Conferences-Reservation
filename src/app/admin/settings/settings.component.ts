@@ -100,6 +100,7 @@ export class SettingsComponent implements OnInit {
       availableTicketsCount: [null, [Validators.required, Validators.min(1)]],
       waitingListMessage: ['', Validators.required],
       welcomeMessage: ['', Validators.required],
+      enableWaitingList: [false, Validators.required]
     });
   }
 
@@ -163,7 +164,8 @@ export class SettingsComponent implements OnInit {
       availableTicketsCount: item.availableTicketsCount,
       waitingListMessage: item.waitingListMessage,
       welcomeMessage: item.welcomeMessage,
-      childBedPrice: item.childBedPrice
+      childBedPrice: item.childBedPrice,
+      enableWaitingList: item.enableWaitingList ?? false
     });
     if (item.imageUrl != '') {
       this.model.selectedImage = item.imageUrl;
