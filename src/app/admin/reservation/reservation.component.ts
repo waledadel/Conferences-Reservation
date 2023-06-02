@@ -90,6 +90,8 @@ export class ReservationComponent implements OnInit {
         this.dialogService.openConfirmBookingDialog(isGrouping).afterClosed().subscribe((res: {confirmBooking: boolean}) => {
           if (res && res.confirmBooking) {
             this.add();
+          } else {
+            this.model.isLoading = false;
           }
         });
       }
