@@ -6,8 +6,18 @@
 </div>
 <div mat-dialog-content>
     <div class="px-0 py-3">
-        <div [innerHTML]="'common.sureToBook' | translate:{ isGrouping: isGrouping }"></div>
-        <div class="font-weight-bold pt-2"> {{'common.completeBooking' | translate}} </div>
+        <div *ngIf="isGrouping; else individualTemp">
+            حجزك لمجموعة وليس فرد واحد ، للتأكيد اضغط موافق.
+            <div>
+                لحجز فرد: اضغط الغاء و اعد الحجز من جديد بعد اختيار حجز فرد
+            </div>
+        </div>
+        <ng-template #individualTemp>
+            حجزك لفرد واحد وليس مجموعة، للتأكيد اضغط موافق.
+            <div>
+                لحجز مجموعة: اضغط الغاء و اعد الحجز من جديد بعد اختيار حجز مجموعة
+            </div>
+        </ng-template>
     </div>
 </div>
 
@@ -16,7 +26,7 @@
         {{'common.cancel' | translate}}
     </button>
     <button mat-flat-button color="primary" (click)="confirm()" cdkFocusInitial>
-        {{'common.confirmBooking' | translate}}
+        موافق
     </button>
 </div>
 
