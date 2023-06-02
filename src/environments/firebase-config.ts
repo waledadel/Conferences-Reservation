@@ -8,12 +8,12 @@ export const firebaseConfig = {
     measurementId: 'G-V3X3TPTNQY'
 };
 
-export const devConfig = {
-    apiKey: 'AIzaSyAUbh5S6iFkdRIMhqIUYrmgewn_tlOzsdI',
-    authDomain: 'conference-reservation-dev.firebaseapp.com',
-    projectId: 'conference-reservation-dev',
-    storageBucket: 'conference-reservation-dev.appspot.com',
-    messagingSenderId: '1007042863705',
-    appId: '1:1007042863705:web:5c52cec2a204c582328748',
-    measurementId: 'G-81R6CR077P'
-};
+// export const firebaseConfig = {
+//     apiKey: 'AIzaSyAUbh5S6iFkdRIMhqIUYrmgewn_tlOzsdI',
+//     authDomain: 'conference-reservation-dev.firebaseapp.com',
+//     projectId: 'conference-reservation-dev',
+//     storageBucket: 'conference-reservation-dev.appspot.com',
+//     messagingSenderId: '1007042863705',
+//     appId: '1:1007042863705:web:5c52cec2a204c582328748',
+//     measurementId: 'G-81R6CR077P'
+// };
