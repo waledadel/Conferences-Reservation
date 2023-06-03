@@ -1,12 +1,14 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
 import * as XLSX from 'xlsx';
 
 import { Constants } from '@app/constants';
-import { IRoom } from '@app/models';
+import { IRoom, IRoomDataSource } from '@app/models';
 import { NotifyService, DialogService, TranslationService, FireStoreService } from '@app/services';
 import { ManageRoomsComponent } from './manage-rooms/manage-rooms.component';
 import { AdminService } from '../admin.service';
+import { RoomsModel } from './rooms.model';
 
 @Component({
   templateUrl: './rooms.component.html',
@@ -14,12 +16,8 @@ import { AdminService } from '../admin.service';
 })
 export class RoomsComponent implements OnInit {
 
-  readonly desktopColumn = ['room', 'building', 'floor', 'sizeName', 'size', 'displayedName', 'current', 'available', 'notUsed', 'actions'];
-  displayedColumns: string[] = [];
-  dataSource: MatTableDataSource<IRoom> = new MatTableDataSource<IRoom>([]);
-  isMobileView = false;
-  showLoading = false;
-  showErrorMessage = false;
+  @ViewChild(MatSort, {static: true}) sort!: MatSort;
+  model: RoomsModel;
 
   get isMobile(): boolean {
     return window.innerWidth < Constants.Grid.large;
@@ -31,7 +29,9 @@ export class RoomsComponent implements OnInit {
     private notifyService: NotifyService,
     private translationService: TranslationService,
     private adminService: AdminService
-  ) {}
+  ) {
+    this.model = new RoomsModel();
+  }
 
   ngOnInit(): void {
     this.detectMobileView();
@@ -44,9 +44,9 @@ export class RoomsComponent implements OnInit {
   }
 
   readExcelFile(event: Event): void {
-    this.showLoading = true;
-    this.showErrorMessage = false;
-    this.dataSource = new MatTableDataSource<IRoom>([]);
+    this.model.showLoading = true;
+    this.model.showErrorMessage = false;
+    this.model.dataSource = new MatTableDataSource<IRoom>([]);
     const fileInput = event.target as HTMLInputElement;
     const selectedFile = fileInput.files?.[0];
     if (selectedFile && selectedFile.name.includes('.xlsx')) {
@@ -59,39 +59,47 @@ export class RoomsComponent implements OnInit {
         const data = XLSX.utils.sheet_to_json<Array<string>>(sheet, { header: 1 });
         const dataSource: Array<IRoom> = [];
         data.forEach((row, index) => {
-          if (index > 0 && row && row.length === 4) {
-            let roomSize = 0;
-            if (row[3].toString().includes('+')) {
-              const list = row[3].split('+');
-              roomSize = list.reduce((accumulator, currentValue) => accumulator + (+currentValue), 0);
-            } else {
-              roomSize = (+row[3]);
+          const header = data[0];
+          if (header[0] === 'room' && header[1] === 'building' && header[2] === 'floor' && header[3] === 'sizeName') {
+            if (index > 0 && row && row.length === 4) {
+              let roomSize = 0;
+              if (row[3].toString().includes('+')) {
+                const list = row[3].split('+');
+                roomSize = list.reduce((accumulator, currentValue) => accumulator + (+currentValue), 0);
+              } else {
+                roomSize = (+row[3]);
+              }
+              dataSource.push({
+                id: index.toString(),
+                room: +(row[0]),
+                building: +(row[1]),
+                floor: +(row[2]),
+                sizeName: row[3],
+                size: roomSize,
+                displayedName: `Room:${row[0]}-(${row[3]})-Building:${row[1]}-Floor:${row[2]}-Available:${roomSize}`,
+                current: 0,
+                available: roomSize,
+                notUsed: 0 
+              });
             }
-            dataSource.push({
-              id: '',
-              room: +(row[0]),
-              building: +(row[1]),
-              floor: +(row[2]),
-              sizeName: row[3],
-              size: roomSize,
-              displayedName: `Room:${row[0]}-(${row[3]})-Building:${row[1]}-Floor:${row[2]}-Available:${roomSize}`,
-              current: 0,
-              available: roomSize,
-              notUsed: 0 
-            });
+          } else {
+            this.model.showErrorMessage = true;
           }
         });
         if (dataSource.length > 0) {
-          this.dataSource = new MatTableDataSource(dataSource);
+          this.model.dataSource = new MatTableDataSource(dataSource);
+          this.model.isDataLocal = true;
         } else {
-          this.showErrorMessage = true;
+          this.model.showErrorMessage = true;
+          this.model.isDataLocal = false;
         }
-        this.showLoading = false;
+        this.model.showLoading = false;
       };
       reader.readAsBinaryString(selectedFile);
     } else {
-      this.showLoading = false;
-      this.showErrorMessage = true;
+      this.model.showLoading = false;
+      this.model.showErrorMessage = true;
+      this.model.isDataLocal = false;
     }
   }
 
@@ -104,27 +112,76 @@ export class RoomsComponent implements OnInit {
   }
 
   delete(item: IRoom): void {
-    this.dialogService.openConfirmDeleteDialog(item.displayedName).afterClosed().subscribe((res: {remove: boolean}) => {
-      if (res && res.remove) {
-        // this.fireStoreService.delete(Constants.RealtimeDatabase.rooms, item.id).then(() => {
-          this.notifyService.showNotifier(this.translationService.instant('notifications.createdSuccessfully'));
-        // });
+    this.dialogService.openConfirmDeleteDialog(item.displayedName).afterClosed().subscribe((res: {confirmDelete: boolean}) => {
+      if (res && res.confirmDelete) {
+        if (this.model.isDataLocal) {
+          const index = this.model.dataSource.data.findIndex(t => t.id === item.id);
+          if (index > -1) {
+            this.model.dataSource.data.splice(index, 1);
+            this.model.dataSource._updateChangeSubscription();
+            this.notifyService.showNotifier(this.translationService.instant('notifications.removedSuccessfully'));
+          }
+        } else {
+          this.fireStoreService.delete(`${Constants.RealtimeDatabase.rooms}/${item.id}`).subscribe(() => {
+            const index = this.model.dataSource.data.findIndex(t => t.id === item.id);
+            if (index > -1) {
+              this.model.dataSource.data.splice(index, 1);
+              this.model.dataSource._updateChangeSubscription();
+              this.notifyService.showNotifier(this.translationService.instant('notifications.removedSuccessfully')); 
+            }
+          });
+        }
       }
     });
   }
 
+  uploadRooms(): void {
+    const rooms: Array<IRoomDataSource> = this.model.dataSource.data.map(r => ({
+      id: r.id,
+      available: r.available,
+      building: r.building,
+      current: r.current,
+      floor: r.floor,
+      notUsed: r.notUsed,
+      room: r.room,
+      sizeName: r.sizeName
+    }));
+    this.fireStoreService.uploadRooms(rooms).subscribe(() => {
+      this.model.isDataLocal = false;
+      this.getRooms();
+    });
+  }
+
   private getRooms(): void {
-    this.fireStoreService.getAll(Constants.RealtimeDatabase.rooms).subscribe(data => {
-      // this.dataSource.data = data;
+    this.fireStoreService.getAll<IRoom>(Constants.RealtimeDatabase.rooms).subscribe(data => {
+      if (data && data.length > 0) {
+        this.model.dataSource.data = data.map(r => ({
+          ...r,
+          displayedName: `Room:${r.room}-(${r.sizeName})-Building:${r.building}-Floor:${r.floor}-Available:${r.available}`,
+          size: this.getRoomCountSize(r.sizeName)
+        }));
+        this.model.dataSource.sort = this.sort;
+      }
     });
   }
 
   private detectMobileView(): void {
-    this.isMobileView = this.isMobile;
-    if (this.isMobileView) {
-      this.displayedColumns = ['mobileView'];
+    this.model.isMobileView = this.isMobile;
+    if (this.model.isMobileView) {
+      this.model.displayedColumns = ['mobileView'];
     } else {
-      this.displayedColumns = this.desktopColumn;
+      this.model.displayedColumns = this.model.desktopColumn;
     }
+  }
+
+  private getRoomCountSize(sizeName: string): number {
+    let roomSize = 0;
+    if (sizeName.toString().includes('+')) {
+      const list = sizeName.split('+');
+      roomSize = list.reduce((accumulator, currentValue) => accumulator + (+currentValue), 0);
+    } else {
+      roomSize = (+sizeName);
+    }
+    return roomSize;
   }
 }

@@ -1,8 +1,8 @@
-<div *ngIf="showLoading" class="loading-container d-flex justify-content-center align-items-center">
+<div *ngIf="model.showLoading" class="loading-container d-flex justify-content-center align-items-center">
   <div class="lds-hourglass"></div>
 </div>
 
-<div *ngIf="showErrorMessage" class="alert alert-danger">
+<div *ngIf="model.showErrorMessage" class="alert alert-danger">
   <div>حدث خطا أثناء قراءة ملف الأكسيل. برجاء مراعاة الآتي:</div>
   <ul>
     <li>يجب أن يتكون الملف من 4 أعمدة فقط.</li>
@@ -18,88 +18,139 @@
   </ul>
 </div>
 
-<div class="container-fluid table-container" [class.px-0]="isMobileView">
-  <div class="w-100" [ngClass]="isMobileView ? 'h-100' : 'mt-2'">
+<div class="container-fluid table-container" [class.px-0]="model.isMobileView">
+  <div class="w-100" [ngClass]="model.isMobileView ? 'h-100' : 'mt-2'">
     <div class="w-100 d-flex h-100">
-      <div *ngIf="dataSource && dataSource.data.length < 1" class="w-100">
+      <div *ngIf="model.dataSource && model.dataSource.data.length < 1" class="w-100">
         <app-empty-data></app-empty-data>
       </div>
-      <div *ngIf="dataSource && dataSource.data.length > 0" class="mat-elevation-z8">
-        <table mat-table [dataSource]="dataSource">
-          <ng-container matColumnDef="room">
-            <th mat-header-cell *matHeaderCellDef>الحجرة</th>
-            <td mat-cell *matCellDef="let element">{{element.room}}</td>
-            <td mat-footer-cell *matFooterCellDef>
-              {{'common.total' | translate}}: <b>{{dataSource.data.length}}</b> 
+      <div [hidden]="model.dataSource && model.dataSource.data.length < 1" class="mat-elevation-z8">
+        <table mat-table [dataSource]="model.dataSource" matSort matSortActive="displayedName" matSortDirection="asc" matSortDisableClear="true">
+          
+          <ng-container matColumnDef="mobileView">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let element" class="py-2">
+              <div class="d-flex justify-content-between align-items-start">
+                <div class="d-flex flex-column">
+                  <div class="d-flex flex-column">
+                    <b>اسم الغرفة:</b>
+                    <div class="font-size-13">{{element.displayedName}}</div>
+                  </div>
+                  <div> <b>الحجرة</b>: {{element.room}} </div>
+                  <div> <b>المبني</b>: {{element.building}} </div>
+                  <div> <b>الطابق</b>: {{element.floor}} </div>
+                  <div> <b>سعة الغرفة</b>: {{element.sizeName}} </div>
+                  <div> <b>السعة</b>: {{element.size}} </div>
+                  <div> <b>الحالي</b>: {{element.size}} </div>
+                  <div> <b>المتاح</b>: {{element.available}} </div>
+                  <div> <b>الغير مستخدم</b>: {{element.notUsed}} </div>
+                </div>
+                <div class="d-flex flex-column">
+                  <button mat-icon-button color="primary" [matMenuTriggerFor]="menu">
+                    <i class="fa-solid fa-ellipsis"></i>
+                  </button>
+                  <mat-menu #menu="matMenu">
+                    <button mat-menu-item class="primary" (click)="update(element)">
+                      {{'common.edit' | translate}}
+                    </button>
+                    <button mat-menu-item class="text-danger" (click)="delete(element)">
+                      {{'common.delete' | translate}}
+                    </button>
+                  </mat-menu>
+                </div>
+              </div>
             </td>
+            <td mat-footer-cell *matFooterCellDef class="px-0">
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="pr-3">{{'common.total' | translate}}: <b>{{model.dataSource.data.length}}</b></div>
+                  <!-- <button mat-icon-button color="primary" class="d-flex justify-content-center align-items-center" (click)="openExportModal()">
+                    <i class="fa-solid fa-download font-size-18"></i>
+                  </button> -->
+              </div>
+          </td>
+          </ng-container>
+
+          <ng-container matColumnDef="displayedName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>اسم الغرفة</th>
+            <td mat-cell *matCellDef="let element">{{ element.displayedName }}</td>
+            <td mat-footer-cell *matFooterCellDef>
+              {{'common.total' | translate}}: <b>{{model.dataSource.data.length}}</b> 
+            </td>
+          </ng-container>
+          
+          <ng-container matColumnDef="room">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>الحجرة</th>
+            <td mat-cell *matCellDef="let element">{{element.room}}</td>
+            <td mat-footer-cell *matFooterCellDef></td>
           </ng-container>
 
           <ng-container matColumnDef="building">
-            <th mat-header-cell *matHeaderCellDef>المبني</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>المبني</th>
             <td mat-cell *matCellDef="let element">{{element.building}}</td>
             <td mat-footer-cell *matFooterCellDef></td>
           </ng-container>
 
           <ng-container matColumnDef="floor">
-            <th mat-header-cell *matHeaderCellDef>الطابق</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>الطابق</th>
             <td mat-cell *matCellDef="let element">{{element.floor}}</td>
             <td mat-footer-cell *matFooterCellDef></td>
           </ng-container>
 
           <ng-container matColumnDef="sizeName">
-            <th mat-header-cell *matHeaderCellDef>سعة الغرفة</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>سعة الغرفة</th>
             <td mat-cell *matCellDef="let element">{{ element.sizeName }}</td>
             <td mat-footer-cell *matFooterCellDef></td>
           </ng-container>
 
           <ng-container matColumnDef="size">
-            <th mat-header-cell *matHeaderCellDef>السعة</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>السعة</th>
             <td mat-cell *matCellDef="let element">{{ element.size }}</td>
             <td mat-footer-cell *matFooterCellDef></td>
           </ng-container>
 
-          <ng-container matColumnDef="displayedName">
-            <th mat-header-cell *matHeaderCellDef>اسم الغرفة</th>
-            <td mat-cell *matCellDef="let element">{{ element.displayedName }}</td>
-            <td mat-footer-cell *matFooterCellDef></td>
-          </ng-container>
-
           <ng-container matColumnDef="current">
-            <th mat-header-cell *matHeaderCellDef>الحالي</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>الحالي</th>
             <td mat-cell *matCellDef="let element">{{element.current}}</td>
             <td mat-footer-cell *matFooterCellDef></td>
           </ng-container>
 
           <ng-container matColumnDef="available">
-            <th mat-header-cell *matHeaderCellDef>المتاح</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>المتاح</th>
             <td mat-cell *matCellDef="let element">{{element.available}}</td>
             <td mat-footer-cell *matFooterCellDef></td>
           </ng-container>
 
           <ng-container matColumnDef="notUsed">
-            <th mat-header-cell *matHeaderCellDef>الغير مستخدم</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>الغير مستخدم</th>
             <td mat-cell *matCellDef="let element">{{element.notUsed}}</td>
             <td mat-footer-cell *matFooterCellDef></td>
           </ng-container>
 
           <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef> </th>
+            <th mat-header-cell *matHeaderCellDef>
+              <button *ngIf="model.isDataLocal" mat-icon-button color="primary" (click)="uploadRooms()">
+                <mat-icon>cloud_upload</mat-icon>
+            </button>
+            </th>
             <td mat-cell *matCellDef="let element">
-              <div class="d-flex">
-                <button mat-icon-button color="primary" (click)="update(element)">
-                  <mat-icon>edit</mat-icon>
+              <button mat-icon-button color="primary" [matMenuTriggerFor]="menu">
+                <i class="fa-solid fa-ellipsis"></i>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item class="primary" (click)="update(element)">
+                  {{'common.edit' | translate}}
                 </button>
-                <button mat-icon-button color="warn" (click)="delete(element)">
-                  <mat-icon>delete</mat-icon>
+                <button mat-menu-item class="text-danger" (click)="delete(element)">
+                  {{'common.delete' | translate}}
                 </button>
-              </div>
+              </mat-menu>
             </td>
             <td mat-footer-cell *matFooterCellDef></td>
           </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-          <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></tr>
+          <tr mat-header-row *matHeaderRowDef="model.displayedColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: model.displayedColumns;"></tr>
+          <tr mat-footer-row *matFooterRowDef="model.displayedColumns; sticky: true"></tr>
         </table>
       </div>
     </div>

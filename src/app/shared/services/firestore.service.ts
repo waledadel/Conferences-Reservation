@@ -6,7 +6,7 @@ import { AngularFirestore, AngularFirestoreCollection, DocumentData, QueryFn } f
 import { Timestamp } from 'firebase/firestore';
 
 import { Constants } from '@app/constants';
-import { ICollectionData, IRelatedMemberViewModel, IPrimaryDataSourceVm, ITicket, ITicketForm, IAllSubscriptionDataSourceVm, IUser } from '@app/models';
+import { ICollectionData, IRelatedMemberViewModel, IPrimaryDataSourceVm, ITicket, ITicketForm, IAllSubscriptionDataSourceVm, IUser, IRoomDataSource } from '@app/models';
 import { convertSnaps } from './db-utils';
 
 @Injectable({
@@ -348,6 +348,15 @@ export class FireStoreService {
   getCollectionData(options: ICollectionData): Observable<Array<DocumentData>> {
     const documentQuery = query(this.getCollection(options.collectionName), where(options.fieldPath, options.opStr, options.value));
     return this.collectionData(documentQuery, { idField: options.idField }) as Observable<Array<DocumentData>>;
+  }
+
+  uploadRooms(data: Array<IRoomDataSource>): Observable<unknown> {
+    const batch = this.angularFirestore.firestore.batch();
+    data.forEach((doc) => {
+      const docRef = this.angularFirestore.doc(`/${Constants.RealtimeDatabase.rooms}/${doc.id}`).ref;
+      batch.set(docRef, doc);
+    });
+    return from(batch.commit()).pipe(map(() => null));
   }
 
   private collectionData<T = DocumentData>(query: Query<T>, options?: { idField?: string; }): Observable<T[]> {
