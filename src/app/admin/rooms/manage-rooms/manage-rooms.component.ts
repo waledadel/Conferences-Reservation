@@ -21,9 +21,9 @@ export class ManageRoomsComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: IRoom
     ) {
       this.form = this.formBuilder.group({
-        room: [0, Validators.required],
-        building: [0, Validators.required],
-        floor: [0, Validators.required],
+        room: [null, Validators.required],
+        building: [null, Validators.required],
+        floor: [null, Validators.required],
         sizeName: ['', Validators.required]
       });
     }
@@ -38,7 +38,7 @@ export class ManageRoomsComponent implements OnInit {
       if (this.data) {
         this.update();
       } else {
-        // this.add();
+        this.add();
       }
     }
   }
@@ -59,12 +59,29 @@ export class ManageRoomsComponent implements OnInit {
     }
   }
 
-  // private add(): void {
-  //   this.fireStoreService.addDoc<IBus>(Constants.RealtimeDatabase.buses, this.form.value).subscribe(() => {
-  //     this.close(true);
-  //     this.notifyService.showNotifier(this.translationService.instant('notifications.createdSuccessfully'));
-  //   });
-  // }
+  private add(): void {
+    const formValue: IRoom = this.form.value;
+    let roomSize = 0;
+    if (formValue.sizeName.toString().includes('+')) {
+      const list = formValue.sizeName.split('+');
+      roomSize = list.reduce((accumulator, currentValue) => accumulator + (+currentValue), 0);
+    } else {
+      roomSize = (+formValue.sizeName);
+    }
+    const data: IRoom = {
+      ...formValue,
+      available: roomSize,
+      notUsed: 0,
+      current: 0,
+      building: +formValue.building,
+      floor: +formValue.floor,
+      room: +formValue.room,
+    };
+    this.fireStoreService.addDoc<IRoom>(Constants.RealtimeDatabase.rooms, data).subscribe(() => {
+      this.close(true);
+      this.notifyService.showNotifier(this.translationService.instant('notifications.createdSuccessfully'));
+    });
+  }
 
   private update(): void {
     this.fireStoreService.updateDoc(`${Constants.RealtimeDatabase.rooms}/${this.data.id}`, this.form.value).subscribe(() => {

@@ -5,15 +5,15 @@
     </button>
 </div>
 <div mat-dialog-content>
-    <form [formGroup]="form" #categoryForm="ngForm" novalidate class="bg-white rounded">
-        <mat-form-field class="w-100">
+    <form [formGroup]="form" #categoryForm="ngForm" novalidate class="row mx-0 py-3 bg-white rounded">
+        <mat-form-field class="col-lg-6 col-12">
             <mat-label>{{'common.name' | translate}}</mat-label>
             <input type="text" matInput formControlName="name" inputmode="text">
             <mat-error *ngIf="form.get('name')!.hasError('required')">
                 {{'validations.requiredField' | translate}}
             </mat-error>
         </mat-form-field>
-        <mat-form-field class="w-100">
+        <mat-form-field class="col-lg-6 col-12">
             <mat-label>{{'common.price' | translate}}</mat-label>
             <input type="text" matInput formControlName="price" inputmode="numeric">
             <mat-error *ngIf="form.get('price')!.hasError('required')">

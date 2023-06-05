@@ -71,7 +71,7 @@ export class RoomsComponent implements OnInit {
                 roomSize = (+row[3]);
               }
               dataSource.push({
-                id: index.toString(),
+                id: '',
                 room: +(row[0]),
                 building: +(row[1]),
                 floor: +(row[2]),
@@ -103,14 +103,18 @@ export class RoomsComponent implements OnInit {
     }
   }
 
-  // add(): void {
-  //   // this.dialogService.openAddEditDialog(ManageRoomsComponent, 'lg', false);
-  // }
+  add(): void {
+    this.dialogService.openAddEditDialog(ManageRoomsComponent, 'lg', false).afterClosed().subscribe((res: {fireRefresh: boolean}) => {
+      if (res && res.fireRefresh) {
+        this.getRooms();
+      }
+    });
+  }
 
   update(item: IRoom): void {
     this.dialogService.openAddEditDialog(ManageRoomsComponent, 'lg', true, item).afterClosed()
     .subscribe((res: {fireRefresh: boolean}) => {
-      if (res.fireRefresh) {
+      if (res && res.fireRefresh) {
         this.updateTableRow(item);
       }
     });
@@ -143,7 +147,7 @@ export class RoomsComponent implements OnInit {
   uploadRooms(): void {
     this.model.showLoading = true;
     const rooms: Array<IRoomDataSource> = this.model.dataSource.data.map(r => ({
-      id: r.id,
+      id: this.fireStoreService.createId(),
       available: r.available,
       building: r.building,
       current: r.current,
@@ -183,7 +187,7 @@ export class RoomsComponent implements OnInit {
         this.model.dataSource.data = data.map(r => ({
           ...r,
           displayedName: `Room:${r.room}-(${r.sizeName})-Building:${r.building}-Floor:${r.floor}-Available:${r.available}`,
-          size: this.getRoomCountSize(r.sizeName)
+          size: this.getRoomCountSize(r.sizeName),
         }));
         this.model.dataSource.sort = this.sort;
       }

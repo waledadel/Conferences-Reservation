@@ -2,10 +2,6 @@
   <div class="lds-hourglass"></div>
 </div>
 
-<!-- <div *ngIf="model.noFileSelected" class="alert alert-warning">
-  لم يتم إختيار اي ملف
-</div> -->
-
 <div *ngIf="model.showErrorMessage" class="alert alert-danger">
   <div>حدث خطا أثناء قراءة ملف الأكسيل. برجاء مراعاة الآتي:</div>
   <ul>
@@ -67,9 +63,6 @@
             <td mat-footer-cell *matFooterCellDef class="px-0">
               <div class="d-flex justify-content-between align-items-center">
                 <div class="pr-3">{{'common.total' | translate}}: <b>{{model.dataSource.data.length}}</b></div>
-                <button mat-icon-button color="warn" (click)="removeAll()">
-                  <mat-icon>clear</mat-icon>
-                </button>
               </div>
           </td>
           </ng-container>
@@ -131,14 +124,7 @@
           </ng-container>
 
           <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef>
-              <button *ngIf="model.isDataLocal" mat-icon-button color="primary" (click)="uploadRooms()">
-                <mat-icon>cloud_upload</mat-icon>
-              </button>
-              <button mat-icon-button color="warn" (click)="removeAll()">
-                <mat-icon>clear</mat-icon>
-              </button>
-            </th>
+            <th mat-header-cell *matHeaderCellDef></th>
             <td mat-cell *matCellDef="let element">
               <button mat-icon-button color="primary" [matMenuTriggerFor]="menu">
                 <i class="fa-solid fa-ellipsis"></i>
@@ -164,13 +150,24 @@
   </div>
 </div>
 
-<button mat-icon-button color="primary" (click)="input.click()" class="mobile-filter-button">
-  <mat-icon>add</mat-icon>
+<button mat-icon-button color="primary" class="mobile-filter-button d-flex" [matMenuTriggerFor]="menu">
+  <i class="fa-solid fa-cog"></i>
+  <mat-menu #menu="matMenu">
+    <button *ngIf="model.dataSource.data.length < 1" mat-menu-item class="primary" (click)="input.click()">
+      إضافة الغرف من ملف أكسيل
+    </button>
+    <button mat-menu-item class="primary" (click)="add()">
+      إضافة غرفة
+    </button>
+    <button *ngIf="model.isDataLocal" mat-menu-item class="primary" (click)="uploadRooms()">
+      حفظ جميع الغرف
+    </button>
+    <button *ngIf="model.dataSource.data.length > 0" mat-menu-item class="text-danger" (click)="removeAll()">
+      حذف جميع الغرف
+    </button>
+  </mat-menu>
 </button>
 
-<!-- <button *ngIf="model.isMobileView" mat-mini-fab color="primary" (click)="input.click()" class="mobile-fab-button">
-  <mat-icon>add</mat-icon>
-</button> -->
 
 <input type="file" [hidden]="true" #input (change)="readExcelFile($event)">
 

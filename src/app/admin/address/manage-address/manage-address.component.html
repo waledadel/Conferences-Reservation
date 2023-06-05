@@ -5,8 +5,8 @@
     </button>
 </div>
 <div mat-dialog-content>
-    <form [formGroup]="form" #categoryForm="ngForm" novalidate>
-        <mat-form-field class="w-100">
+    <form [formGroup]="form" #categoryForm="ngForm" novalidate class="row mx-0 py-3 bg-white rounded">
+        <mat-form-field class="col-lg-6 col-12">
             <mat-label>{{'address.title' | translate}}</mat-label>
             <input type="text" matInput formControlName="name">
             <mat-error *ngIf="form.get('name')!.hasError('required')">

@@ -287,12 +287,14 @@ mat-mdc-fab.mat-primary, .mat-mdc-mini-fab.mat-primary {
 
 .mobile-filter-button {
   position: fixed !important;
-  top: 3px;
+  top: 9px;
   left: 10px;
   z-index: 100 !important; // Not appear in IOS
   color: #fff !important;
 }
 
-.font-size-18 {
-  font-size: 18px;
+@media(max-width: 769px) {
+  .mobile-filter-button {
+    top: 3px;
+  }
 }

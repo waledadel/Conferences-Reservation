@@ -116,9 +116,6 @@
                         <td mat-footer-cell *matFooterCellDef class="px-0">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="pr-3">{{'common.total' | translate}}: <b>{{model.total}}</b></div>
-                                <button mat-icon-button color="primary" class="d-flex justify-content-center align-items-center" (click)="openExportModal()">
-                                  <i class="fa-solid fa-download font-size-18"></i>
-                                </button>
                             </div>
                         </td>
                     </ng-container>
@@ -334,11 +331,7 @@
                     </ng-container>
         
                     <ng-container matColumnDef="actions" stickyEnd>
-                        <th mat-header-cell *matHeaderCellDef class="text-center">
-                            <button mat-icon-button color="primary" (click)="showAdvancedFilter()">
-                                <mat-icon>filter_list</mat-icon>
-                            </button>
-                        </th>
+                        <th mat-header-cell *matHeaderCellDef></th>
                         <td mat-cell *matCellDef="let element">
                             <button mat-icon-button color="primary" [matMenuTriggerFor]="menu">
                                 <i class="fa-solid fa-ellipsis"></i>
@@ -350,11 +343,7 @@
                                     translate}}</button>
                             </mat-menu>
                         </td>
-                        <td mat-footer-cell *matFooterCellDef>
-                            <button mat-icon-button color="primary" class="d-flex justify-content-center align-items-center" (click)="openExportModal()">
-                                <i class="fa-solid fa-download font-size-18"></i>
-                            </button>
-                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
                     </ng-container>
         
                     <tr mat-header-row *matHeaderRowDef="model.displayedColumns; sticky: true"></tr>
@@ -362,12 +351,24 @@
                     <tr mat-footer-row *matFooterRowDef="model.displayedColumns; sticky: true"></tr>
                 </table>
             </div>
-            <button *ngIf="model.isMobileView" mat-icon-button color="primary" (click)="showAdvancedFilter()" class="mobile-filter-button">
-                <mat-icon>filter_list</mat-icon>
-            </button>
         </div>
     </div>
 </div>
+
+
+<button mat-icon-button color="primary" class="mobile-filter-button d-flex" [matMenuTriggerFor]="menu">
+    <i class="fa-solid fa-gear"></i>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item class="primary" (click)="showAdvancedFilter()">
+        <i class="fa-solid fa-filter"></i>&nbsp;
+        البحث المتقدم
+      </button>
+      <button mat-menu-item class="primary" (click)="openExportModal()">
+        <i class="fa-solid fa-download"></i>&nbsp;
+        تصدير الأعضاء 
+      </button>
+    </mat-menu>
+</button>
 
 <ng-template #empty>
     ---
