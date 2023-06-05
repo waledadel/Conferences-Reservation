@@ -3,13 +3,14 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { Constants } from '@app/constants';
-import { BookingStatus, Gender, IAddress, IAllSubscriptionDataSourceVm, IBus } from '@app/models';
+import { BookingStatus, Gender, IAddress, IAllSubscriptionDataSourceVm, IBus, IRoom } from '@app/models';
 import { DialogService, FireStoreService } from '@app/services';
 import { AdminService } from '../admin.service';
 import { IAdvancedFilterForm } from '../advanced-search/advanced-search.models';
 import { ExportMembersComponent, IExportMembers } from '../export-members/export-members.component';
 import { AllSubscriptionModel } from './all-subscription.models';
 import { AdvancedSearchComponent } from '../advanced-search/advanced-search.component';
+import { AddRoomToMemberComponent } from './add-room-to-member/add-room-to-member.component';
 
 @Component({
   templateUrl: './all-subscription.component.html'
@@ -37,8 +38,30 @@ export class AllSubscriptionComponent implements OnInit {
   ngOnInit(): void {
     this.detectMobileView();
     this.getBuses();
+    this.getRooms();
     this.getAddress();
     this.adminService.updatePageTitle('كل المشتركين');
+  }
+
+  isAllSelected(): boolean {
+    const numSelected = this.model.selection.selected.length;
+    const numRows = this.model.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  toggleAllRows(): void {
+    if (this.isAllSelected()) {
+      this.model.selection.clear();
+      return;
+    }
+    this.model.selection.select(...this.model.dataSource.data);
+  }
+
+  checkboxLabel(row?: IAllSubscriptionDataSourceVm): string {
+    if (!row) {
+      return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
+    }
+    return `${this.model.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
   }
 
   
@@ -117,6 +140,12 @@ export class AllSubscriptionComponent implements OnInit {
     });
   }
 
+  addRoomToMember(item: IAllSubscriptionDataSourceVm): void {
+    this.dialogService.openAddEditDialog(AddRoomToMemberComponent, 'lg', true, item).afterClosed().subscribe(res => {
+
+    });
+  }
+
   private getAddress(): void {
     this.fireStoreService.getAll<IAddress>(Constants.RealtimeDatabase.address).subscribe(data => {
       this.model.addressList = data;
@@ -126,10 +155,12 @@ export class AllSubscriptionComponent implements OnInit {
 
   private getTickets(): void {
     this.fireStoreService.getAllSubscription().subscribe(res => {
-      const data = res.map(item => ({
+      const data: Array<IAllSubscriptionDataSourceVm> = res.map(item => ({
         ...item,
         address: this.getAddressById(item.addressId),
-        transportationName: this.getBusNameById(item.transportationId)
+        transportationName: this.getBusNameById(item.transportationId),
+        displayedRoomName: this.getRoomNameById(item.roomId),
+        mainMemberName: item.isMain ? '' : res.find(m => m.id === item.primaryId)?.name ?? ''
       }));
       this.model.dataSource = new MatTableDataSource(data);
       this.model.dataSource.sort = this.sort;
@@ -173,6 +204,40 @@ export class AllSubscriptionComponent implements OnInit {
       return '';
     }
     return '';
+  }
+
+  private getRoomNameById(id: string): string {
+    if (id && this.model.rooms.length > 0) {
+      const room = this.model.rooms.find(b => b.id === id);
+      if (room) {
+        return room.displayedName;
+      }
+      return '';
+    }
+    return '';
+  }
+
+  private getRooms(): void {
+    this.fireStoreService.getAll<IRoom>(Constants.RealtimeDatabase.rooms).subscribe(data => {
+      if (data && data.length > 0) {
+        this.model.rooms = data.map(r => ({
+          ...r,
+          displayedName: `Room:${r.room}-(${r.sizeName})-Building:${r.building}-Floor:${r.floor}-Available:${r.available}`,
+          size: this.getRoomCountSize(r.sizeName),
+        }));
+      }
+    });
+  }
+
+  private getRoomCountSize(sizeName: string): number {
+    let roomSize = 0;
+    if (sizeName.toString().includes('+')) {
+      const list = sizeName.split('+');
+      roomSize = list.reduce((accumulator, currentValue) => accumulator + (+currentValue), 0);
+    } else {
+      roomSize = (+sizeName);
+    }
+    return roomSize;
   }
 
   getFilterPredicate(): ((data: IAllSubscriptionDataSourceVm, filter: string) => boolean) {

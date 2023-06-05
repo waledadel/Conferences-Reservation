@@ -57,13 +57,18 @@
                   <div><b>{{'common.transportationName' | translate}}:</b> {{element.transportationName}}</div>
                   <div class="d-flex">
                     <b>{{'common.room' | translate}}:</b>&nbsp;
-                    <ng-container *ngIf="element.room; else empty">
-                      {{ element.room }}
+                    <ng-container *ngIf="element.displayedRoomName; else empty">
+                      {{ element.displayedRoomName }}
                     </ng-container>
-                    <ng-template #empty>---</ng-template>
                   </div>
                 </div>
                 <div class="d-flex justify-content-between flex-column">
+                  <mat-checkbox (click)="$event.stopPropagation()"
+                    (change)="$event ? model.selection.toggle(element) : null"
+                    [checked]="model.selection.isSelected(element)"
+                    [aria-label]="checkboxLabel(element)"
+                    color="primary">
+                  </mat-checkbox>
                   <app-social-media [mobile]="element.mobile"></app-social-media>
                 </div>
               </div>
@@ -76,18 +81,44 @@
             </td>
           </ng-container>
   
+          <ng-container matColumnDef="select">
+            <th mat-header-cell *matHeaderCellDef>
+              <mat-checkbox (change)="$event ? toggleAllRows() : null"
+                [checked]="model.selection.hasValue() && isAllSelected()"
+                [indeterminate]="model.selection.hasValue() && !isAllSelected()"
+                [aria-label]="checkboxLabel()"
+                color="primary">
+              </mat-checkbox>
+            </th>
+            <td mat-cell *matCellDef="let row">
+              <mat-checkbox (click)="$event.stopPropagation()"
+                (change)="$event ? model.selection.toggle(row) : null"
+                [checked]="model.selection.isSelected(row)"
+                [aria-label]="checkboxLabel(row)"
+                color="primary">
+              </mat-checkbox>
+            </td>
+            <td mat-footer-cell *matFooterCellDef>
+            </td>
+          </ng-container>
+
           <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.name' | translate}}</th>
-            <td mat-cell *matCellDef="let element" class="col-3">
+            <td mat-cell *matCellDef="let element" class="col-2">
               <div class="d-flex">
-                <div>{{element.name}}</div>
+                <div class="d-flex flex-column">
+                  <div>{{element.name}}</div>
+                  <small *ngIf="!element.isMain" class="text-success">
+                    {{element.mainMemberName}} <i class="fa-solid fa-star"></i>
+                  </small>
+                </div>
                 <div class="px-2">
-                  <mat-icon *ngIf="element.isChild" color="primary">child_care</mat-icon>
-                  <mat-icon *ngIf="element.isMain" color="primary">star</mat-icon>
+                  <i *ngIf="element.isChild" class="fa-solid fa-child primary"></i>
+                  <i *ngIf="element.isMain" class="fa-solid fa-star primary"></i>
                 </div>
               </div>
             </td>
-            <td mat-footer-cell *matFooterCellDef>{{'common.total' | translate}}: <b>{{model.total}}</b> </td>
+            <td mat-footer-cell *matFooterCellDef></td>
           </ng-container>
     
           <ng-container matColumnDef="mobile">
@@ -171,23 +202,24 @@
           <ng-container matColumnDef="room">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.room' | translate}}</th>
             <td mat-cell *matCellDef="let element" class="col-3">
-              <ng-container *ngIf="element.room; else empty">
-                {{ element.room }}
+              <ng-container *ngIf="element.displayedRoomName; else empty">
+                {{ element.displayedRoomName }}
               </ng-container>
-              <ng-template #empty>---</ng-template>
             </td>
             <td mat-footer-cell *matFooterCellDef></td>
           </ng-container>
 
           <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef class="text-center">
-                <button mat-icon-button color="primary" (click)="showAdvancedFilter()">
-                    <mat-icon>filter_list</mat-icon>
-                </button>
-            </th>
-            <td mat-cell *matCellDef="let element"></td>
-            <td mat-footer-cell *matFooterCellDef></td>
-        </ng-container>
+            <th mat-header-cell *matHeaderCellDef class="col-1"></th>
+            <td mat-cell *matCellDef="let element">
+              <button mat-stroked-button color="primary" (click)="addRoomToMember(element)">
+                تسكين
+              </button>
+            </td>
+            <td mat-footer-cell *matFooterCellDef>
+              الإجمالي: <b>{{model.total}}</b> 
+            </td>
+          </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="model.displayedColumns; sticky: true"></tr>
           <tr mat-row *matRowDef="let row; columns: model.displayedColumns;"></tr>
@@ -211,3 +243,5 @@
     </button>
   </mat-menu>
 </button>
+
+<ng-template #empty>---</ng-template>

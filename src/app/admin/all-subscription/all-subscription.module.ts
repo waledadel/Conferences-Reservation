@@ -5,11 +5,13 @@ import { AllSubscriptionRoutingModule } from './all-subscription-routing.module'
 import { SharedModule } from 'app/shared/shared.module';
 import { AdvancedSearchModule } from './../advanced-search/advanced-search.module';
 import { ExportMembersModule } from '../export-members/export-members.module';
+import { AddRoomToMemberComponent } from './add-room-to-member/add-room-to-member.component';
 
 
 @NgModule({
   declarations: [
-    AllSubscriptionComponent
+    AllSubscriptionComponent,
+    AddRoomToMemberComponent
   ],
   imports: [
     SharedModule,

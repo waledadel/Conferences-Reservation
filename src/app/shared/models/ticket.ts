@@ -110,6 +110,9 @@ export interface IAllSubscriptionDataSourceVm {
     transportationId: string;
     transportationName: string;
     birthDateMonth: number;
+    mainMemberName: string;
+    primaryId: string;
+    displayedRoomName: string;
 }
 
 export interface ICostDetailsDataSourceVm {

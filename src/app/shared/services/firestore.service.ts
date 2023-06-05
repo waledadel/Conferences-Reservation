@@ -205,6 +205,13 @@ export class FireStoreService {
     return from(updateDoc(docRef, data));
   }
 
+  updateDocumentProperty(collectionPath: string, docId: string, propertyName: string, propertyValue: any): Observable<unknown> {
+    const documentRef = this.angularFirestore.collection(collectionPath).doc(docId);
+    return from(documentRef.update({
+      [propertyName]: propertyValue
+    }));
+  }
+
   delete(path: string): Observable<void> {
     return from(this.angularFirestore.doc(path).delete());
   }
@@ -241,7 +248,10 @@ export class FireStoreService {
             address: '',
             transportationId: ticket.transportationId,
             transportationName: '',
-            birthDateMonth: ticket.birthDate.toDate().getMonth() + 1
+            birthDateMonth: ticket.birthDate.toDate().getMonth() + 1,
+            mainMemberName: '',
+            primaryId: ticket.primaryId,
+            displayedRoomName: ''
           }))
         ),
         take(1)
