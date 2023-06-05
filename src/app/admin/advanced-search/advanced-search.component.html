@@ -30,6 +30,15 @@
                     </mat-select>
                 </mat-form-field>
                 <mat-form-field class="col-lg-6 col-12">
+                    <mat-label>{{'address.title' | translate}}</mat-label>
+                    <mat-select formControlName="addressId">
+                        <mat-option [value]="'all'">{{'common.all' | translate}}</mat-option>
+                        <ng-container *ngFor="let item of model.addressList">
+                            <mat-option [value]="item.id">{{ item.name }}</mat-option>
+                        </ng-container>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field class="col-lg-6 col-12">
                     <mat-label>{{'common.gender' | translate}}</mat-label>
                     <mat-select formControlName="gender">
                         <ng-container *ngFor="let item of model.genderList">

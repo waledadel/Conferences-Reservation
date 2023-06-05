@@ -278,7 +278,9 @@ export class FireStoreService {
             adminNotes: ticket.adminNotes,
             lastUpdateUserId: ticket.lastUpdateUserId ?? '',
             lastUpdateDate: ticket.lastUpdateDate,
-            lastUpdatedBy: ''
+            lastUpdatedBy: '',
+            addressId: ticket.addressId,
+            addressName: ''
           }))
         ),
         take(takeCount)

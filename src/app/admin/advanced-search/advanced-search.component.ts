@@ -5,7 +5,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 import { Constants } from '@app/constants';
 import { AdvancedSearchModel, IAdvancedFilterForm } from './advanced-search.models';
-import { BookingStatus, Gender, IBus } from '@app/models';
+import { BookingStatus, Gender, IAddress, IBus } from '@app/models';
 import { FireStoreService } from '@app/services';
 
 @Component({
@@ -37,6 +37,7 @@ export class AdvancedSearchComponent implements OnInit {
     this.model.form = this.initFormModels();
     this.detectMobileView();
     this.getBuses();
+    this.getAddress();
     this.patchFromValue();
     this.model.showPrimaryOptions = this.router.url.includes('primary');
   }
@@ -49,17 +50,18 @@ export class AdvancedSearchComponent implements OnInit {
     this.model.form.patchValue({
       name: '',
       mobile: '',
-      adultsCount: 0,
-      childrenCount: 0,
-      paid: 0,
-      total: 0,
-      remaining: 0,
+      adultsCount: null,
+      childrenCount: null,
+      paid: null,
+      total: null,
+      remaining: null,
       transportationId: 'all',
       gender: Gender.all,
       bookingStatus: BookingStatus.all,
-      birthDateMonth: 0,
-      fromAge: 0,
-      toAge: 0
+      birthDateMonth: null,
+      fromAge: null,
+      toAge: null,
+      addressId: 'all'
     });
     this.filter();
   }
@@ -72,23 +74,31 @@ export class AdvancedSearchComponent implements OnInit {
     return this.formBuilder.group({
       name: [''],
       mobile: [''],
-      adultsCount: [0],
-      childrenCount: [0],
-      paid: [0],
-      total: [0],
-      remaining: [0],
+      adultsCount: [null],
+      childrenCount: [null],
+      paid: [null],
+      total: [null],
+      remaining: [null],
       transportationId: ['all'],
       gender: [Gender.all],
       bookingStatus: [BookingStatus.all],
-      birthDateMonth: [0],
-      fromAge: [0],
-      toAge: [0],
+      birthDateMonth: [null],
+      fromAge: [null],
+      toAge: [null],
+      addressId: ['all']
     });
   }
 
   private getBuses(): void {
     this.fireStoreService.getAll<IBus>(Constants.RealtimeDatabase.buses).subscribe(data => {
       this.model.buses = data;
+    });
+  }
+
+  
+  private getAddress(): void {
+    this.fireStoreService.getAll<IAddress>(Constants.RealtimeDatabase.address).subscribe(data => {
+      this.model.addressList = data.sort((a, b) => a.name > b.name ? 1 : -1);
     });
   }
 
@@ -112,6 +122,7 @@ export class AdvancedSearchComponent implements OnInit {
         birthDateMonth: this.perviousFilter.birthDateMonth,
         fromAge: this.perviousFilter.fromAge,
         toAge: this.perviousFilter.toAge,
+        addressId: this.perviousFilter.addressId
       });
     }
   }

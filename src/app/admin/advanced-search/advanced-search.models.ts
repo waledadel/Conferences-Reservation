@@ -1,11 +1,12 @@
 import { KeyValue } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 
-import { BookingStatus, Gender, IBus } from '@app/models';
+import { BookingStatus, Gender, IAddress, IBus } from '@app/models';
 
 export class AdvancedSearchModel {
   form!: FormGroup;
   buses: Array<IBus> = [];
+  addressList: Array<IAddress> = [];
   isMobileView = false;
   isAgePanelStateOpened = false;
   showPrimaryOptions = false;
@@ -53,4 +54,5 @@ export interface IAdvancedFilterForm {
   birthDateMonth: number;
   fromAge: number;
   toAge: number;
+  addressId: string;
 }

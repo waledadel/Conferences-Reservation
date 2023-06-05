@@ -107,8 +107,9 @@ export class AllSubscriptionComponent implements OnInit {
         const fromAge = res.fromAge;
         const toAge = res.toAge;
         const gender = res.gender;
+        const addressId = res.addressId;
         // create string of our searching values and split if by '$'
-        const filterValue = `${name}$${mobile}$${transportationId}$${bookingStatus}$${birthDateMonth}$${fromAge}$${toAge}$${gender}`;
+        const filterValue = `${name}$${mobile}$${transportationId}$${bookingStatus}$${birthDateMonth}$${fromAge}$${toAge}$${gender}$${addressId}`;
         this.model.dataSource.filter = filterValue.trim();
         this.model.total = this.model.dataSource.filteredData.length;
         this.model.filteredData = this.model.dataSource.filteredData;
@@ -186,6 +187,7 @@ export class AllSubscriptionComponent implements OnInit {
       const fromAge = filterArray[5];
       const toAge = filterArray[6];
       const gender = filterArray[7];
+      const addressId = filterArray[8];
       const matchFilter = [];
       // Fetch data from row
       const columnName = row.name;
@@ -195,16 +197,18 @@ export class AllSubscriptionComponent implements OnInit {
       const columnBirthDateMonth = row.birthDateMonth;
       const columnAge = row.age;
       const columnGender = row.gender;
+      const columnAddress = row.addressId;
       // verify fetching data by our searching values
       const customFilterName = columnName.toLowerCase().includes(name);
       const customFilterMobile = columnMobile.toLowerCase().includes(mobile);
       // We minus 1 for primary count
-      const customFilterFromAge = +fromAge > 0 ? +columnAge >= +fromAge : true;
-      const customFilterToAge = +toAge > 0 ? +columnAge <= +toAge : true;
+      const customFilterFromAge = fromAge != 'null' ? +columnAge >= +fromAge : true;
+      const customFilterToAge = toAge != 'null' ? +columnAge <= +toAge : true;
       const customFilterTransportationId = transportationId != 'all' ? columnTransportationId === transportationId : true;
-      const customFilterBirthDateMonth = +birthDateMonth > 0 ? +columnBirthDateMonth === +birthDateMonth : true;
+      const customFilterBirthDateMonth = birthDateMonth != 'null' ? +columnBirthDateMonth === +birthDateMonth : true;
       const customFilterBookingStatus = +bookingStatus != BookingStatus.all ? +columnBookingStatus === +bookingStatus : true;
       const customFilterGender = +gender != Gender.all ? +columnGender === +gender : true;
+      const customFilterAddressId = addressId != 'all' ? columnAddress === addressId : true;
       // push boolean values into array
       matchFilter.push(customFilterName);
       matchFilter.push(customFilterMobile);
@@ -214,6 +218,7 @@ export class AllSubscriptionComponent implements OnInit {
       matchFilter.push(customFilterBirthDateMonth);
       matchFilter.push(customFilterBookingStatus);
       matchFilter.push(customFilterGender);
+      matchFilter.push(customFilterAddressId);
       // return true if all values in array is true
       // else return false
       return matchFilter.every(Boolean);

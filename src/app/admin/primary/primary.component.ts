@@ -3,7 +3,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { Timestamp } from '@angular/fire/firestore';
 
-import { IBus, IRelatedMemberViewModel, IPrimaryDataSourceVm, ISettings, ITicket, ICostDetailsDataSourceVm, Gender, BookingStatus, IUser, BookingType } from '@app/models';
+import { IBus, IRelatedMemberViewModel, IPrimaryDataSourceVm, ISettings, ITicket, ICostDetailsDataSourceVm, Gender, BookingStatus, IUser, BookingType, IAddress } from '@app/models';
 import { DialogService, FireStoreService, NotifyService, TranslationService } from '@app/services';
 import { ManageReservationComponent } from '../reservation/manage-reservation/manage-reservation.component';
 import { Constants } from '@app/constants';
@@ -43,6 +43,7 @@ export class PrimaryComponent implements OnInit {
     this.detectMobileView();
     this.getAllUsers();
     this.getBuses();
+    this.getAddress();
     this.getSettings();
     this.adminService.updatePageTitle('الإشتراكات الرئيسية');
   }
@@ -220,8 +221,9 @@ export class PrimaryComponent implements OnInit {
         const remaining = res.remaining;
         const gender = res.gender;
         const paid = res.paid;
+        const addressId = res.addressId;
         // create string of our searching values and split if by '$'
-        const filterValue = `${name}$${mobile}$${adultsCount}$${childrenCount}$${transportationId}$${bookingStatus}$${birthDateMonth}$${fromAge}$${toAge}$${total}$${remaining}$${gender}$${paid}`;
+        const filterValue = `${name}$${mobile}$${adultsCount}$${childrenCount}$${transportationId}$${bookingStatus}$${birthDateMonth}$${fromAge}$${toAge}$${total}$${remaining}$${gender}$${paid}$${addressId}`;
         this.model.dataSource.filter = filterValue.trim(); //.toLowerCase();
         this.model.total = this.model.dataSource.filteredData.length;
         this.model.filteredData = this.model.dataSource.filteredData;
@@ -253,7 +255,8 @@ export class PrimaryComponent implements OnInit {
         ...item,
         totalCost: this.getTotalCost(item, this.model.notPrimaryMembers),
         transportationName: this.getBusNameById(item.transportationId),
-        lastUpdatedBy: this.getUserById(item.lastUpdateUserId)
+        lastUpdatedBy: this.getUserById(item.lastUpdateUserId),
+        addressName: this.getAddressNameById(item.addressId)
       }));
       this.model.dataSource = new MatTableDataSource(data);
       this.model.total = data.length;
@@ -267,6 +270,18 @@ export class PrimaryComponent implements OnInit {
       const bus = this.model.buses.find(b => b.id === id);
       if (bus) {
         return bus.name;
+      }
+      return '';
+    }
+    return '';
+  }
+
+  
+  private getAddressNameById(id: string): string {
+    if (id && this.model.addressList.length > 0) {
+      const address = this.model.addressList.find(b => b.id === id);
+      if (address) {
+        return address.name;
       }
       return '';
     }
@@ -309,7 +324,8 @@ export class PrimaryComponent implements OnInit {
                 transportationName: this.getBusNameById(res.transportationId),
                 birthDateMonth: res.birthDate.toDate().getMonth() + 1,
                 lastUpdatedBy: this.getUserById(res.lastUpdateUserId),
-                age: this.fireStoreService.getAge(res.birthDate)
+                age: this.fireStoreService.getAge(res.birthDate),
+                addressName: this.getAddressNameById(res.addressId)
               };
             } else {
               this.model.dataSource.data[index] = {
@@ -318,7 +334,8 @@ export class PrimaryComponent implements OnInit {
                 transportationName: this.getBusNameById(res.transportationId),
                 birthDateMonth: res.birthDate.toDate().getMonth() + 1,
                 lastUpdatedBy: this.getUserById(res.lastUpdateUserId),
-                age: this.fireStoreService.getAge(res.birthDate)
+                age: this.fireStoreService.getAge(res.birthDate),
+                addressName: this.getAddressNameById(res.addressId)
               };
             }
             this.model.dataSource._updateChangeSubscription();
@@ -408,6 +425,12 @@ export class PrimaryComponent implements OnInit {
     });
   }
 
+  private getAddress(): void {
+    this.fireStoreService.getAll<IAddress>(Constants.RealtimeDatabase.address).subscribe(data => {
+      this.model.addressList = data;
+    });
+  }
+
   private getTransportPrice(transportId: string): number {
     if (transportId && this.model.buses.length > 0) {
       const bus = this.model.buses.find(b => b.id === transportId);
@@ -451,6 +474,7 @@ export class PrimaryComponent implements OnInit {
       const remaining = filterArray[10];
       const gender = filterArray[11];
       const paid = filterArray[12];
+      const addressId = filterArray[13];
       const matchFilter = [];
       // Fetch data from row
       const columnName = row.name;
@@ -464,21 +488,23 @@ export class PrimaryComponent implements OnInit {
       const columnTotal = row.totalCost;
       const columnGender = row.gender;
       const columnPaid = row.paid;
+      const columnAddress = row.addressId;
       // verify fetching data by our searching values
       const customFilterName = columnName.toLowerCase().includes(name);
       const customFilterMobile = columnMobile.includes(mobile);
       // We minus 1 for primary count
-      const customFilterAdultsCount = +adultsCount > 0 ? +columnAdultsCount === (+adultsCount - 1) : true; 
-      const customFilterChildrenCount = +childrenCount > 0 ? +columnChildrenCount === +childrenCount : true;
-      const customFilterFromAge = +fromAge > 0 ? +columnAge >= +fromAge : true;
-      const customFilterToAge = +toAge > 0 ? +columnAge <= +toAge : true;
+      const customFilterAdultsCount = adultsCount != 'null' ? +columnAdultsCount === (+adultsCount - 1) : true; 
+      const customFilterChildrenCount = childrenCount != 'null' ? +columnChildrenCount === +childrenCount : true;
+      const customFilterFromAge = fromAge != 'null' ? +columnAge >= +fromAge : true;
+      const customFilterToAge = toAge != 'null' ? +columnAge <= +toAge : true;
       const customFilterTransportationId = transportationId != 'all' ? columnTransportationId === transportationId : true;
-      const customFilterBirthDateMonth = +birthDateMonth > 0 ? +columnBirthDateMonth === +birthDateMonth : true;
+      const customFilterBirthDateMonth = birthDateMonth != 'null' ? +columnBirthDateMonth === +birthDateMonth : true;
       const customFilterBookingStatus = +bookingStatus != BookingStatus.all ? +columnBookingStatus === +bookingStatus : true;
       const customFilterGender = +gender != Gender.all ? +columnGender === +gender : true;
-      const customFilterTotal = +total > 0 ? +columnTotal === +total : true;
-      const customFilterPaid = +paid > 0 ? +columnPaid === +paid : true;
-      const customFilterRemaining = +remaining > 0 ? +columnTotal - +columnPaid === +remaining : true;
+      const customFilterTotal = total != 'null' ? +columnTotal === +total : true;
+      const customFilterPaid = paid != 'null' ? +columnPaid === +paid : true;
+      const customFilterRemaining = remaining != 'null' ? +columnTotal - +columnPaid === +remaining : true;
+      const customFilterAddressId = addressId != 'all' ? columnAddress === addressId : true;
       // push boolean values into array
       matchFilter.push(customFilterName);
       matchFilter.push(customFilterMobile);
@@ -493,6 +519,7 @@ export class PrimaryComponent implements OnInit {
       matchFilter.push(customFilterTotal);
       matchFilter.push(customFilterPaid);
       matchFilter.push(customFilterRemaining);
+      matchFilter.push(customFilterAddressId);
       // return true if all values in array is true
       // else return false
       return matchFilter.every(Boolean);

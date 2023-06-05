@@ -77,9 +77,11 @@ export interface IPrimaryDataSourceVm {
     paid: number;
     userNotes: string;
     transportationId: string;
+    addressId: string;
     primaryId: string;
     mobile: string;
     transportationName: string;
+    addressName: string;
     gender: Gender;
     birthDate: Timestamp;
     age: number;
