@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import * as XLSX from 'xlsx';
@@ -17,6 +17,7 @@ import { RoomsModel } from './rooms.model';
 export class RoomsComponent implements OnInit {
 
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
+  @ViewChild('input', {static: true}) input!: ElementRef<HTMLInputElement>;
   model: RoomsModel;
 
   get isMobile(): boolean {
@@ -98,17 +99,21 @@ export class RoomsComponent implements OnInit {
       reader.readAsBinaryString(selectedFile);
     } else {
       this.model.showLoading = false;
-      this.model.showErrorMessage = true;
       this.model.isDataLocal = false;
     }
   }
 
-  add(): void {
-    // this.dialogService.openAddEditDialog(ManageRoomsComponent, 'lg', false);
-  }
+  // add(): void {
+  //   // this.dialogService.openAddEditDialog(ManageRoomsComponent, 'lg', false);
+  // }
 
   update(item: IRoom): void {
-    this.dialogService.openAddEditDialog(ManageRoomsComponent, 'lg', true, item);
+    this.dialogService.openAddEditDialog(ManageRoomsComponent, 'lg', true, item).afterClosed()
+    .subscribe((res: {fireRefresh: boolean}) => {
+      if (res.fireRefresh) {
+        this.updateTableRow(item);
+      }
+    });
   }
 
   delete(item: IRoom): void {
@@ -136,6 +141,7 @@ export class RoomsComponent implements OnInit {
   }
 
   uploadRooms(): void {
+    this.model.showLoading = true;
     const rooms: Array<IRoomDataSource> = this.model.dataSource.data.map(r => ({
       id: r.id,
       available: r.available,
@@ -148,7 +154,26 @@ export class RoomsComponent implements OnInit {
     }));
     this.fireStoreService.uploadRooms(rooms).subscribe(() => {
       this.model.isDataLocal = false;
+      this.model.showLoading = false;
       this.getRooms();
+    });
+  }
+
+  removeAll(): void {
+    this.dialogService.openConfirmDeleteDialog('حذف جميع الغرف').afterClosed().subscribe((res: {confirmDelete: boolean}) => {
+      if (res && res.confirmDelete) {
+        this.model.showLoading = true;
+        if (!this.model.isDataLocal) {
+          this.fireStoreService.deleteAllRooms(this.model.dataSource.data).subscribe(() => {
+            this.notifyService.showNotifier(this.translationService.instant('notifications.removedSuccessfully'));
+          });
+        }
+        this.input.nativeElement.value = '';
+        this.model.dataSource.data = [];
+        this.model.showErrorMessage = false;
+        this.model.isDataLocal = false;
+        this.model.showLoading = false;
+      }
     });
   }
 
@@ -183,5 +208,21 @@ export class RoomsComponent implements OnInit {
       roomSize = (+sizeName);
     }
     return roomSize;
+  }
+
+  private updateTableRow(item: Partial<IRoom>): void {
+    this.fireStoreService.getById(`${Constants.RealtimeDatabase.rooms}/${item.id}`).subscribe((res: IRoomDataSource) => {
+      if (res) {
+        const index = this.model.dataSource.data.findIndex(t => t.id === item.id);
+        if (index > -1) {
+          this.model.dataSource.data[index] = {
+            ...res,
+            size: this.getRoomCountSize(res.sizeName),
+            displayedName: `Room:${res.room}-(${res.sizeName})-Building:${res.building}-Floor:${res.floor}-Available:${res.available}`,
+          };
+        }
+        this.model.dataSource._updateChangeSubscription();
+      }
+    });
   }
 }

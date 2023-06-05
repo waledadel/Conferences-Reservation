@@ -205,7 +205,7 @@ export class AllSubscriptionComponent implements OnInit {
       const customFilterFromAge = fromAge != 'null' ? +columnAge >= +fromAge : true;
       const customFilterToAge = toAge != 'null' ? +columnAge <= +toAge : true;
       const customFilterTransportationId = transportationId != 'all' ? columnTransportationId === transportationId : true;
-      const customFilterBirthDateMonth = birthDateMonth != 'null' ? +columnBirthDateMonth === +birthDateMonth : true;
+      const customFilterBirthDateMonth = +birthDateMonth > 0 ? +columnBirthDateMonth === +birthDateMonth : true;
       const customFilterBookingStatus = +bookingStatus != BookingStatus.all ? +columnBookingStatus === +bookingStatus : true;
       const customFilterGender = +gender != Gender.all ? +columnGender === +gender : true;
       const customFilterAddressId = addressId != 'all' ? columnAddress === addressId : true;

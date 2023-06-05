@@ -1,1 +1,43 @@
-<p>manage-rooms works!</p>
+<div mat-dialog-title class="d-flex justify-content-between align-content-center">
+    <div class="font-weight-bold">{{ (data ? 'common.update' : 'common.add') | translate }}</div>
+    <button class="p-0 d-flex justify-content-cener align-items-center" (click)="close()">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+<div mat-dialog-content>
+    <form [formGroup]="form" #roomForm="ngForm" novalidate class="row bg-white rounded mx-0 py-3">
+        <mat-form-field class="col-lg-6 col-12">
+            <mat-label>الحجرة</mat-label>
+            <input type="text" matInput formControlName="room" inputmode="numeric">
+            <mat-error *ngIf="form.get('room')!.hasError('required')">
+                {{'validations.requiredField' | translate}}
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field class="col-lg-6 col-12">
+            <mat-label>المبني</mat-label>
+            <input type="text" matInput formControlName="building" inputmode="numeric">
+            <mat-error *ngIf="form.get('building')!.hasError('required')">
+                {{'validations.requiredField' | translate}}
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field class="col-lg-6 col-12">
+            <mat-label>الطابق</mat-label>
+            <input type="text" matInput formControlName="floor" inputmode="numeric">
+            <mat-error *ngIf="form.get('floor')!.hasError('required')">
+                {{'validations.requiredField' | translate}}
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field class="col-lg-6 col-12">
+            <mat-label>سعة الغرفة</mat-label>
+            <input type="text" matInput formControlName="sizeName" inputmode="text">
+            <mat-error *ngIf="form.get('sizeName')!.hasError('required')">
+                {{'validations.requiredField' | translate}}
+            </mat-error>
+        </mat-form-field>
+    </form>
+</div>
+<div mat-dialog-actions>
+    <button color="primary" mat-flat-button type="button" cdkFocusInitial (click)="save($event, roomForm)">
+        <span> {{ 'common.save' | translate }}</span>
+    </button>
+</div>

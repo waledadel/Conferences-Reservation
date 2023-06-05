@@ -82,7 +82,7 @@ export class AdvancedSearchComponent implements OnInit {
       transportationId: ['all'],
       gender: [Gender.all],
       bookingStatus: [BookingStatus.all],
-      birthDateMonth: [null],
+      birthDateMonth: [0],
       fromAge: [null],
       toAge: [null],
       addressId: ['all']

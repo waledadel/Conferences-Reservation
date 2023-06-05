@@ -7,6 +7,7 @@ export const allOptions: Array<IExportMembers> = [
     {key: 'عدد البالغين', columnName: 'childrenCount', isChecked: false, isCustomizableOption: true},
     {key: 'الغرفة', columnName: 'roomId', isChecked: false, isCustomizableOption: false},
     {key: 'المواصلات', columnName: 'transportationName', isChecked: false, isCustomizableOption: false},
+    {key: 'العنوان', columnName: 'addressName', isChecked: false, isCustomizableOption: false},
     {key: 'نوع الحجز', columnName: 'bookingType', isChecked: false, isCustomizableOption: true},
     {key: 'تاريخ الميلاد', columnName: 'birthDate', isChecked: false, isCustomizableOption: false},
     {key: 'السن', columnName: 'age', isChecked: false, isCustomizableOption: false},

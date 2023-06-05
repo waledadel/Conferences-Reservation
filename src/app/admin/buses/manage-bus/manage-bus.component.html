@@ -5,7 +5,7 @@
     </button>
 </div>
 <div mat-dialog-content>
-    <form [formGroup]="form" #categoryForm="ngForm" novalidate>
+    <form [formGroup]="form" #categoryForm="ngForm" novalidate class="bg-white rounded">
         <mat-form-field class="w-100">
             <mat-label>{{'common.name' | translate}}</mat-label>
             <input type="text" matInput formControlName="name" inputmode="text">

@@ -8,7 +8,7 @@ export class PrimaryModel {
   childReservationPriceLessThanEight = 0;
   childReservationPriceMoreThanEight = 0;
   childBedPrice = 0;
-  readonly desktopColumn = ['name', 'mobile', 'adultsCount', 'childrenCount', 'roomId', 'transportation', 'address',
+  readonly desktopColumn = ['name', 'mobile', 'adultsCount', 'childrenCount', 'roomId', 'transportation', 'addressName',
   'bookingType', 'birthDate', 'age', 'bookingDate', 'gender', 'totalCost', 'paid', 'remaining', 'adminNotes', 'userNotes', 
   'lastUpdateDate', 'lastUpdatedBy', 'bookingStatus', 'actions'];
   displayedColumns: string[] = [];

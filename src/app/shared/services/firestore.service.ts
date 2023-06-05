@@ -368,4 +368,13 @@ export class FireStoreService {
   private getCollection(collectionName: string): CollectionReference<DocumentData> {
     return collection(this.firestore, collectionName);
   }
+
+  deleteAllRooms(data: Array<IRoomDataSource>): Observable<unknown> {
+    const batch = this.angularFirestore.firestore.batch();
+    data.forEach((doc) => {
+      const docRef = this.angularFirestore.doc(`/${Constants.RealtimeDatabase.rooms}/${doc.id}`).ref;
+      batch.delete(docRef);
+    });
+    return from(batch.commit()).pipe(map(() => null));
+  }
 }
