@@ -298,3 +298,9 @@ mat-mdc-fab.mat-primary, .mat-mdc-mini-fab.mat-primary {
     top: 3px;
   }
 }
+
+.cancel-room {
+  &:hover {
+    text-decoration: none;
+  }
+}

@@ -5,12 +5,50 @@
     </button>
 </div>
 <div mat-dialog-content>
+    <div class="bg-white p-3 rounded mb-3">
+        <small class="text-muted">
+            برجاء تحديد الأشخاص إذا أردت أن تسكن أكثر من شخص
+        </small>
+        <div class="font-weight-bold">
+            الأشتراك الرئيسي:
+        </div>
+        <div *ngIf="primary" class="d-flex justify-content-between align-items-center">
+            <mat-checkbox color="primary" [disabled]="primary.hasRoom" [value]="primary.id" [(ngModel)]="primary.isChecked">
+                {{primary.name}}
+            </mat-checkbox>
+            <!-- <a class="text-danger cancel-room" href="javascript:void(0)" (click)="cancel(primary.id)">
+                إلغاء التسكين   
+            </a> -->
+        </div>
+        <div class="font-weight-bold">
+            العائلة:
+        </div>
+        <ng-container *ngIf="family.length > 0; else noFamily">
+            <div *ngFor="let f of family" class="d-flex justify-content-between align-items-center">
+               <mat-checkbox color="primary" [disabled]="f.hasRoom" [value]="f.id" [(ngModel)]="f.isChecked">{{f.name}}</mat-checkbox>
+               <!-- <a class="text-danger cancel-room" href="javascript:void(0)" (click)="cancel(f.id)">
+                    إلغاء التسكين   
+               </a> -->
+            </div>
+        </ng-container>
+        <ng-template #noFamily>
+            <div class="text-muted">
+                هذا الاشتراك لا يحتوي علي أفراد آخرين أو أطفال
+            </div>
+        </ng-template>
+        <small *ngIf="showEmptySelectErrorMessage" class="text-danger">
+            يجب إختيار شخص علي الأقل لأكمال عملية التسكين
+        </small>
+        <small *ngIf="isExceededRoomAvailability" class="text-danger">
+            لا يوجد أماكن متاحة بالغرفة لهذا العدد
+        </small>
+    </div>
     <form [formGroup]="form" #roomForm="ngForm" novalidate class="row mx-0 py-3 bg-white rounded">
         <mat-form-field  class="col-12">
             <mat-label>الغرفة</mat-label>
             <mat-select formControlName="roomId">
                 <ng-container *ngFor="let item of rooms">
-                    <mat-option [value]="item.id">{{ item.displayedName }}</mat-option>
+                    <mat-option [value]="item.id" [disabled]="item.available < 1">{{ item.displayedName }}</mat-option>
                 </ng-container>
             </mat-select>
             <mat-error *ngIf="form.get('roomId')!.hasError('required')">

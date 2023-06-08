@@ -6,7 +6,7 @@ import { AngularFirestore, AngularFirestoreCollection, DocumentData, QueryFn } f
 import { Timestamp } from 'firebase/firestore';
 
 import { Constants } from '@app/constants';
-import { ICollectionData, IRelatedMemberViewModel, IPrimaryDataSourceVm, ITicket, ITicketForm, IAllSubscriptionDataSourceVm, IUser, IRoomDataSource } from '@app/models';
+import { ICollectionData, IRelatedMemberViewModel, IPrimaryDataSourceVm, ITicket, ITicketForm, IAllSubscriptionDataSourceVm, IUser, IRoomDataSource, IMemberRoomDataSource } from '@app/models';
 import { convertSnaps } from './db-utils';
 
 @Injectable({
@@ -212,6 +212,16 @@ export class FireStoreService {
     }));
   }
 
+  updateDocumentsProperty(collectionPath: string, docIds: string[], propertyName: string, propertyValue: any): Observable<void> {
+    const batch = this.angularFirestore.firestore.batch();
+    const collectionRef = this.angularFirestore.collection(collectionPath).ref;
+    docIds.forEach((docId) => {
+      const documentRef = collectionRef.doc(docId);
+      batch.update(documentRef, {[propertyName]: propertyValue});
+    });
+    return from(batch.commit());
+  }
+
   delete(path: string): Observable<void> {
     return from(this.angularFirestore.doc(path).delete());
   }
@@ -333,6 +343,26 @@ export class FireStoreService {
             needsSeparateBed: ticket.needsSeparateBed,
             transportationId: ticket.transportationId,
             isChild: ticket.isChild
+          }))
+        ),
+        take(takeCount)
+      );
+  }
+
+  getMembersByPrimaryId(primaryId: string, takeCount = 1): Observable<Array<IMemberRoomDataSource>> {
+    return this.angularFirestore
+      .collection<ITicket>(Constants.RealtimeDatabase.tickets, ref => 
+        ref.where('primaryId', '==', primaryId)
+      ).valueChanges({ idField: 'id' })
+      .pipe(
+        map((tickets: Array<ITicket>) =>
+          tickets.map((ticket: IMemberRoomDataSource) => ({
+            id: ticket.id,
+            primaryId: ticket.primaryId,
+            name: ticket.name,
+            isChild: ticket.isChild,
+            isMain: ticket.isMain,
+            roomId: ticket.roomId,
           }))
         ),
         take(takeCount)

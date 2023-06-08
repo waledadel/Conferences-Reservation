@@ -63,13 +63,10 @@
                   </div>
                 </div>
                 <div class="d-flex justify-content-between flex-column">
-                  <mat-checkbox (click)="$event.stopPropagation()"
-                    (change)="$event ? model.selection.toggle(element) : null"
-                    [checked]="model.selection.isSelected(element)"
-                    [aria-label]="checkboxLabel(element)"
-                    color="primary">
-                  </mat-checkbox>
                   <app-social-media [mobile]="element.mobile"></app-social-media>
+                  <a href="javascript:void(0)" (click)="addRoomToMember(element)" class="primary pt-4">
+                    <i class="fa-solid fa-bed"></i>
+                  </a>
                 </div>
               </div>
     
@@ -78,27 +75,6 @@
               <div class="d-flex justify-content-between align-items-center">
                 <div class="pr-3">{{'common.total' | translate}}: <b>{{model.total}}</b></div>
               </div>
-            </td>
-          </ng-container>
-  
-          <ng-container matColumnDef="select">
-            <th mat-header-cell *matHeaderCellDef>
-              <mat-checkbox (change)="$event ? toggleAllRows() : null"
-                [checked]="model.selection.hasValue() && isAllSelected()"
-                [indeterminate]="model.selection.hasValue() && !isAllSelected()"
-                [aria-label]="checkboxLabel()"
-                color="primary">
-              </mat-checkbox>
-            </th>
-            <td mat-cell *matCellDef="let row">
-              <mat-checkbox (click)="$event.stopPropagation()"
-                (change)="$event ? model.selection.toggle(row) : null"
-                [checked]="model.selection.isSelected(row)"
-                [aria-label]="checkboxLabel(row)"
-                color="primary">
-              </mat-checkbox>
-            </td>
-            <td mat-footer-cell *matFooterCellDef>
             </td>
           </ng-container>
 
@@ -231,7 +207,7 @@
 </div>
 
 <button mat-icon-button color="primary" class="mobile-filter-button d-flex" [matMenuTriggerFor]="menu">
-  <i class="fa-solid fa-gear"></i>
+  <i class="fa-solid fa-ellipsis-vertical"></i>
   <mat-menu #menu="matMenu">
     <button mat-menu-item class="primary" (click)="showAdvancedFilter()">
       <i class="fa-solid fa-filter"></i>&nbsp;

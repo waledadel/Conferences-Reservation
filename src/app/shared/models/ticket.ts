@@ -136,6 +136,20 @@ export interface IRelatedMemberViewModel {
     isChild: boolean;
 }
 
+export interface IMemberRoomDataSource {
+    id: string;
+    primaryId: string;
+    name: string;
+    isChild: boolean;
+    isMain: boolean;
+    roomId: string;
+}
+
+export interface IMemberRoomViewModel extends IMemberRoomDataSource {
+    hasRoom: boolean;
+    isChecked: boolean;
+}
+
 export enum BookingStatus {
     all = 0,
     new = 1,

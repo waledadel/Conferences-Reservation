@@ -77,7 +77,7 @@ export class RoomsComponent implements OnInit {
                 floor: +(row[2]),
                 sizeName: row[3],
                 size: roomSize,
-                displayedName: `Room:${row[0]}-(${row[3]})-Building:${row[1]}-Floor:${row[2]}-Available:${roomSize}`,
+                displayedName: `R:${row[0]}_S:(${row[3]})_B:${row[1]}_F:${row[2]}_A:${roomSize}`,
                 current: 0,
                 available: roomSize,
                 notUsed: 0 
@@ -186,7 +186,7 @@ export class RoomsComponent implements OnInit {
       if (data && data.length > 0) {
         this.model.dataSource.data = data.map(r => ({
           ...r,
-          displayedName: `Room:${r.room}-(${r.sizeName})-Building:${r.building}-Floor:${r.floor}-Available:${r.available}`,
+          displayedName: `R:${r.room}_S:(${r.sizeName})_B:${r.building}_F:${r.floor}_A:${r.available}`,
           size: this.getRoomCountSize(r.sizeName),
         }));
         this.model.dataSource.sort = this.sort;
@@ -222,7 +222,7 @@ export class RoomsComponent implements OnInit {
           this.model.dataSource.data[index] = {
             ...res,
             size: this.getRoomCountSize(res.sizeName),
-            displayedName: `Room:${res.room}-(${res.sizeName})-Building:${res.building}-Floor:${res.floor}-Available:${res.available}`,
+            displayedName: `R:${res.room}_S:(${res.sizeName})_B:${res.building}_F:${res.floor}_A:${res.available}`,
           };
         }
         this.model.dataSource._updateChangeSubscription();

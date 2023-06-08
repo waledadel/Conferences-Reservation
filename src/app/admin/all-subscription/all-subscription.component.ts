@@ -42,28 +42,6 @@ export class AllSubscriptionComponent implements OnInit {
     this.getAddress();
     this.adminService.updatePageTitle('كل المشتركين');
   }
-
-  isAllSelected(): boolean {
-    const numSelected = this.model.selection.selected.length;
-    const numRows = this.model.dataSource.data.length;
-    return numSelected === numRows;
-  }
-
-  toggleAllRows(): void {
-    if (this.isAllSelected()) {
-      this.model.selection.clear();
-      return;
-    }
-    this.model.selection.select(...this.model.dataSource.data);
-  }
-
-  checkboxLabel(row?: IAllSubscriptionDataSourceVm): string {
-    if (!row) {
-      return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
-    }
-    return `${this.model.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
-  }
-
   
   openExportModal(): void {
     this.dialogService.openAddEditDialog(ExportMembersComponent, 'lg', true, false)
@@ -141,8 +119,27 @@ export class AllSubscriptionComponent implements OnInit {
   }
 
   addRoomToMember(item: IAllSubscriptionDataSourceVm): void {
-    this.dialogService.openAddEditDialog(AddRoomToMemberComponent, 'lg', true, item).afterClosed().subscribe(res => {
+    this.dialogService.openAddEditDialog(AddRoomToMemberComponent, 'lg', true, item).afterClosed()
+    .subscribe((res: {fireRefresh: boolean}) => {
+      if (res && res.fireRefresh) {
+        this.updateTableRow(item);
+      }
+    });
+  }
 
+  private updateTableRow(item: IAllSubscriptionDataSourceVm): void {
+    this.fireStoreService.getById(`${Constants.RealtimeDatabase.tickets}/${item.id}`).subscribe((res: IAllSubscriptionDataSourceVm) => {
+      if (res) {
+        const index = this.model.dataSource.data.findIndex(t => t.id === item.id);
+        if (index > -1) {
+          this.model.dataSource.data[index] = {
+            ...item,
+            roomId: res.roomId,
+            displayedRoomName: this.getRoomNameById(res.roomId),
+          };
+          this.model.dataSource._updateChangeSubscription();
+        }
+      }
     });
   }
 
@@ -222,7 +219,7 @@ export class AllSubscriptionComponent implements OnInit {
       if (data && data.length > 0) {
         this.model.rooms = data.map(r => ({
           ...r,
-          displayedName: `Room:${r.room}-(${r.sizeName})-Building:${r.building}-Floor:${r.floor}-Available:${r.available}`,
+          displayedName: `R:${r.room}_S:(${r.sizeName})_B:${r.building}_F:${r.floor}_A:${r.available}`,
           size: this.getRoomCountSize(r.sizeName),
         }));
       }
