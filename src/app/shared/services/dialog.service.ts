@@ -1,9 +1,9 @@
-import { BookingSuccessfullyComponent } from './../../admin/reservation/booking-successfully/booking-successfully.component';
-import { ConfirmBookingComponent } from './../../admin/reservation/confirm-booking/confirm-booking.component';
 import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 import { ConfirmDeleteComponent } from '../components/confirm-delete/confirm-delete.component';
+import { ConfirmBookingComponent } from './../../admin/reservation/confirm-booking/confirm-booking.component';
+import { BookingSuccessfullyComponent } from './../../admin/reservation/booking-successfully/booking-successfully.component';
 
 type modalSize = 'sm' | 'md' | 'lg' | 'xlg';
 
@@ -44,4 +44,11 @@ export class DialogService {
       data: isEditMode ? data : null
     });
   }
+
+  // openTemplateModal(templateRef: any, size: modalSize): MatDialogRef<ModalComponent, any> {
+  //   return this.dialog.open(ModalComponent, {
+  //     panelClass: `customDialogPanelClass-${size}`,
+  //     data: { templateRef }
+  //   });
+  // }
 }
