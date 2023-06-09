@@ -33,7 +33,6 @@ export class AddRoomToMemberComponent implements OnInit {
     }
 
   ngOnInit(): void {
-    this.patchForm();
     this.setPrimary();
     this.setRooms();
     this.getRelatedMembersByPrimaryId();
@@ -44,7 +43,7 @@ export class AddRoomToMemberComponent implements OnInit {
     if (this.form.valid) {
       if (this.config.data) {
         const isPrimaryChecked = this.primary && this.primary.isChecked && !this.primary.hasRoom;
-        const isFamilyChecked = this.family.length > 0 && this.family.filter(m => m.isChecked).length > 0;
+        const isFamilyChecked = this.family.length > 0 && this.family.filter(m => m.isChecked && !m.hasRoom).length > 0;
         if (isPrimaryChecked || isFamilyChecked) {
           this.update();
         } else {
@@ -73,14 +72,6 @@ export class AddRoomToMemberComponent implements OnInit {
         });
       }
     });
-  }
-
-  private patchForm(): void {
-    if (this.config.data) {
-      this.form.patchValue({
-        roomId: this.config.data.roomId
-      });
-    }
   }
 
   private update(): void {
@@ -152,6 +143,9 @@ export class AddRoomToMemberComponent implements OnInit {
       this.isSaveButtonDisabled = isClickedMemberDisabled && isFamilyDisabled;
       if (this.isSaveButtonDisabled) {
         this.form.get('roomId')?.disable();
+        this.form.patchValue({
+          roomId: this.config.data.roomId
+        });
       }
     }
   }

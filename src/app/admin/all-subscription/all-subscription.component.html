@@ -31,11 +31,14 @@
                       </div>
                     </div>
                     <span class="mx-2">
-                      <mat-icon *ngIf="element.isChild" color="primary">child_care</mat-icon>
-                      <mat-icon *ngIf="element.isMain" color="primary">star</mat-icon>
+                      <i *ngIf="element.isChild" class="fa-solid fa-child primary"></i>
+                      <i *ngIf="element.isMain" class="fa-solid fa-star primary"></i>
                     </span>
                   </div>
                   <div><b>{{'common.name' | translate}}:</b> {{element.name}}</div>
+                  <small *ngIf="!element.isMain" class="text-success">
+                    {{element.mainMemberName}} <i class="fa-solid fa-star"></i>
+                  </small>
                   <div class="d-flex">
                     <b>{{'common.mobile' | translate}}:</b>
                     {{ element.mobile }}
