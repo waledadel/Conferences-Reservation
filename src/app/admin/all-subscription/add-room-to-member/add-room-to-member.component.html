@@ -76,9 +76,6 @@
                 هذا الاشتراك لا يحتوي علي أفراد آخرين أو أطفال
             </div>
         </ng-template>
-        <small *ngIf="isExceededRoomAvailability" class="text-danger">
-            لا يوجد أماكن متاحة بالغرفة لهذا العدد
-        </small>
     </div>
     <form [formGroup]="form" #roomForm="ngForm" novalidate class="row mx-0 py-3 bg-white rounded">
         <mat-form-field  class="col-12">
@@ -93,9 +90,6 @@
             </mat-error>
         </mat-form-field>
     </form>
-    <div [hidden]="!showEmptySelectErrorMessage" class="alert alert-danger mt-3" id="emptySelectionContainer">
-        يجب إختيار عضو علي الأقل لأكمال عملية التسكين
-    </div>
 </div>
 <div mat-dialog-actions>
     <button color="primary" mat-flat-button type="button" [disabled]="isSaveButtonDisabled || isSaveLoading" cdkFocusInitial (click)="save($event, roomForm)">

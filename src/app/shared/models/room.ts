@@ -22,3 +22,8 @@ export interface IRoomDataSource {
     available: number;
     notUsed: number;
 }
+
+export enum RoomErrorsModal {
+    emptySelection = 1,
+    exceededAvailability = 2
+}

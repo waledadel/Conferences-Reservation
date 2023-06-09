@@ -2,8 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-  templateUrl: './room-cancellation.component.html',
-  styleUrls: ['./room-cancellation.component.scss']
+  templateUrl: './room-cancellation.component.html'
 })
 export class RoomCancellationComponent {
 

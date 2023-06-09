@@ -5,6 +5,8 @@ import { ConfirmDeleteComponent } from '../components/confirm-delete/confirm-del
 import { ConfirmBookingComponent } from './../../admin/reservation/confirm-booking/confirm-booking.component';
 import { BookingSuccessfullyComponent } from './../../admin/reservation/booking-successfully/booking-successfully.component';
 import { RoomCancellationComponent } from 'app/admin/all-subscription/room-cancellation/room-cancellation.component';
+import { ErrorsModalComponent } from './../../admin/all-subscription/errors-modal/errors-modal.component';
+import { RoomErrorsModal } from '../models/room';
 
 type modalSize = 'sm' | 'md' | 'lg' | 'xlg';
 
@@ -43,6 +45,14 @@ export class DialogService {
       panelClass: 'customDialogPanelClass-md',
       disableClose: true,
       data: itemName
+    });
+  }
+
+  openRoomErrorsModal(error: RoomErrorsModal): MatDialogRef<unknown, any> {
+    return this.dialog.open(ErrorsModalComponent, {
+      panelClass: 'customDialogPanelClass-md',
+      disableClose: true,
+      data: error
     });
   }
 

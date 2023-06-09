@@ -1,11 +1,10 @@
-import { DOCUMENT } from '@angular/common';
 import { Component, OnInit, Inject } from '@angular/core';
 import { Timestamp } from '@angular/fire/firestore';
 import { FormGroup, Validators, FormBuilder, FormGroupDirective } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { Constants } from '@app/constants';
-import { IAddRoomToMemberDialogConfig, IMemberRoomViewModel, IRoom } from '@app/models';
+import { IAddRoomToMemberDialogConfig, IMemberRoomViewModel, IRoom, RoomErrorsModal } from '@app/models';
 import { NotifyService, FireStoreService, DialogService } from '@app/services';
 
 @Component({
@@ -17,8 +16,6 @@ export class AddRoomToMemberComponent implements OnInit {
   rooms: Array<IRoom> = [];
   family: Array<IMemberRoomViewModel> = [];
   primary!: IMemberRoomViewModel;
-  showEmptySelectErrorMessage = false;
-  isExceededRoomAvailability = false;
   isSaveButtonDisabled = false;
   isSaveLoading = false;
 
@@ -28,7 +25,6 @@ export class AddRoomToMemberComponent implements OnInit {
     private fireStoreService: FireStoreService,
     private notifyService: NotifyService,
     private dialogService: DialogService,
-    @Inject(DOCUMENT) private document: Document,
     @Inject(MAT_DIALOG_DATA) private config: IAddRoomToMemberDialogConfig
     ) {
       this.form = this.formBuilder.group({
@@ -50,19 +46,9 @@ export class AddRoomToMemberComponent implements OnInit {
         const isPrimaryChecked = this.primary && this.primary.isChecked && !this.primary.hasRoom;
         const isFamilyChecked = this.family.length > 0 && this.family.filter(m => m.isChecked).length > 0;
         if (isPrimaryChecked || isFamilyChecked) {
-          this.isSaveLoading = true;
-          this.showEmptySelectErrorMessage = false;
           this.update();
         } else {
-          this.showEmptySelectErrorMessage = true;
-          const container = this.document.getElementById('emptySelectionContainer');
-          if (container) {
-            container.scrollIntoView({
-              behavior: 'smooth',
-              block: 'start',
-              inline: 'start'
-            });
-          }
+          this.openErrorModal(RoomErrorsModal.emptySelection);
         }
       }
     }
@@ -114,9 +100,8 @@ export class AddRoomToMemberComponent implements OnInit {
       const selectedRoom = this.rooms.find(r => r.id === roomId);
       if (selectedRoom) {
         const selectedRoomAvailability = selectedRoom.available;
-        if (selectedIds.length > selectedRoomAvailability) {
-          this.isExceededRoomAvailability = true;
-        } else {
+        if (selectedIds.length <= selectedRoomAvailability) {
+          this.isSaveLoading = true;
           this.fireStoreService.updateDocumentsProperty(Constants.RealtimeDatabase.tickets, selectedIds, 'roomId', roomId).subscribe(() => {
             this.notifyService.showNotifier('تم التسكين بنجاح');
             const remainingAvailable = selectedRoom.available - selectedIds.length;
@@ -125,6 +110,8 @@ export class AddRoomToMemberComponent implements OnInit {
               this.isSaveLoading = false;
             });
           });
+        } else {
+          this.openErrorModal(RoomErrorsModal.exceededAvailability);
         }
       }
     }
@@ -214,5 +201,9 @@ export class AddRoomToMemberComponent implements OnInit {
         this.rooms = rooms;
       }
     }
+  }
+
+  private openErrorModal(error: RoomErrorsModal): void {
+    this.dialogService.openRoomErrorsModal(error);
   }
 }
