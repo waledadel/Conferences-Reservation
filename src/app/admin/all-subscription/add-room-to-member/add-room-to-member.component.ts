@@ -148,7 +148,7 @@ export class AddRoomToMemberComponent implements OnInit {
   private enableDisableSaveBtn(): void {
     if (this.config.data) {
       const isClickedMemberDisabled = !!(this.config.data.roomId && this.primary.roomId != '');
-      const isFamilyDisabled = this.family.length > 0 ? this.family.every(m => m.roomId != '') : true;
+      const isFamilyDisabled = this.family.length > 0 ? this.family.filter(me => me.age > 4).every(m => m.roomId != '') : true;
       this.isSaveButtonDisabled = isClickedMemberDisabled && isFamilyDisabled;
       if (this.isSaveButtonDisabled) {
         this.form.get('roomId')?.disable();

@@ -12,7 +12,7 @@
         <div class="font-weight-bold mb-2">
             الأشتراك الرئيسي:
         </div>
-        <div *ngIf="primary" class="d-flex justify-content-between align-items-center flex-md-row flex-column member-card py-2 px-2 rounded">
+        <div *ngIf="primary" class="d-flex justify-content-between align-items-lg-center align-items-start flex-md-row flex-column member-card py-2 px-2 rounded">
             <mat-checkbox color="primary" [disabled]="primary.hasRoom" [value]="primary.id" [(ngModel)]="primary.isChecked">
                 <div class="d-flex flex-column">
                     <div class="text-dark font-weight-bold">{{primary.name}}</div>
@@ -21,12 +21,12 @@
                     </small>
                 </div>
             </mat-checkbox>
-            <small *ngIf="primary.hasRoom" class="d-flex flex-column">
+            <small *ngIf="primary.hasRoom" class="d-flex flex-column px-lg-0 px-2">
                 <span class="text-success">({{primary.roomName}})</span>
                 <a class="text-danger text-decoration-none" href="javascript:void(0)" (click)="openRoomCancellationModal(primary)">
                     <i class="fa-solid fa-circle-minus"></i>&nbsp;إلغاء التسكين  
                 </a>
-                <a class="primary text-decoration-none" href="javascript:void(0)" (click)="openRoomCancellationModal(primary)">
+                <a class="primary text-decoration-none" href="javascript:void(0)">
                     <i class="fa-solid fa-right-left"></i>&nbsp;نقل إلي غرفة أخري
                 </a>
             </small>
@@ -60,7 +60,7 @@
                         </div>
                     </div>
                 </mat-checkbox>
-                <small *ngIf="f.hasRoom" class="d-flex flex-column">
+                <small *ngIf="f.hasRoom" class="d-flex flex-column px-lg-0 px-2">
                     <span class="text-success">({{f.roomName}})</span>
                     <a class="text-danger text-decoration-none" href="javascript:void(0)" (click)="openRoomCancellationModal(f)">
                         <i class="fa-solid fa-circle-minus"></i>&nbsp;إلغاء التسكين  
