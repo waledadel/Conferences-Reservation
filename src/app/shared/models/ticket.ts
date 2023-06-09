@@ -1,4 +1,5 @@
 import { Timestamp } from 'firebase/firestore';
+import { IRoom } from './room';
 
 export interface ITicket {
     id: string;
@@ -92,7 +93,10 @@ export interface IPrimaryDataSourceVm {
     lastUpdatedBy: string;
 }
 
-
+export interface IAddRoomToMemberDialogConfig {
+    data: IAllSubscriptionDataSourceVm;
+    rooms: Array<IRoom>;
+}
 
 export interface IAllSubscriptionDataSourceVm {
     id: string;
@@ -113,6 +117,7 @@ export interface IAllSubscriptionDataSourceVm {
     mainMemberName: string;
     primaryId: string;
     displayedRoomName: string;
+    needsSeparateBed: boolean;
 }
 
 export interface ICostDetailsDataSourceVm {
@@ -143,11 +148,15 @@ export interface IMemberRoomDataSource {
     isChild: boolean;
     isMain: boolean;
     roomId: string;
+    needsSeparateBed: boolean;
+    birthDate: Timestamp;
 }
 
 export interface IMemberRoomViewModel extends IMemberRoomDataSource {
     hasRoom: boolean;
     isChecked: boolean;
+    roomName: string;
+    age: number;
 }
 
 export enum BookingStatus {

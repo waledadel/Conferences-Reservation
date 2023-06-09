@@ -1,13 +1,16 @@
+import { DOCUMENT } from '@angular/common';
 import { Component, OnInit, Inject } from '@angular/core';
+import { Timestamp } from '@angular/fire/firestore';
 import { FormGroup, Validators, FormBuilder, FormGroupDirective } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { Constants } from '@app/constants';
-import { IAllSubscriptionDataSourceVm, IMemberRoomViewModel, IRoom } from '@app/models';
-import { NotifyService, TranslationService, FireStoreService } from '@app/services';
+import { IAddRoomToMemberDialogConfig, IMemberRoomViewModel, IRoom } from '@app/models';
+import { NotifyService, FireStoreService, DialogService } from '@app/services';
 
 @Component({
-  templateUrl: './add-room-to-member.component.html'
+  templateUrl: './add-room-to-member.component.html',
+  styleUrls: ['./add-room-to-member.component.scss']
 })
 export class AddRoomToMemberComponent implements OnInit {
   form: FormGroup;
@@ -16,14 +19,17 @@ export class AddRoomToMemberComponent implements OnInit {
   primary!: IMemberRoomViewModel;
   showEmptySelectErrorMessage = false;
   isExceededRoomAvailability = false;
+  isSaveButtonDisabled = false;
+  isSaveLoading = false;
 
   constructor(
-    public dialogRef: MatDialogRef<AddRoomToMemberComponent>,
+    private dialogRef: MatDialogRef<AddRoomToMemberComponent>,
     private formBuilder: FormBuilder,
     private fireStoreService: FireStoreService,
     private notifyService: NotifyService,
-    private translationService: TranslationService,
-    @Inject(MAT_DIALOG_DATA) private data: IAllSubscriptionDataSourceVm
+    private dialogService: DialogService,
+    @Inject(DOCUMENT) private document: Document,
+    @Inject(MAT_DIALOG_DATA) private config: IAddRoomToMemberDialogConfig
     ) {
       this.form = this.formBuilder.group({
         roomId: ['', Validators.required],
@@ -31,50 +37,62 @@ export class AddRoomToMemberComponent implements OnInit {
     }
 
   ngOnInit(): void {
-    this.getRooms();
     this.patchForm();
-    if (this.data && this.data.isMain) {
-      this.primary = {
-        id: this.data.id,
-        isMain: this.data.isMain,
-        isChild: this.data.isChild,
-        name: this.data.name,
-        primaryId: this.data.primaryId,
-        roomId: this.data.roomId,
-        hasRoom: (this.data.roomId != null && this.data.roomId != '') ?? false,
-        isChecked: (this.data.roomId != null && this.data.roomId != '') ?? false
-      };
-    }
+    this.setPrimary();
+    this.setRooms();
     this.getRelatedMembersByPrimaryId();
   }
 
   save(event: Event, categoryForm: FormGroupDirective): void {
     categoryForm.onSubmit(event);
     if (this.form.valid) {
-      if (this.data) {
+      if (this.config.data) {
         const isPrimaryChecked = this.primary && this.primary.isChecked && !this.primary.hasRoom;
-        if (isPrimaryChecked || this.family.length > 0) {
+        const isFamilyChecked = this.family.length > 0 && this.family.filter(m => m.isChecked).length > 0;
+        if (isPrimaryChecked || isFamilyChecked) {
+          this.isSaveLoading = true;
           this.showEmptySelectErrorMessage = false;
           this.update();
         } else {
           this.showEmptySelectErrorMessage = true;
+          const container = this.document.getElementById('emptySelectionContainer');
+          if (container) {
+            container.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start',
+              inline: 'start'
+            });
+          }
         }
       }
     }
   }
 
-  close(fireRefresh = false): void {
-    this.dialogRef.close({fireRefresh});
+  close(fireRefresh = false, roomId = ''): void {
+    this.dialogRef.close({fireRefresh, roomId});
   }
 
-  cancel(memberId: string): void {
-
+  openRoomCancellationModal(member: IMemberRoomViewModel): void {
+    this.dialogService.openRoomCancellationModal(member.name).afterClosed().subscribe((res: {confirmCancellation: boolean}) => {
+      if (res && res.confirmCancellation) {
+        this.fireStoreService.updateDocumentProperty(Constants.RealtimeDatabase.tickets, member.id, 'roomId', '').subscribe(() => {
+          this.notifyService.showNotifier('تم إلغاء التسكين بنجاح');
+          const selectedRoom = this.rooms.find(r => r.id === member.roomId);
+          if (selectedRoom) {
+            const remainingAvailable = selectedRoom.available + 1;
+            this.fireStoreService.updateDocumentProperty(Constants.RealtimeDatabase.rooms, member.roomId, 'available', remainingAvailable).subscribe(() => {
+              this.close(true, member.roomId);
+            });
+          }
+        });
+      }
+    });
   }
 
   private patchForm(): void {
-    if (this.data) {
+    if (this.config.data) {
       this.form.patchValue({
-        roomId: this.data.roomId
+        roomId: this.config.data.roomId
       });
     }
   }
@@ -100,10 +118,11 @@ export class AddRoomToMemberComponent implements OnInit {
           this.isExceededRoomAvailability = true;
         } else {
           this.fireStoreService.updateDocumentsProperty(Constants.RealtimeDatabase.tickets, selectedIds, 'roomId', roomId).subscribe(() => {
-            this.notifyService.showNotifier(this.translationService.instant('notifications.createdSuccessfully'));
+            this.notifyService.showNotifier('تم التسكين بنجاح');
             const remainingAvailable = selectedRoom.available - selectedIds.length;
             this.fireStoreService.updateDocumentProperty(Constants.RealtimeDatabase.rooms, roomId, 'available', remainingAvailable).subscribe(() => {
-              this.close(true);
+              this.close(true, roomId);
+              this.isSaveLoading = false;
             });
           });
         }
@@ -111,51 +130,89 @@ export class AddRoomToMemberComponent implements OnInit {
     }
   }
 
-  private getRooms(): void {
-    this.fireStoreService.getAll<IRoom>(Constants.RealtimeDatabase.rooms).subscribe(data => {
-      if (data && data.length > 0) {
-        this.rooms = data.sort((a,b) => a.room - b.room).map(r => ({
-          ...r,
-          displayedName: `R:${r.room}_S:(${r.sizeName})_B:${r.building}_F:${r.floor}_A:${r.available}`,
-          size: this.getRoomCountSize(r.sizeName),
-        }));
-      }
-    });
-  }
-
-  private getRoomCountSize(sizeName: string): number {
-    let roomSize = 0;
-    if (sizeName.toString().includes('+')) {
-      const list = sizeName.split('+');
-      roomSize = list.reduce((accumulator, currentValue) => accumulator + (+currentValue), 0);
-    } else {
-      roomSize = (+sizeName);
-    }
-    return roomSize;
-  }
-
   private getRelatedMembersByPrimaryId(): void {
-    if (this.data && this.data.primaryId) {
-      this.fireStoreService.getMembersByPrimaryId(this.data.primaryId, 1).subscribe(list => {
+    if (this.config.data && this.config.data.primaryId) {
+      this.fireStoreService.getMembersByPrimaryId(this.config.data.primaryId, 1).subscribe(list => {
         if (list && list.length > 0) {
           const otherMembers = list.filter(m => !m.isMain);
           const primary = list.find(m => m.isMain);
           if (otherMembers && otherMembers.length > 0) {
-            this.family = otherMembers.map(m => ({
-              ...m,
-              hasRoom: (m.roomId != '' && m.roomId != null) ?? false,
-              isChecked: (m.roomId != '' && m.roomId != null) ?? false
-            }));
+            this.family = otherMembers.map(m => {
+              const hasRoom = m.roomId != '' && m.roomId != null;
+              const roomName = hasRoom ? this.getRoomName(m.roomId) : '';
+              const isChecked = hasRoom;
+              const age = this.getAge(m.birthDate);
+              return {...m, hasRoom, isChecked, roomName, age };
+            });
           }
           if (primary) {
-            this.primary = {
-              ...primary,
-              hasRoom: (primary.roomId != '' && primary.roomId != null) ?? false,
-              isChecked: (primary.roomId != '' && primary.roomId != null) ?? false
-            };
+            const hasRoom = primary.roomId != '' && primary.roomId != null;
+            const isChecked = hasRoom;
+            const roomName = hasRoom ? this.getRoomName(primary.roomId) : '';
+            const age = this.getAge(primary.birthDate);
+            this.primary = { ...primary, hasRoom, isChecked, roomName, age };
           }
         }
+        this.enableDisableSaveBtn();
       });
+    }
+  }
+
+  private enableDisableSaveBtn(): void {
+    if (this.config.data) {
+      const isClickedMemberDisabled = !!(this.config.data.roomId && this.primary.roomId != '');
+      const isFamilyDisabled = this.family.length > 0 ? this.family.every(m => m.roomId != '') : true;
+      this.isSaveButtonDisabled = isClickedMemberDisabled && isFamilyDisabled;
+      if (this.isSaveButtonDisabled) {
+        this.form.get('roomId')?.disable();
+      }
+    }
+  }
+
+  private getRoomName(roomId: string): string {
+    if (roomId) {
+      const foundRoom = this.rooms.find(r => r.id === roomId);
+      if (foundRoom) {
+        return `R:${foundRoom.room}_S:(${foundRoom.sizeName})_B:${foundRoom.building}_F:${foundRoom.floor}_A:${foundRoom.available}`;
+      }
+      return '';
+    }
+    return '';
+  }
+
+  private getAge(birthDate: Timestamp): number {
+    return new Date().getFullYear() - birthDate.toDate().getFullYear();
+  }
+
+  private setPrimary(): void {
+    if (this.config) {
+      const data = this.config.data;
+      if (data && data.isMain) {
+        const isPrimaryHasRoom = data.roomId != null && data.roomId != '';
+        this.primary = {
+          id: data.id,
+          isMain: data.isMain,
+          isChild: data.isChild,
+          name: data.name,
+          primaryId: data.primaryId,
+          roomId: data.roomId,
+          hasRoom: isPrimaryHasRoom,
+          isChecked: isPrimaryHasRoom,
+          roomName: isPrimaryHasRoom ? this.getRoomName(data.roomId) : '',
+          needsSeparateBed: data.needsSeparateBed,
+          birthDate: data.birthDate,
+          age: this.getAge(data.birthDate)
+        };
+      }
+    }
+  }
+
+  private setRooms(): void {
+    if (this.config) {
+      const rooms = this.config.rooms;
+      if (rooms && rooms.length > 0) {
+        this.rooms = rooms;
+      }
     }
   }
 }

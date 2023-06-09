@@ -4,6 +4,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ConfirmDeleteComponent } from '../components/confirm-delete/confirm-delete.component';
 import { ConfirmBookingComponent } from './../../admin/reservation/confirm-booking/confirm-booking.component';
 import { BookingSuccessfullyComponent } from './../../admin/reservation/booking-successfully/booking-successfully.component';
+import { RoomCancellationComponent } from 'app/admin/all-subscription/room-cancellation/room-cancellation.component';
 
 type modalSize = 'sm' | 'md' | 'lg' | 'xlg';
 
@@ -37,6 +38,14 @@ export class DialogService {
     });
   }
 
+  openRoomCancellationModal(itemName: string): MatDialogRef<unknown, any> {
+    return this.dialog.open(RoomCancellationComponent, {
+      panelClass: 'customDialogPanelClass-md',
+      disableClose: true,
+      data: itemName
+    });
+  }
+
   openAddEditDialog(component: any, size: modalSize, isEditMode: boolean, data?: any): MatDialogRef<unknown, any> {
     return this.dialog.open(component, {
       panelClass: `customDialogPanelClass-${size}`,
@@ -44,11 +53,4 @@ export class DialogService {
       data: isEditMode ? data : null
     });
   }
-
-  // openTemplateModal(templateRef: any, size: modalSize): MatDialogRef<ModalComponent, any> {
-  //   return this.dialog.open(ModalComponent, {
-  //     panelClass: `customDialogPanelClass-${size}`,
-  //     data: { templateRef }
-  //   });
-  // }
 }

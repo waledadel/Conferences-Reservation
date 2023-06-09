@@ -3,7 +3,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { Constants } from '@app/constants';
-import { BookingStatus, Gender, IAddress, IAllSubscriptionDataSourceVm, IBus, IRoom } from '@app/models';
+import { BookingStatus, Gender, IAddress, IAllSubscriptionDataSourceVm, IBus, IRoom, IRoomDataSource } from '@app/models';
 import { DialogService, FireStoreService } from '@app/services';
 import { AdminService } from '../admin.service';
 import { IAdvancedFilterForm } from '../advanced-search/advanced-search.models';
@@ -119,24 +119,42 @@ export class AllSubscriptionComponent implements OnInit {
   }
 
   addRoomToMember(item: IAllSubscriptionDataSourceVm): void {
-    this.dialogService.openAddEditDialog(AddRoomToMemberComponent, 'lg', true, item).afterClosed()
-    .subscribe((res: {fireRefresh: boolean}) => {
-      if (res && res.fireRefresh) {
-        this.updateTableRow(item);
+    this.dialogService.openAddEditDialog(AddRoomToMemberComponent, 'lg', true, {
+      data: item,
+      rooms: this.model.rooms
+    }).afterClosed()
+    .subscribe((res: {fireRefresh: boolean, roomId: string}) => {
+      if (res) {
+        if (res.fireRefresh && res.roomId != '') {
+          this.getUpdatedRoom(item, res.roomId);
+        }
       }
     });
   }
 
-  private updateTableRow(item: IAllSubscriptionDataSourceVm): void {
+  private updateTableRows(item: IAllSubscriptionDataSourceVm, roomId: string): void {
     this.fireStoreService.getById(`${Constants.RealtimeDatabase.tickets}/${item.id}`).subscribe((res: IAllSubscriptionDataSourceVm) => {
       if (res) {
-        const index = this.model.dataSource.data.findIndex(t => t.id === item.id);
-        if (index > -1) {
-          this.model.dataSource.data[index] = {
+        const memberIndex = this.model.dataSource.data.findIndex(t => t.id === item.id);
+        if (memberIndex > -1) {
+          this.model.dataSource.data[memberIndex] = {
             ...item,
             roomId: res.roomId,
             displayedRoomName: this.getRoomNameById(res.roomId),
           };
+          // Update displayed rows with the same room after increase or decrease available beds
+          const rowsWzSameRoom = this.model.dataSource.data.filter(m => m.roomId === roomId);
+          if (rowsWzSameRoom && rowsWzSameRoom.length > 0) {
+            rowsWzSameRoom.forEach(row => {
+              const rowIndex = this.model.dataSource.data.findIndex(t => t.id === row.id);
+              if (rowIndex > -1) {
+                this.model.dataSource.data[rowIndex] = {
+                  ...row,
+                  displayedRoomName: this.getRoomNameById(roomId)
+                };
+              }
+            });
+          }
           this.model.dataSource._updateChangeSubscription();
         }
       }
@@ -217,7 +235,7 @@ export class AllSubscriptionComponent implements OnInit {
   private getRooms(): void {
     this.fireStoreService.getAll<IRoom>(Constants.RealtimeDatabase.rooms).subscribe(data => {
       if (data && data.length > 0) {
-        this.model.rooms = data.map(r => ({
+        this.model.rooms = data.sort((a,b) => a.room - b.room).map(r => ({
           ...r,
           displayedName: `R:${r.room}_S:(${r.sizeName})_B:${r.building}_F:${r.floor}_A:${r.available}`,
           size: this.getRoomCountSize(r.sizeName),
@@ -235,6 +253,22 @@ export class AllSubscriptionComponent implements OnInit {
       roomSize = (+sizeName);
     }
     return roomSize;
+  }
+
+  private getUpdatedRoom(item: IAllSubscriptionDataSourceVm, roomId: string): void {
+    this.fireStoreService.getById(`${Constants.RealtimeDatabase.rooms}/${roomId}`).subscribe((res: IRoomDataSource) => {
+      if (res) {
+        const index = this.model.rooms.findIndex(r => r.id === res.id);
+        if (index > -1) {
+          this.model.rooms[index] = {
+            ...res,
+            displayedName: `R:${res.room}_S:(${res.sizeName})_B:${res.building}_F:${res.floor}_A:${res.available}`,
+            size: this.getRoomCountSize(res.sizeName),
+          };
+          this.updateTableRows(item, roomId);
+        }
+      }
+    });
   }
 
   getFilterPredicate(): ((data: IAllSubscriptionDataSourceVm, filter: string) => boolean) {

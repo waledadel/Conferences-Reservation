@@ -261,7 +261,8 @@ export class FireStoreService {
             birthDateMonth: ticket.birthDate.toDate().getMonth() + 1,
             mainMemberName: '',
             primaryId: ticket.primaryId,
-            displayedRoomName: ''
+            displayedRoomName: '',
+            needsSeparateBed: ticket.needsSeparateBed
           }))
         ),
         take(1)
@@ -363,6 +364,8 @@ export class FireStoreService {
             isChild: ticket.isChild,
             isMain: ticket.isMain,
             roomId: ticket.roomId,
+            needsSeparateBed: ticket.needsSeparateBed,
+            birthDate: ticket.birthDate
           }))
         ),
         take(takeCount)
