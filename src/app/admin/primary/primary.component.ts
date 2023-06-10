@@ -3,7 +3,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { Timestamp } from '@angular/fire/firestore';
 
-import { IBus, IRelatedMemberViewModel, IPrimaryDataSourceVm, ISettings, ITicket, ICostDetailsDataSourceVm, Gender, BookingStatus, IUser, BookingType, IAddress } from '@app/models';
+import { IRelatedMemberViewModel, IPrimaryDataSourceVm, ISettings, ITicket, ICostDetailsDataSourceVm, Gender, BookingStatus, IUser, BookingType, IAddress, IBus } from '@app/models';
 import { DialogService, FireStoreService, NotifyService, TranslationService } from '@app/services';
 import { ManageReservationComponent } from '../reservation/manage-reservation/manage-reservation.component';
 import { Constants } from '@app/constants';
@@ -118,14 +118,9 @@ export class PrimaryComponent implements OnInit {
     if (item.name) {
       this.dialogService.openConfirmDeleteDialog(item.name).afterClosed().subscribe((res: {confirmDelete: boolean}) => {
         if (res && res.confirmDelete && item.id) {
-          this.fireStoreService.getPrimaryWithRelatedParticipants(item.id).subscribe(list => {
-            const ids = list.map(item => item.id);
-            if (ids && ids.length > 0) {
-              this.fireStoreService.deleteReservation(ids).subscribe(() => {
-                this.notifyService.showNotifier(this.translationService.instant('notifications.removedSuccessfully'));
-                this.removeRow(item);
-              });
-            }
+          this.fireStoreService.softDeleteReservation(item.id).subscribe(() => {
+            this.notifyService.showNotifier(this.translationService.instant('notifications.removedSuccessfully'));
+            this.updateTableRow(item);
           });
         }
       });
@@ -251,13 +246,15 @@ export class PrimaryComponent implements OnInit {
 
   private getPrimaryTickets(takeCount = 1): void {
     this.fireStoreService.getPrimarySubscription(takeCount).subscribe(res => {
-      const data = res.map(item => ({
-        ...item,
-        totalCost: this.getTotalCost(item, this.model.notPrimaryMembers),
-        transportationName: this.getBusNameById(item.transportationId),
-        lastUpdatedBy: this.getUserById(item.lastUpdateUserId),
-        addressName: this.getAddressNameById(item.addressId)
-      }));
+      const data: Array<IPrimaryDataSourceVm> = res.map(item => {
+        const totalCost = this.getTotalCost(item, this.model.notPrimaryMembers);
+        const transportationName = this.getBusNameById(item.transportationId);
+        const lastUpdatedBy = this.getUserById(item.lastUpdateUserId);
+        const addressName = this.getAddressNameById(item.addressId);
+        const deletedBy = (item.bookingStatus === this.model.bookingStatus.deleted && item.deletedBy != null) ? 
+          this.getUserById(item.deletedBy) : '';
+        return {...item, totalCost, transportationName, lastUpdatedBy, addressName, deletedBy};
+      });
       this.model.dataSource = new MatTableDataSource(data);
       this.model.total = data.length;
       this.model.dataSource.sort = this.sort;
@@ -276,7 +273,6 @@ export class PrimaryComponent implements OnInit {
     return '';
   }
 
-  
   private getAddressNameById(id: string): string {
     if (id && this.model.addressList.length > 0) {
       const address = this.model.addressList.find(b => b.id === id);
@@ -290,7 +286,7 @@ export class PrimaryComponent implements OnInit {
 
   private getUserById(id: string): string {
     if (id && this.model.users.length > 0) {
-      const user = this.model.users.find(b => b.id === id);
+      const user = this.model.users.find(u => u.id === id);
       if (user) {
         return user.fullName;
       }
@@ -345,13 +341,14 @@ export class PrimaryComponent implements OnInit {
     });
   }
 
-  private removeRow(item: Partial<ITicket>): void {
-    const index = this.model.dataSource.data.findIndex(t => t.id === item.id);
-    if (index > -1) {
-      this.model.dataSource.data.splice(index, 1);
-      this.model.dataSource._updateChangeSubscription();
-    }
-  }
+  // Case delete forever
+  // private removeRow(item: Partial<ITicket>): void {
+  //   const index = this.model.dataSource.data.findIndex(t => t.id === item.id);
+  //   if (index > -1) {
+  //     this.model.dataSource.data.splice(index, 1);
+  //     this.model.dataSource._updateChangeSubscription();
+  //   }
+  // }
 
   private getTotalCost(ticket: IPrimaryDataSourceVm, list: Array<IRelatedMemberViewModel>): number {
     if (ticket) {

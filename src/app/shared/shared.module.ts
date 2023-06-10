@@ -9,6 +9,7 @@ import { PageNotFoundComponent } from './components/page-not-found/page-not-foun
 import { LogoutComponent } from './components/logout/logout.component';
 import { MaterialModule } from './material/material.module';
 import { SocialMediaComponent } from './components/social-media/social-media.component';
+import { TicketStatusComponent } from './components/ticket-status/ticket-status.component';
 
 
 const components = [
@@ -16,7 +17,8 @@ const components = [
   ConfirmDeleteComponent,
   PageNotFoundComponent,
   LogoutComponent,
-  SocialMediaComponent
+  SocialMediaComponent,
+  TicketStatusComponent
 ];
 
 const modules = [

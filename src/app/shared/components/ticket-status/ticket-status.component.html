@@ -1,0 +1,20 @@
+<ng-container [ngSwitch]="status">
+    <div *ngSwitchCase="bookingStatus.confirmed">
+        <div class="badge px-2 py-1 badge-info">{{ 'bookingStatus.confirmed' | translate }}</div>
+    </div>
+    <div *ngSwitchCase="bookingStatus.duplicated">
+        <div class="badge px-2 py-1 badge-warning">{{ 'bookingStatus.duplicated' | translate }}</div>
+    </div>
+    <div *ngSwitchCase="bookingStatus.canceled">
+        <div class="badge px-2 py-1 badge-danger">{{ 'bookingStatus.canceled' | translate }}</div>
+    </div>
+    <div *ngSwitchCase="bookingStatus.waiting">
+        <div class="badge px-2 py-1 badge-secondary">{{ 'bookingStatus.waiting' | translate }}</div>
+    </div>
+    <div *ngSwitchCase="bookingStatus.deleted">
+        <div class="badge px-2 py-1 badge-danger">محذوف</div>
+    </div>
+    <div *ngSwitchDefault>
+        <div class="badge px-2 py-1 badge-success">{{ 'bookingStatus.new' | translate }}</div>
+    </div>
+</ng-container>

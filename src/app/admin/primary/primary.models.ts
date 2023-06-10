@@ -10,7 +10,7 @@ export class PrimaryModel {
   childBedPrice = 0;
   readonly desktopColumn = ['name', 'mobile', 'adultsCount', 'childrenCount', 'roomId', 'transportation', 'addressName',
   'bookingType', 'birthDate', 'age', 'bookingDate', 'gender', 'totalCost', 'paid', 'remaining', 'adminNotes', 'userNotes', 
-  'lastUpdateDate', 'lastUpdatedBy', 'bookingStatus', 'actions'];
+  'lastUpdateDate', 'lastUpdatedBy', 'deletedBy', 'bookingStatus', 'actions'];
   displayedColumns: string[] = [];
   dataSource = new MatTableDataSource<IPrimaryDataSourceVm>([]);
   filteredData: Array<IPrimaryDataSourceVm> = [];

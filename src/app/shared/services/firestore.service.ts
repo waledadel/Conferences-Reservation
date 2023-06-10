@@ -6,7 +6,7 @@ import { AngularFirestore, AngularFirestoreCollection, DocumentData, QueryFn } f
 import { Timestamp } from 'firebase/firestore';
 
 import { Constants } from '@app/constants';
-import { ICollectionData, IRelatedMemberViewModel, IPrimaryDataSourceVm, ITicket, ITicketForm, IAllSubscriptionDataSourceVm, IUser, IRoomDataSource, IMemberRoomDataSource } from '@app/models';
+import { ICollectionData, IRelatedMemberViewModel, IPrimaryDataSourceVm, ITicket, ITicketForm, IAllSubscriptionDataSourceVm, IUser, IRoomDataSource, IMemberRoomDataSource, BookingStatus } from '@app/models';
 import { convertSnaps } from './db-utils';
 
 @Injectable({
@@ -189,15 +189,31 @@ export class FireStoreService {
     return from(batch.commit()).pipe(map(() => null));
   }
 
-  deleteReservation(ids: Array<string>): Observable<unknown> {
-    const batch = this.angularFirestore.firestore.batch();
-    if (ids && ids.length > 0) {
-      ids.forEach(id => {
-        const ref = this.angularFirestore.doc(`/${Constants.RealtimeDatabase.tickets}/${id}`).ref;
-        batch.delete(ref);
+  // deleteReservationForever(ids: Array<string>): Observable<unknown> {
+  //   const batch = this.angularFirestore.firestore.batch();
+  //   if (ids && ids.length > 0) {
+  //     ids.forEach(id => {
+  //       const ref = this.angularFirestore.doc(`/${Constants.RealtimeDatabase.tickets}/${id}`).ref;
+  //       batch.delete(ref);
+  //     });
+  //   }
+  //   return from(batch.commit()).pipe(map(() => null));
+  // }
+
+  softDeleteReservation(id: string): Observable<void> {
+    const userId = localStorage.getItem('userId') ?? '';
+    const collectionRef = this.angularFirestore.collection(Constants.RealtimeDatabase.tickets).ref;
+    const query = collectionRef.where('primaryId', '==', id);  
+    return from(query.get().then((querySnapshot) => {
+      const batch = this.angularFirestore.firestore.batch();
+      querySnapshot.forEach((doc) => {
+        batch.update(doc.ref, {
+          bookingStatus: BookingStatus.deleted,
+          deletedBy: userId
+        });
       });
-    }
-    return from(batch.commit()).pipe(map(() => null));
+      return batch.commit();
+    }));
   }
 
   updateDoc(path: string, data: PartialWithFieldValue<any>): Observable<any> {
@@ -301,12 +317,83 @@ export class FireStoreService {
             lastUpdateDate: ticket.lastUpdateDate,
             lastUpdatedBy: '',
             addressId: ticket.addressId,
-            addressName: ''
+            addressName: '',
+            deletedBy: ticket.deletedBy ?? ''
           }))
         ),
         take(takeCount)
       );
   }
+
+  // getPrimarySubscription(takeCount = 1): Observable<Array<IPrimaryDataSourceVm>> {
+  //   const busRef = this.angularFirestore.collection<IBus>(Constants.RealtimeDatabase.buses).ref;
+  //   const addressRef = this.angularFirestore.collection<IAddress>(Constants.RealtimeDatabase.address).ref;
+  //   return this.angularFirestore
+  //     .collection<IPrimaryDataSourceVm>(Constants.RealtimeDatabase.tickets, ref => 
+  //       ref.where('isMain', '==', true)
+  //     ).valueChanges({ idField: 'id' })
+  //     .pipe(
+  //       switchMap((tickets: Array<IPrimaryDataSourceVm>) => {
+  //         return combineLatest(
+  //           tickets.map((ticket: IPrimaryDataSourceVm) => {
+  //             const transportationId = ticket.transportationId;
+  //             const busDoc = busRef.doc(transportationId);
+  //             const addressId = ticket.addressId;
+  //             const addressDoc = addressRef.doc(addressId);
+  //             return forkJoin([
+  //               from(busDoc.get()).pipe(
+  //                 map((doc) => ({
+  //                   ...doc.data(),
+  //                   id: doc.id,
+  //                 }) as IBus)
+  //               ),
+  //               from(addressDoc.get()).pipe(
+  //                 map((doc) => ({
+  //                   ...doc.data(),
+  //                   id: doc.id,
+  //                 }) as IAddress)
+  //               )
+  //             ]);
+  //           })
+  //         ).pipe(
+  //           map((results: Array<[IBus, IAddress]>) =>
+  //             tickets.map((ticket: IPrimaryDataSourceVm, index: number) => {
+  //               const [bus, address] = results[index];
+  //               return {
+  //                 id: ticket.id,
+  //                 name: ticket.name,
+  //                 adultsCount: ticket.adultsCount,
+  //                 childrenCount: ticket.childrenCount,
+  //                 roomId: ticket.roomId,
+  //                 bookingType: ticket.bookingType,
+  //                 bookingStatus: ticket.bookingStatus,
+  //                 bookingDate: ticket.bookingDate,
+  //                 totalCost: 0,
+  //                 paid: ticket.paid,
+  //                 userNotes: ticket.userNotes,
+  //                 transportationId: ticket.transportationId,
+  //                 primaryId: ticket.primaryId,
+  //                 mobile: ticket.mobile,
+  //                 transportationName: bus.name,
+  //                 gender: ticket.gender,
+  //                 birthDate: ticket.birthDate,
+  //                 age: this.getAge(ticket.birthDate),
+  //                 birthDateMonth: ticket.birthDate.toDate().getMonth() + 1,
+  //                 adminNotes: ticket.adminNotes,
+  //                 lastUpdateUserId: ticket.lastUpdateUserId ?? '',
+  //                 lastUpdateDate: ticket.lastUpdateDate,
+  //                 lastUpdatedBy: '',
+  //                 addressId: ticket.addressId,
+  //                 addressName: address.name,
+  //                 deletedBy: ticket.deletedBy ?? '',
+  //               };
+  //             })
+  //           ),
+  //           take(takeCount)
+  //         );
+  //       })
+  //     );
+  // }
 
   getNotPrimarySubscription(takeCount = 1): Observable<Array<IRelatedMemberViewModel>> {
     return this.angularFirestore

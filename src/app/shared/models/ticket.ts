@@ -91,6 +91,7 @@ export interface IPrimaryDataSourceVm {
     lastUpdateDate?: Timestamp;
     lastUpdateUserId: string;
     lastUpdatedBy: string;
+    deletedBy?: string;
 }
 
 export interface IAddRoomToMemberDialogConfig {
@@ -165,7 +166,8 @@ export enum BookingStatus {
     confirmed = 2,
     duplicated = 3,
     canceled = 4,
-    waiting = 5
+    waiting = 5,
+    deleted = 6
 }
 
 export enum SocialStatus {
