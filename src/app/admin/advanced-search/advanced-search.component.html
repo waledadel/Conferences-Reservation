@@ -60,7 +60,7 @@
                     <mat-label>{{'common.bookingStatus' | translate}}</mat-label>
                     <mat-select formControlName="bookingStatus">
                         <ng-container *ngFor="let item of model.bookingStatusList">
-                            <mat-option [value]="item.value">{{ item.key | translate }}</mat-option>
+                            <mat-option [value]="item.value" [disabled]="model.form.value.hideDeleted && item.value === model.bookingStatus.deleted">{{ item.key | translate }}</mat-option>
                         </ng-container>
                     </mat-select>
                 </mat-form-field>
@@ -116,7 +116,7 @@
                     </mat-accordion>
                 </div>
                 <div class="col-lg-6 col-12">
-                    <mat-slide-toggle formControlName="hideDeleted">إخفاء المحذوفين</mat-slide-toggle>
+                    <mat-slide-toggle formControlName="hideDeleted" [disabled]="model.bookingStatus.deleted === model.form.value.bookingStatus">إخفاء المحذوفين</mat-slide-toggle>
                 </div>
             </div>
         </form>

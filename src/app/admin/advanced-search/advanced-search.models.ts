@@ -44,6 +44,7 @@ export class AdvancedSearchModel {
     { key: 'مسكن', value: MemberRoom.hasRoom},
     { key: 'غير مسكن', value: MemberRoom.notHaveRoom}
   ];
+  bookingStatus = BookingStatus;
 }
 
 export interface IAdvancedFilterForm {
