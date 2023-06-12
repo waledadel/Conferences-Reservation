@@ -55,7 +55,7 @@ export class PrimaryComponent implements OnInit {
         let exportData: Array<any> = [];
         const selectedColumns = res.options.filter(op => op.isChecked);
         const dataSource = this.model.filteredData.length > 0 ? this.model.filteredData : this.model.dataSource.data;
-        dataSource.forEach(item => {
+        dataSource.filter(m => m.bookingStatus != BookingStatus.deleted).forEach(item => {
           let keyField: keyof IPrimaryDataSourceVm;
           let exportObj = {} as any;
           for (const key in item) {
@@ -178,23 +178,28 @@ export class PrimaryComponent implements OnInit {
   }
 
   getAllAdultsCount(): number {
-    return this.model.dataSource.data.map(t => t.adultsCount + 1).reduce((acc, value) => acc + value, 0);
+    return this.model.dataSource.data.filter(m => m.bookingStatus != BookingStatus.deleted)
+    .map(t => t.adultsCount + 1).reduce((acc, value) => acc + value, 0);
   }
 
   getAllChildrenCount(): number {
-    return this.model.dataSource.data.map(t => t.childrenCount).reduce((acc, value) => acc + value, 0);
+    return this.model.dataSource.data.filter(m => m.bookingStatus != BookingStatus.deleted)
+    .map(t => t.childrenCount).reduce((acc, value) => acc + value, 0);
   }
 
   getAllTotalCost(): number {
-    return this.model.dataSource.data.map(t => t.totalCost).reduce((acc, value) => acc + value, 0);
+    return this.model.dataSource.data.filter(m => m.bookingStatus != BookingStatus.deleted)
+    .map(t => t.totalCost).reduce((acc, value) => acc + value, 0);
   }
 
   getAllPaid(): number {
-    return this.model.dataSource.data.map(t => t.paid).reduce((acc, value) => acc + value, 0);
+    return this.model.dataSource.data.filter(m => m.bookingStatus != BookingStatus.deleted)
+    .map(t => t.paid).reduce((acc, value) => acc + value, 0);
   }
 
   getAllRemaining(): number {
-    return this.model.dataSource.data.map(t => t.totalCost - t.paid).reduce((acc, value) => acc + value, 0);
+    return this.model.dataSource.data.filter(m => m.bookingStatus != BookingStatus.deleted)
+    .map(t => t.totalCost - t.paid).reduce((acc, value) => acc + value, 0);
   }
 
   showAdvancedFilter(): void {
@@ -217,9 +222,10 @@ export class PrimaryComponent implements OnInit {
         const gender = res.gender;
         const paid = res.paid;
         const addressId = res.addressId;
+        const hideDeleted = res.hideDeleted;
         // create string of our searching values and split if by '$'
-        const filterValue = `${name}$${mobile}$${adultsCount}$${childrenCount}$${transportationId}$${bookingStatus}$${birthDateMonth}$${fromAge}$${toAge}$${total}$${remaining}$${gender}$${paid}$${addressId}`;
-        this.model.dataSource.filter = filterValue.trim(); //.toLowerCase();
+        const filterValue = `${name}$${mobile}$${adultsCount}$${childrenCount}$${transportationId}$${bookingStatus}$${birthDateMonth}$${fromAge}$${toAge}$${total}$${remaining}$${gender}$${paid}$${addressId}$${hideDeleted}`;
+        this.model.dataSource.filter = filterValue.trim();
         this.model.total = this.model.dataSource.filteredData.length;
         this.model.filteredData = this.model.dataSource.filteredData;
       }
@@ -256,7 +262,7 @@ export class PrimaryComponent implements OnInit {
         return {...item, totalCost, transportationName, lastUpdatedBy, addressName, deletedBy};
       });
       this.model.dataSource = new MatTableDataSource(data);
-      this.model.total = data.length;
+      this.model.total = data.filter(m => m.bookingStatus != BookingStatus.deleted).length;
       this.model.dataSource.sort = this.sort;
       this.model.dataSource.filterPredicate = this.getFilterPredicate();
     });
@@ -472,6 +478,7 @@ export class PrimaryComponent implements OnInit {
       const gender = filterArray[11];
       const paid = filterArray[12];
       const addressId = filterArray[13];
+      const hideDeleted = filterArray[14];
       const matchFilter = [];
       // Fetch data from row
       const columnName = row.name;
@@ -502,6 +509,7 @@ export class PrimaryComponent implements OnInit {
       const customFilterPaid = paid != 'null' ? +columnPaid === +paid : true;
       const customFilterRemaining = remaining != 'null' ? +columnTotal - +columnPaid === +remaining : true;
       const customFilterAddressId = addressId != 'all' ? columnAddress === addressId : true;
+      const customFilterHideDeleted = hideDeleted == 'true' ? row.bookingStatus != BookingStatus.deleted : true;
       // push boolean values into array
       matchFilter.push(customFilterName);
       matchFilter.push(customFilterMobile);
@@ -517,6 +525,7 @@ export class PrimaryComponent implements OnInit {
       matchFilter.push(customFilterPaid);
       matchFilter.push(customFilterRemaining);
       matchFilter.push(customFilterAddressId);
+      matchFilter.push(customFilterHideDeleted);
       // return true if all values in array is true
       // else return false
       return matchFilter.every(Boolean);

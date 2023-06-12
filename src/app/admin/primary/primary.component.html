@@ -108,8 +108,9 @@
                             </div>
                         </td>
                         <td mat-footer-cell *matFooterCellDef class="px-0">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="pr-3">{{'common.total' | translate}}: <b>{{model.total}}</b></div>
+                            <div class="pr-3 d-flex">
+                                {{'common.total' | translate}}: <b>{{model.total}}</b>
+                                <small class="text-danger px-2">(بدون المحذوف)</small>
                             </div>
                         </td>
                     </ng-container>
@@ -119,7 +120,12 @@
                         <td mat-cell *matCellDef="let element" class="width-175">
                             {{element.name}}
                         </td>
-                        <td mat-footer-cell *matFooterCellDef>{{'common.total' | translate}}: <b>{{model.total}}</b> </td>
+                        <td mat-footer-cell *matFooterCellDef>
+                            <div class="d-flex flex-column">
+                                <div>{{'common.total' | translate}}: <b>{{model.total}}</b></div>
+                                <small class="text-danger">(بدون المحذوف)</small>
+                            </div>
+                        </td>
                     </ng-container>
         
                     <ng-container matColumnDef="mobile">
@@ -314,7 +320,8 @@
                     </ng-container>
         
                     <tr mat-header-row *matHeaderRowDef="model.displayedColumns; sticky: true"></tr>
-                    <tr mat-row *matRowDef="let row; columns: model.displayedColumns;"></tr>
+                    <tr mat-row *matRowDef="let row; columns: model.displayedColumns;" 
+                        [class.deleted-row]="row.bookingStatus === model.bookingStatus.deleted"></tr>
                     <tr mat-footer-row *matFooterRowDef="model.displayedColumns; sticky: true"></tr>
                 </table>
             </div>

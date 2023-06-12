@@ -1,7 +1,7 @@
 import { KeyValue } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 
-import { BookingStatus, Gender, IAddress, IBus } from '@app/models';
+import { BookingStatus, Gender, IAddress, IBus, MemberRoom } from '@app/models';
 
 export class AdvancedSearchModel {
   form!: FormGroup;
@@ -22,6 +22,7 @@ export class AdvancedSearchModel {
     {key: 'bookingStatus.canceled', value: BookingStatus.canceled},
     {key: 'bookingStatus.duplicated', value: BookingStatus.duplicated},
     {key: 'bookingStatus.waiting', value: BookingStatus.waiting},
+    {key: 'bookingStatus.deleted', value: BookingStatus.deleted},
   ];
   readonly months: KeyValue<string, number>[] = [
     { key: 'الكل', value: 0},
@@ -37,6 +38,11 @@ export class AdvancedSearchModel {
     { key: 'أكتوبر', value: 10},
     { key: 'نوفمبر', value: 11},
     { key: 'ديسمبر', value: 12}
+  ];
+  readonly roomOptions: KeyValue<string, number>[] = [
+    { key: 'الكل', value: MemberRoom.all},
+    { key: 'مسكن', value: MemberRoom.hasRoom},
+    { key: 'غير مسكن', value: MemberRoom.notHaveRoom}
   ];
 }
 
@@ -55,4 +61,6 @@ export interface IAdvancedFilterForm {
   fromAge: number;
   toAge: number;
   addressId: string;
+  hasRoom: MemberRoom;
+  hideDeleted: boolean;
 }

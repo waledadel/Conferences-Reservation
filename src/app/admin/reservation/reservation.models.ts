@@ -27,6 +27,7 @@ export class ReservationModel {
     {key: 'bookingStatus.confirmed', value: BookingStatus.confirmed},
     {key: 'bookingStatus.canceled', value: BookingStatus.canceled},
     {key: 'bookingStatus.duplicated', value: BookingStatus.duplicated},
+    {key: 'bookingStatus.deleted', value: BookingStatus.deleted},
   ];
 
   get participants(): FormArray {

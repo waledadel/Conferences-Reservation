@@ -157,7 +157,8 @@
         "confirmed": "مؤكد",
         "duplicated": "مكرر",
         "canceled": "ملغي",
-        "waiting": "قائمة الإنتظار"
+        "waiting": "قائمة الإنتظار",
+        "deleted": "محذوف"
     },
     "advancedFilter": {
         "advancedFilter": "البحث المتقدم",

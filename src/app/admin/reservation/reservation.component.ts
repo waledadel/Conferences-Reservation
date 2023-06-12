@@ -82,13 +82,13 @@ export class ReservationComponent implements OnInit {
 
   save(): void {
     if (this.model.form.valid) {
-      this.model.isLoading = true;
       if (this.model.isEditMode) {
         this.update();
       } else {
         const isGrouping = this.model.selectedType === BookingType.group;
         this.dialogService.openConfirmBookingDialog(isGrouping).afterClosed().subscribe((res: {confirmBooking: boolean}) => {
           if (res && res.confirmBooking) {
+            this.model.isLoading = true;
             this.add();
           } else {
             this.model.isLoading = false;

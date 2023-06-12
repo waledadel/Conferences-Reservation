@@ -27,3 +27,9 @@ export enum RoomErrorsModal {
     emptySelection = 1,
     exceededAvailability = 2
 }
+
+export enum MemberRoom {
+    all = 0,
+    hasRoom = 1,
+    notHaveRoom = 2
+}

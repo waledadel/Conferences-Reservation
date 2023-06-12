@@ -20,6 +20,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 // import { MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 // import { A11yModule } from '@angular/cdk/a11y';
 // import { ScrollingModule } from '@angular/cdk/scrolling';
@@ -30,7 +31,6 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 // import { MatProgressBarModule } from '@angular/material/progress-bar';
 // import { PortalModule } from '@angular/cdk/portal';
 // import { MatSliderModule } from '@angular/material/slider';
-// import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 // import { BidiModule } from '@angular/cdk/bidi';
 // import { MatTreeModule } from '@angular/material/tree';
 // import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -67,6 +67,7 @@ const modules = [
   MatFormFieldModule,
   MatTooltipModule,
   MatCheckboxModule,
+  MatSlideToggleModule,
   // MatProgressSpinnerModule,
   // ScrollingModule,
   // A11yModule,
@@ -78,7 +79,6 @@ const modules = [
   // PortalModule,
   // MatSliderModule,
   // BidiModule,
-  // MatSlideToggleModule,
   // MatChipsModule,
   // MatStepperModule,
   // MatGridListModule,

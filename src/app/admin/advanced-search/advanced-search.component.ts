@@ -5,7 +5,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 import { Constants } from '@app/constants';
 import { AdvancedSearchModel, IAdvancedFilterForm } from './advanced-search.models';
-import { BookingStatus, Gender, IAddress, IBus } from '@app/models';
+import { BookingStatus, Gender, IAddress, IBus, MemberRoom } from '@app/models';
 import { FireStoreService } from '@app/services';
 
 @Component({
@@ -61,7 +61,9 @@ export class AdvancedSearchComponent implements OnInit {
       birthDateMonth: null,
       fromAge: null,
       toAge: null,
-      addressId: 'all'
+      addressId: 'all',
+      hasRoom: MemberRoom.all,
+      hideDeleted: false
     });
     this.filter();
   }
@@ -85,7 +87,9 @@ export class AdvancedSearchComponent implements OnInit {
       birthDateMonth: [0],
       fromAge: [null],
       toAge: [null],
-      addressId: ['all']
+      addressId: ['all'],
+      hasRoom: [MemberRoom.all],
+      hideDeleted: [false]
     });
   }
 
@@ -122,7 +126,9 @@ export class AdvancedSearchComponent implements OnInit {
         birthDateMonth: this.perviousFilter.birthDateMonth,
         fromAge: this.perviousFilter.fromAge,
         toAge: this.perviousFilter.toAge,
-        addressId: this.perviousFilter.addressId
+        addressId: this.perviousFilter.addressId,
+        hasRoom: this.perviousFilter.hasRoom,
+        hideDeleted: this.perviousFilter.hideDeleted
       });
     }
   }

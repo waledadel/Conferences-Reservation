@@ -29,6 +29,14 @@
                         </ng-container>
                     </mat-select>
                 </mat-form-field>
+                <mat-form-field *ngIf="!model.showPrimaryOptions" class="col-lg-6 col-12">
+                    <mat-label>التسكين</mat-label>
+                    <mat-select formControlName="hasRoom">
+                        <ng-container *ngFor="let item of model.roomOptions">
+                            <mat-option [value]="item.value">{{ item.key }}</mat-option>
+                        </ng-container>
+                    </mat-select>
+                </mat-form-field>
                 <mat-form-field class="col-lg-6 col-12">
                     <mat-label>{{'address.title' | translate}}</mat-label>
                     <mat-select formControlName="addressId">
@@ -106,6 +114,9 @@
                             </div>
                         </mat-expansion-panel>
                     </mat-accordion>
+                </div>
+                <div class="col-lg-6 col-12">
+                    <mat-slide-toggle formControlName="hideDeleted">إخفاء المحذوفين</mat-slide-toggle>
                 </div>
             </div>
         </form>
