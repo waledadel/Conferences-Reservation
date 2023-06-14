@@ -34,6 +34,12 @@ export const menuItems: Array<IMenu> = [
     roles: [Roles.admin, Roles.servant]
   },
   {
+    icon: 'delete_forever',
+    text: 'menu.deletedMembers',
+    url:  Constants.Routes.deletedMembers,
+    roles: [Roles.admin, Roles.servant]
+  },
+  {
     icon: 'hotel',
     text: 'menu.rooms',
     url:  Constants.Routes.rooms,

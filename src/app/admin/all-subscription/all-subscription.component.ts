@@ -50,7 +50,7 @@ export class AllSubscriptionComponent implements OnInit {
         let exportData: Array<any> = [];
         const selectedColumns = res.options.filter(op => op.isChecked);
         const dataSource = this.model.filteredData.length > 0 ? this.model.filteredData : this.model.dataSource.data;
-        dataSource.filter(m => m.bookingStatus != BookingStatus.deleted).forEach(item => {
+        dataSource.forEach(item => {
           let keyField: keyof IAllSubscriptionDataSourceVm;
           let exportObj = {} as any;
           for (const key in item) {
@@ -110,9 +110,8 @@ export class AllSubscriptionComponent implements OnInit {
         const gender = res.gender;
         const addressId = res.addressId;
         const hasRoom = res.hasRoom;
-        const hideDeleted = res.hideDeleted;
         // create string of our searching values and split if by '$'
-        const filterValue = `${name}$${mobile}$${transportationId}$${bookingStatus}$${birthDateMonth}$${fromAge}$${toAge}$${gender}$${addressId}$${hasRoom}$${hideDeleted}`;
+        const filterValue = `${name}$${mobile}$${transportationId}$${bookingStatus}$${birthDateMonth}$${fromAge}$${toAge}$${gender}$${addressId}$${hasRoom}`;
         this.model.dataSource.filter = filterValue.trim();
         this.model.total = this.model.dataSource.filteredData.length;
         this.model.filteredData = this.model.dataSource.filteredData;
@@ -164,12 +163,12 @@ export class AllSubscriptionComponent implements OnInit {
   private getAddress(): void {
     this.fireStoreService.getAll<IAddress>(Constants.RealtimeDatabase.address).subscribe(data => {
       this.model.addressList = data;
-      this.getTickets();
+      this.getAllMembers();
     });
   }
 
-  private getTickets(): void {
-    this.fireStoreService.getAllSubscription().subscribe(res => {
+  private getAllMembers(): void {
+    this.fireStoreService.getAllMembers().subscribe(res => {
       const data: Array<IAllSubscriptionDataSourceVm> = res.map(item => ({
         ...item,
         address: this.getAddressById(item.addressId),
@@ -179,7 +178,7 @@ export class AllSubscriptionComponent implements OnInit {
       }));
       this.model.dataSource = new MatTableDataSource(data);
       this.model.dataSource.sort = this.sort;
-      this.model.total = data.filter(m => m.bookingStatus != BookingStatus.deleted).length;
+      this.model.total = data.length;
       this.model.dataSource.filterPredicate = this.getFilterPredicate();
     });
   }
@@ -285,7 +284,6 @@ export class AllSubscriptionComponent implements OnInit {
       const gender = filterArray[7];
       const addressId = filterArray[8];
       const hasRoom = filterArray[9];
-      const hideDeleted = filterArray[10];
       const matchFilter = [];
       // Fetch data from row
       const columnName = row.name;
@@ -308,7 +306,6 @@ export class AllSubscriptionComponent implements OnInit {
       const customFilterBookingStatus = +bookingStatus != BookingStatus.all ? +columnBookingStatus === +bookingStatus : true;
       const customFilterGender = +gender != Gender.all ? +columnGender === +gender : true;
       const customFilterAddressId = addressId != 'all' ? columnAddress === addressId : true;
-      const customFilterHideDeleted = hideDeleted == 'true' ? row.bookingStatus != BookingStatus.deleted : true;
       let customFilterHasRoom = true;
       if (+hasRoom === MemberRoom.all) {
         customFilterHasRoom = true;
@@ -328,7 +325,6 @@ export class AllSubscriptionComponent implements OnInit {
       matchFilter.push(customFilterGender);
       matchFilter.push(customFilterAddressId);
       matchFilter.push(customFilterHasRoom);
-      matchFilter.push(customFilterHideDeleted);
       // return true if all values in array is true
       // else return false
       return matchFilter.every(Boolean);

@@ -25,6 +25,10 @@ const routes: Routes = [
         loadChildren: () => import('./all-subscription/all-subscription.module').then(mod => mod.AllSubscriptionModule),
       },
       {
+        path: Constants.Routes.deletedMembers,
+        loadChildren: () => import('./deleted-members/deleted-members.module').then(mod => mod.DeletedMembersModule),
+      },
+      {
         path: Constants.Routes.rooms,
         loadChildren: () => import('./rooms/rooms.module').then(mod => mod.RoomsModule),
       },

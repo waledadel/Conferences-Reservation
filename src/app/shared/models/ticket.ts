@@ -121,6 +121,16 @@ export interface IAllSubscriptionDataSourceVm {
     needsSeparateBed: boolean;
 }
 
+export interface IDeletedMembersDataSourceVm {
+    id: string;
+    isChild: boolean;
+    isMain: boolean;
+    mobile: string;
+    name: string;
+    mainMemberName: string;
+    primaryId: string;
+}
+
 export interface ICostDetailsDataSourceVm {
     name: string;
     reservationPrice: number;

@@ -41,6 +41,7 @@ export namespace Constants {
         public static readonly dashboard = 'dashboard';
         public static readonly primary = 'primary';
         public static readonly all = 'all';
+        public static readonly deletedMembers = 'deleted-members';
         public static readonly rooms = 'rooms';
         public static readonly buses = 'buses';
         public static readonly address = 'address';

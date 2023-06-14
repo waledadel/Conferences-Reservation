@@ -95,7 +95,8 @@
         "buses": "الإتوبيسات",
         "statistics": "الإحصائيات",
         "settings": "إعدادات",
-        "address": "العنوان"
+        "address": "العنوان",
+        "deletedMembers": "المشتركين المحذوفين"
     },
     "room": {
         "add": "إضافة غرفة",

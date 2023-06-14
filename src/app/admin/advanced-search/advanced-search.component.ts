@@ -62,8 +62,7 @@ export class AdvancedSearchComponent implements OnInit {
       fromAge: null,
       toAge: null,
       addressId: 'all',
-      hasRoom: MemberRoom.all,
-      hideDeleted: false
+      hasRoom: MemberRoom.all
     });
     this.filter();
   }
@@ -88,8 +87,7 @@ export class AdvancedSearchComponent implements OnInit {
       fromAge: [null],
       toAge: [null],
       addressId: ['all'],
-      hasRoom: [MemberRoom.all],
-      hideDeleted: [false]
+      hasRoom: [MemberRoom.all]
     });
   }
 
@@ -127,8 +125,7 @@ export class AdvancedSearchComponent implements OnInit {
         fromAge: this.perviousFilter.fromAge,
         toAge: this.perviousFilter.toAge,
         addressId: this.perviousFilter.addressId,
-        hasRoom: this.perviousFilter.hasRoom,
-        hideDeleted: this.perviousFilter.hideDeleted
+        hasRoom: this.perviousFilter.hasRoom
       });
     }
   }

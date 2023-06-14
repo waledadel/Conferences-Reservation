@@ -6,7 +6,7 @@ import { AngularFirestore, AngularFirestoreCollection, DocumentData, QueryFn } f
 import { Timestamp } from 'firebase/firestore';
 
 import { Constants } from '@app/constants';
-import { ICollectionData, IRelatedMemberViewModel, IPrimaryDataSourceVm, ITicket, ITicketForm, IAllSubscriptionDataSourceVm, IUser, IRoomDataSource, IMemberRoomDataSource, BookingStatus } from '@app/models';
+import { ICollectionData, IRelatedMemberViewModel, IPrimaryDataSourceVm, ITicket, ITicketForm, IAllSubscriptionDataSourceVm, IUser, IRoomDataSource, IMemberRoomDataSource, BookingStatus, IDeletedMembersDataSourceVm } from '@app/models';
 import { convertSnaps } from './db-utils';
 
 @Injectable({
@@ -251,10 +251,10 @@ export class FireStoreService {
       .valueChanges({ idField: 'id' });
   }
 
-  getAllSubscription(): Observable<Array<IAllSubscriptionDataSourceVm>> {
-    return this.angularFirestore
+  getAllMembers(): Observable<Array<IAllSubscriptionDataSourceVm>> {
+      return this.angularFirestore
       .collection<IAllSubscriptionDataSourceVm>(Constants.RealtimeDatabase.tickets, ref => 
-        ref.orderBy('bookingDate', 'asc')
+        ref.where('bookingStatus', '<', BookingStatus.deleted).orderBy('bookingStatus', 'asc')
       )
       .valueChanges({ idField: 'id' })
       .pipe(
@@ -279,6 +279,29 @@ export class FireStoreService {
             primaryId: ticket.primaryId,
             displayedRoomName: '',
             needsSeparateBed: ticket.needsSeparateBed
+          }))
+        ),
+        take(1)
+      );
+  }
+
+  getDeletedMembers(): Observable<Array<IDeletedMembersDataSourceVm>> {
+    return this.angularFirestore
+      .collection<IAllSubscriptionDataSourceVm>(Constants.RealtimeDatabase.tickets, ref => 
+        ref.where('bookingStatus', '==', BookingStatus.deleted)
+      )
+      .valueChanges({ idField: 'id' })
+      .pipe(
+        map((tickets: Array<IDeletedMembersDataSourceVm>) =>
+          tickets.map((ticket: IDeletedMembersDataSourceVm) => ({
+            id: ticket.id,
+            name: ticket.name,
+            mobile: ticket.mobile,
+            isMain: ticket.isMain,
+            isChild: ticket.isChild,
+            mainMemberName: '',
+            primaryId: ticket.primaryId,
+            displayedRoomName: '',
           }))
         ),
         take(1)
