@@ -82,11 +82,6 @@
                                             {{element.adminNotes}}
                                         </ng-container>
                                     </div>
-                                    <div> <b>تم الحذف بواسطة: </b>
-                                        <ng-container *ngIf="element.bookingStatus === model.bookingStatus.deleted && element.deletedBy">
-                                            {{element.deletedBy}}
-                                        </ng-container>
-                                    </div>
                                 </div>
                                 <div class="d-flex flex-column">
                                     <div>
@@ -285,16 +280,6 @@
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.lastUpdatedBy' | translate}}</th>
                         <td mat-cell *matCellDef="let element" class="width-135">
                             <ng-container *ngIf="element.lastUpdatedBy; else empty">{{element.lastUpdatedBy}}</ng-container>
-                        </td>
-                        <td mat-footer-cell *matFooterCellDef></td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="deletedBy">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>تم الحذف بواسطة</th>
-                        <td mat-cell *matCellDef="let element" class="width-135">
-                            <ng-container *ngIf="element.bookingStatus === model.bookingStatus.deleted && element.deletedBy">
-                                {{element.deletedBy}}
-                            </ng-container>
                         </td>
                         <td mat-footer-cell *matFooterCellDef></td>
                     </ng-container>

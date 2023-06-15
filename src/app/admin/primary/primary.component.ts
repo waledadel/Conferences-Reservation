@@ -245,15 +245,13 @@ export class PrimaryComponent implements OnInit {
   }
 
   private getPrimaryTickets(takeCount = 1): void {
-    this.fireStoreService.getPrimarySubscription(takeCount).subscribe(res => {
+    this.fireStoreService.getPrimaryMembers(takeCount).subscribe(res => {
       const data: Array<IPrimaryDataSourceVm> = res.map(item => {
         const totalCost = this.getTotalCost(item, this.model.notPrimaryMembers);
         const transportationName = this.getBusNameById(item.transportationId);
         const lastUpdatedBy = this.getUserById(item.lastUpdateUserId);
         const addressName = this.getAddressNameById(item.addressId);
-        const deletedBy = (item.bookingStatus === this.model.bookingStatus.deleted && item.deletedBy != null) ? 
-          this.getUserById(item.deletedBy) : '';
-        return {...item, totalCost, transportationName, lastUpdatedBy, addressName, deletedBy};
+        return {...item, totalCost, transportationName, lastUpdatedBy, addressName};
       });
       this.model.dataSource = new MatTableDataSource(data);
       this.model.total = data.length;

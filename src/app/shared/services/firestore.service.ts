@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, first, from, map, take } from 'rxjs';
+import { Observable, combineLatest, first, forkJoin, from, map, switchMap, take } from 'rxjs';
 import { DocumentReference, PartialWithFieldValue, Query, query, where, CollectionReference } from 'firebase/firestore';
 import { Firestore, collection, addDoc, collectionData, doc, updateDoc, docData, getCountFromServer } from '@angular/fire/firestore';
 import { AngularFirestore, AngularFirestoreCollection, DocumentData, QueryFn } from '@angular/fire/compat/firestore';
@@ -285,33 +285,54 @@ export class FireStoreService {
       );
   }
 
-  getDeletedMembers(): Observable<Array<IDeletedMembersDataSourceVm>> {
+  getDeletedMembers(takeCount = 1): Observable<Array<IDeletedMembersDataSourceVm>> {
+    const usersRef = this.angularFirestore.collection<IUser>(Constants.RealtimeDatabase.users).ref;
     return this.angularFirestore
-      .collection<IAllSubscriptionDataSourceVm>(Constants.RealtimeDatabase.tickets, ref => 
+      .collection<IDeletedMembersDataSourceVm>(Constants.RealtimeDatabase.tickets, ref => 
         ref.where('bookingStatus', '==', BookingStatus.deleted)
-      )
-      .valueChanges({ idField: 'id' })
+      ).valueChanges({ idField: 'id' })
       .pipe(
-        map((tickets: Array<IDeletedMembersDataSourceVm>) =>
-          tickets.map((ticket: IDeletedMembersDataSourceVm) => ({
-            id: ticket.id,
-            name: ticket.name,
-            mobile: ticket.mobile,
-            isMain: ticket.isMain,
-            isChild: ticket.isChild,
-            mainMemberName: '',
-            primaryId: ticket.primaryId,
-            displayedRoomName: '',
-          }))
-        ),
-        take(1)
+        switchMap((tickets: Array<IDeletedMembersDataSourceVm>) => {
+          return combineLatest(
+            tickets.map((ticket: IDeletedMembersDataSourceVm) => {
+              const userId = ticket.deletedBy;
+              const usersDoc = usersRef.doc(userId);
+              return forkJoin([
+                from(usersDoc.get()).pipe(
+                  map((doc) => ({
+                    ...doc.data(),
+                    id: doc.id,
+                  }) as IUser)
+                )
+              ]);
+            })
+          ).pipe(
+            map((results: Array<[IUser]>) =>
+              tickets.map((ticket: IDeletedMembersDataSourceVm, index: number) => {
+                const [user] = results[index];
+                return {
+                  id: ticket.id,
+                  name: ticket.name,
+                  mobile: ticket.mobile,
+                  isMain: ticket.isMain,
+                  isChild: ticket.isChild,
+                  mainMemberName: '',
+                  primaryId: ticket.primaryId,
+                  displayedRoomName: '',
+                  deletedBy: ticket.deletedBy ? user.fullName : '',
+                };
+              })
+            ),
+            take(takeCount)
+          );
+        })
       );
   }
 
-  getPrimarySubscription(takeCount = 1): Observable<Array<IPrimaryDataSourceVm>> {
+  getPrimaryMembers(takeCount = 1): Observable<Array<IPrimaryDataSourceVm>> {
     return this.angularFirestore
       .collection<IPrimaryDataSourceVm>(Constants.RealtimeDatabase.tickets, ref => 
-        ref.where('isMain', '==', true)
+        ref.where('isMain', '==', true).where('bookingStatus', '<', BookingStatus.deleted)
       ).valueChanges({ idField: 'id' })
       .pipe(
         map((tickets: Array<IPrimaryDataSourceVm>) =>
@@ -340,8 +361,7 @@ export class FireStoreService {
             lastUpdateDate: ticket.lastUpdateDate,
             lastUpdatedBy: '',
             addressId: ticket.addressId,
-            addressName: '',
-            deletedBy: ticket.deletedBy ?? ''
+            addressName: ''
           }))
         ),
         take(takeCount)

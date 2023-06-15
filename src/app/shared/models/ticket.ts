@@ -91,7 +91,6 @@ export interface IPrimaryDataSourceVm {
     lastUpdateDate?: Timestamp;
     lastUpdateUserId: string;
     lastUpdatedBy: string;
-    deletedBy?: string;
 }
 
 export interface IAddRoomToMemberDialogConfig {
@@ -129,6 +128,7 @@ export interface IDeletedMembersDataSourceVm {
     name: string;
     mainMemberName: string;
     primaryId: string;
+    deletedBy: string;
 }
 
 export interface ICostDetailsDataSourceVm {
