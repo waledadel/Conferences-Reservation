@@ -18,6 +18,7 @@ export class HomeComponent implements OnInit {
   currentDate = new Date();
   enableWaitingList = false;
   isReservationStart = false;
+  isClosed = true;
 
   constructor(private fireStoreService: FireStoreService) {
     this.settings = {} as Observable<Array<ISettings>>;

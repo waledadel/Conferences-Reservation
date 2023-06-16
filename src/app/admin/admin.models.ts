@@ -37,7 +37,7 @@ export const menuItems: Array<IMenu> = [
     icon: 'delete_forever',
     text: 'menu.deletedMembers',
     url:  Constants.Routes.deletedMembers,
-    roles: [Roles.admin, Roles.servant]
+    roles: [Roles.admin]
   },
   {
     icon: 'hotel',
