@@ -5,11 +5,38 @@
     </button>
 </div>
 <div mat-dialog-content>
-    <ng-container *ngIf="data && data.bookingType && isDataLoaded">
+    <ng-container *ngIf="(data && data.bookingType && isDataLoaded); else add">
         <app-reservation [type]="data.bookingType" [canManageReservation]="true" [reservationData]="reservationData" [fireSaveAction]="fireSave" (closeModal)="close(true)"></app-reservation>
     </ng-container>
+    <ng-template #add>
+        <mat-tab-group class="w-100" [selectedIndex]="selectedTabIndex" (selectedIndexChange)="onTabChanged($event)">
+            <mat-tab [label]="'home.individualBooking' | translate">
+                <div class="bg-white" *ngIf="selectedTabIndex < 1">
+                    <app-reservation [type]="bookingType.individual" 
+                        [enableWaitingList]="false"></app-reservation>
+                </div>
+            </mat-tab>
+            <mat-tab [label]="'home.groupBooking' | translate">
+                <div class="bg-white" *ngIf="selectedTabIndex > 0">
+                    <div class="alert alert-info">
+                        <div>
+                            {{'common.childInfo' | translate}}
+                        </div>
+                        <div>
+                            {{'common.adultInfo' | translate}}
+                        </div>
+                        <div>
+                            {{'common.maximumPersons' | translate}}
+                        </div>
+                    </div>
+                    <app-reservation [type]="bookingType.group" 
+                        [enableWaitingList]="false"></app-reservation>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </ng-template>
 </div>
-<div mat-dialog-actions>
+<div *ngIf="data && data.bookingType && isDataLoaded" mat-dialog-actions>
     <button color="primary" mat-flat-button type="button" cdkFocusInitial (click)="save()" [disabled]="fireSave">
         <span> {{ 'common.save' | translate }}</span>
         <i *ngIf="fireSave" class="fa-solid fa-spinner fa-spin px-2"></i>

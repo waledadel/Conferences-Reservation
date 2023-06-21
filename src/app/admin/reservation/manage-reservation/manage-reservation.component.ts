@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
-import { ITicket } from '@app/models';
+import { BookingType, ITicket } from '@app/models';
 import { FireStoreService } from '@app/services';
 
 @Component({
@@ -12,6 +12,8 @@ export class ManageReservationComponent implements OnInit  {
   reservationData: Array<ITicket> = [];
   fireSave = false;
   isDataLoaded = false;
+  selectedTabIndex = 0;
+  bookingType = BookingType;
 
   constructor(
     private dialogRef: MatDialogRef<ManageReservationComponent>,
@@ -34,5 +36,9 @@ export class ManageReservationComponent implements OnInit  {
 
   save(): void {
     this.fireSave = true;
+  }
+
+  onTabChanged(index: number): void {
+    this.selectedTabIndex = index;
   }
 }

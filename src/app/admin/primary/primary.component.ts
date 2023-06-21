@@ -114,6 +114,15 @@ export class PrimaryComponent implements OnInit {
     });
   }
 
+  add(): void {
+    this.dialogService.openAddEditDialog(ManageReservationComponent, 'lg', true, null).afterClosed()
+    .subscribe((res: {fireRefresh: boolean}) => {
+      if (res.fireRefresh) {
+        // this.updateTableRow(item);
+      }
+    });
+  }
+
   delete(item: Partial<ITicket>): void {
     if (item.name) {
       this.dialogService.openConfirmDeleteDialog(item.name).afterClosed().subscribe((res: {confirmDelete: boolean}) => {
