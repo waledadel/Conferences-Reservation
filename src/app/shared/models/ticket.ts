@@ -91,6 +91,8 @@ export interface IPrimaryDataSourceVm {
     lastUpdateDate?: Timestamp;
     lastUpdateUserId: string;
     lastUpdatedBy: string;
+    remaining: number; // for export only
+    mainMemberName: string; // for export only in all page
 }
 
 export interface IAddRoomToMemberDialogConfig {
@@ -118,6 +120,9 @@ export interface IAllSubscriptionDataSourceVm {
     primaryId: string;
     displayedRoomName: string;
     needsSeparateBed: boolean;
+    totalCost: number;
+    paid: number;
+    remaining: number;
 }
 
 export interface IDeletedMembersDataSourceVm {

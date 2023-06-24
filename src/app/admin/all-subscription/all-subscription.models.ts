@@ -5,7 +5,7 @@ import { IAddress, IAllSubscriptionDataSourceVm, IBus, BookingStatus, IRoom } fr
 import { IAdvancedFilterForm } from '../advanced-search/advanced-search.models';
 
 export class AllSubscriptionModel {
-  readonly desktopColumns = ['name', 'mobile', 'birthDate', 'age', 'address', 'transportation', 'gender', 'status', 'room', 'actions'];
+  readonly desktopColumns = ['name', 'mobile', 'birthDate', 'age', 'address', 'transportation', 'gender', 'status', 'total', 'paid', 'remaining', 'room', 'actions'];
   displayedColumns: string[] = [];
   dataSource = new MatTableDataSource<IAllSubscriptionDataSourceVm>([]);
   filteredData: Array<IAllSubscriptionDataSourceVm> = [];
@@ -17,4 +17,8 @@ export class AllSubscriptionModel {
   bookingStatus = BookingStatus;
   selection = new SelectionModel<IAllSubscriptionDataSourceVm>(true, []);
   rooms: Array<IRoom> = [];
+  adultReservationPrice = 0;
+  childReservationPriceLessThanEight = 0;
+  childReservationPriceMoreThanEight = 0;
+  childBedPrice = 0;
 }

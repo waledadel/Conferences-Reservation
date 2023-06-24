@@ -278,7 +278,10 @@ export class FireStoreService {
             mainMemberName: '',
             primaryId: ticket.primaryId,
             displayedRoomName: '',
-            needsSeparateBed: ticket.needsSeparateBed
+            needsSeparateBed: ticket.needsSeparateBed,
+            totalCost: 0,
+            paid: ticket.paid,
+            remaining: 0
           }))
         ),
         take(1)
@@ -361,7 +364,9 @@ export class FireStoreService {
             lastUpdateDate: ticket.lastUpdateDate,
             lastUpdatedBy: '',
             addressId: ticket.addressId,
-            addressName: ''
+            addressName: '',
+            mainMemberName: '',
+            remaining: 0
           }))
         ),
         take(takeCount)

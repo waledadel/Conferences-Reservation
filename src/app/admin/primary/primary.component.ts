@@ -11,8 +11,9 @@ import { CostDetailsComponent } from './cost-details/cost-details.component';
 import { AdminService } from '../admin.service';
 import { IAdvancedFilterForm } from '../advanced-search/advanced-search.models';
 import { PrimaryModel } from './primary.models';
-import { ExportMembersComponent, IExportMembers } from '../export-members/export-members.component';
+import { ExportMembersComponent } from '../export-members/export-members.component';
 import { AdvancedSearchComponent } from '../advanced-search/advanced-search.component';
+import { ExportPages, IExportMembers } from '../export-members/export-members.model';
 
 @Component({
   templateUrl: './primary.component.html'
@@ -49,7 +50,7 @@ export class PrimaryComponent implements OnInit {
   }
 
   openExportModal(): void {
-    this.dialogService.openAddEditDialog(ExportMembersComponent, 'lg', true, true)
+    this.dialogService.openAddEditDialog(ExportMembersComponent, 'lg', true, ExportPages.Primary)
     .afterClosed().subscribe((res: {exportData: boolean, options: Array<IExportMembers>}) => {
       if (res && res.exportData && res.options.filter(o => o.isChecked).length > 0) {
         let exportData: Array<any> = [];
@@ -67,14 +68,17 @@ export class PrimaryComponent implements OnInit {
               const bookingTypeField: keyof IPrimaryDataSourceVm = 'bookingType';
               const birthDateField: keyof IPrimaryDataSourceVm = 'birthDate';
               const lastUpdateDateField: keyof IPrimaryDataSourceVm = 'lastUpdateDate';
+              const remainingField: keyof IPrimaryDataSourceVm = 'remaining';
               if (keyField === genderField) {
                 exportObj[selectedOption.key] = item[keyField] === Gender.female ? 'أنثي' : 'ذكر';
               } else if (keyField === birthDateField) {
                 exportObj[selectedOption.key] = item[keyField].toDate();
               } else if (item[keyField] != null && keyField === lastUpdateDateField) {
                 exportObj[selectedOption.key] = item[keyField]?.toDate();
-              }else if (keyField === bookingTypeField) {
+              } else if (keyField === bookingTypeField) {
                 exportObj[selectedOption.key] = item[keyField] === BookingType.group ? 'مجموعة' : 'فرد';
+              } else if (keyField === remainingField) {
+                exportObj[selectedOption.key] = item.totalCost - item.paid;
               } else if (keyField === bookingStatusField) {
                 switch (item[keyField]) {
                   case BookingStatus.confirmed:

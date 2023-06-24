@@ -3,14 +3,16 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { Constants } from '@app/constants';
-import { BookingStatus, Gender, IAddress, IAllSubscriptionDataSourceVm, IBus, IRoom, IRoomDataSource, MemberRoom } from '@app/models';
+import { BookingStatus, Gender, IAddress, IAllSubscriptionDataSourceVm, IBus, IRoom, IRoomDataSource, ISettings, MemberRoom } from '@app/models';
 import { DialogService, FireStoreService } from '@app/services';
 import { AdminService } from '../admin.service';
 import { IAdvancedFilterForm } from '../advanced-search/advanced-search.models';
-import { ExportMembersComponent, IExportMembers } from '../export-members/export-members.component';
+import { ExportMembersComponent } from '../export-members/export-members.component';
 import { AllSubscriptionModel } from './all-subscription.models';
 import { AdvancedSearchComponent } from '../advanced-search/advanced-search.component';
 import { AddRoomToMemberComponent } from './add-room-to-member/add-room-to-member.component';
+import { Timestamp } from '@angular/fire/firestore';
+import { ExportPages, IExportMembers } from '../export-members/export-members.model';
 
 @Component({
   templateUrl: './all-subscription.component.html'
@@ -37,6 +39,7 @@ export class AllSubscriptionComponent implements OnInit {
 
   ngOnInit(): void {
     this.detectMobileView();
+    this.getSettings();
     this.getBuses();
     this.getRooms();
     this.getAddress();
@@ -44,7 +47,7 @@ export class AllSubscriptionComponent implements OnInit {
   }
   
   openExportModal(): void {
-    this.dialogService.openAddEditDialog(ExportMembersComponent, 'lg', true, false)
+    this.dialogService.openAddEditDialog(ExportMembersComponent, 'lg', true, ExportPages.All)
     .afterClosed().subscribe((res: {exportData: boolean, options: Array<IExportMembers>}) => {
       if (res && res.exportData && res.options.filter(o => o.isChecked).length > 0) {
         let exportData: Array<any> = [];
@@ -60,10 +63,19 @@ export class AllSubscriptionComponent implements OnInit {
               const genderField: keyof IAllSubscriptionDataSourceVm = 'gender';
               const bookingStatusField: keyof IAllSubscriptionDataSourceVm = 'bookingStatus';
               const birthDateField: keyof IAllSubscriptionDataSourceVm = 'birthDate';
+              const roomField: keyof IAllSubscriptionDataSourceVm = 'roomId';
+              const remainingField: keyof IAllSubscriptionDataSourceVm = 'remaining';
               if (keyField === genderField) {
                 exportObj[selectedOption.key] = item[keyField] === Gender.female ? 'أنثي' : 'ذكر';
               } else if (keyField === birthDateField) {
                 exportObj[selectedOption.key] = item[keyField].toDate();
+              } else if (keyField === remainingField) {
+                exportObj[selectedOption.key] = item.totalCost - item.paid;
+              } else if (keyField === roomField) {
+                const existingRoom = this.model.rooms.find(r => r.id === item[keyField]);
+                if (existingRoom) {
+                  exportObj[selectedOption.key] = `R:${existingRoom.room}_S:(${existingRoom.sizeName})_B:${existingRoom.building}_F:${existingRoom.floor}_A:${existingRoom.available}`;
+                }
               } else if (keyField === bookingStatusField) {
                 switch (item[keyField]) {
                   case BookingStatus.confirmed:
@@ -174,7 +186,8 @@ export class AllSubscriptionComponent implements OnInit {
         address: this.getAddressById(item.addressId),
         transportationName: this.getBusNameById(item.transportationId),
         displayedRoomName: this.getRoomNameById(item.roomId),
-        mainMemberName: item.isMain ? '' : res.find(m => m.id === item.primaryId)?.name ?? ''
+        mainMemberName: item.isMain ? 'ذاته' : res.find(m => m.id === item.primaryId)?.name ?? '',
+        totalCost: this.getTotalCost(item, res)
       }));
       this.model.dataSource = new MatTableDataSource(data);
       this.model.dataSource.sort = this.sort;
@@ -329,5 +342,91 @@ export class AllSubscriptionComponent implements OnInit {
       // else return false
       return matchFilter.every(Boolean);
     };
+  }
+
+  private getTotalCost(ticket: IAllSubscriptionDataSourceVm, list: Array<IAllSubscriptionDataSourceVm>): number {
+    if (ticket && list && list.length > 0) {
+      let childrenCost = 0;
+      let adultCost = 0;
+      let primaryCost = 0;
+      const primaryMember = list.find(m => m.id === ticket.primaryId && m.isMain);
+      if (primaryMember) {
+        primaryCost = this.model.adultReservationPrice + this.getTransportPrice(primaryMember.transportationId);
+        const children = list.filter(m => m.primaryId === primaryMember.id && m.isChild);
+        const adults = list.filter(m => m.primaryId === primaryMember.id && !m.isChild && !m.isMain);
+        if (children && children.length > 0) {
+          children.forEach(child => {
+            const reservationPrice = this.getChildReservationPrice(child.birthDate);
+            const bedPrice = this.getChildBedPrice(child);
+            const transportPrice = this.getTransportPrice(child.transportationId);
+            childrenCost += (reservationPrice + bedPrice + transportPrice);
+          });
+        }
+        if (adults && adults.length > 0) {
+          adults.forEach(adult => {
+            const price = this.model.adultReservationPrice;
+            const transportPrice = this.getTransportPrice(adult.transportationId);
+            adultCost += price + transportPrice;
+          });
+        }
+        return primaryCost + adultCost + childrenCost;
+      }
+      return 0;
+    }
+    return 0;
+  }
+
+  private getSettings(): void {
+    this.fireStoreService.getAll<ISettings>(Constants.RealtimeDatabase.settings).subscribe(data => {
+      if (data && data.length > 0) {
+        this.model.adultReservationPrice = data[0].reservationPrice;
+        this.model.childReservationPriceLessThanEight = data[0].childReservationPriceLessThanEight;
+        this.model.childReservationPriceMoreThanEight = data[0].childReservationPriceMoreThanEight;
+        this.model.childBedPrice = data[0].childBedPrice;
+      }
+    });
+  }
+
+  private getTransportPrice(transportId: string): number {
+    if (transportId && this.model.buses.length > 0) {
+      const bus = this.model.buses.find(b => b.id === transportId);
+      if (bus) {
+        return +bus.price;
+      }
+      return 0;
+    }
+    return 0;
+  }
+
+  private getChildBedPrice(child: IAllSubscriptionDataSourceVm): number {
+    if (child) {
+      const childYears = new Date().getFullYear() - child.birthDate.toDate().getFullYear();
+      if (childYears >= 8 && childYears < 12) {
+        return 0; // Already pay as the adult
+      } else {
+        return child.needsSeparateBed ? this.model.childBedPrice : 0;
+      }
+    }
+    return 0;
+  }
+
+  private getChildReservationPrice(birthDate?: Timestamp): number {
+    if (birthDate) {
+      const today = new Date();
+      const userBirthDate = birthDate.toDate();
+      let childYears = today.getFullYear() - userBirthDate.getFullYear();
+      const monthDiff = today.getMonth() - userBirthDate.getMonth();
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < userBirthDate.getDate())) {
+        childYears--;
+      }
+      if (childYears >= 8 && childYears < 12) {
+        return this.model.childReservationPriceMoreThanEight;
+      } else if(childYears >= 4 && childYears < 8) {
+        return this.model.childReservationPriceLessThanEight;
+      } else {
+        return 0;
+      }
+    }
+    return 0;
   }
 }

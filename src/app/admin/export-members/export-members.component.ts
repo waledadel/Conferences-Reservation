@@ -1,14 +1,7 @@
-import { IPrimaryDataSourceVm } from '@app/models';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { allOptions } from './export-members.model';
 
-export interface IExportMembers { 
-  key: string;
-  columnName: keyof IPrimaryDataSourceVm;
-  isChecked: boolean;
-  isCustomizableOption: boolean;
-}
+import { ExportPages, IExportMembers, allOptions } from './export-members.model';
 
 @Component({
   templateUrl: './export-members.component.html',
@@ -23,23 +16,17 @@ export class ExportMembersComponent implements OnInit {
   };
   constructor(
     private dialogRef: MatDialogRef<ExportMembersComponent>,
-    @Inject(MAT_DIALOG_DATA) public showCustomizableOptions: boolean) {
+    @Inject(MAT_DIALOG_DATA) private config: ExportPages) {
   }
 
   ngOnInit(): void {
-    if (this.showCustomizableOptions) {
-      this.options = allOptions;
-    } else {
-      this.options = allOptions.filter(o => !o.isCustomizableOption);
+    if (this.config) {
+      this.options = allOptions.filter(o => o.visibility.includes(this.config)).map(item => ({...item, isChecked: false}));
     }
   }
 
   onSelectAllChanged(): void {
-    if (this.selectAll) {
-      this.options = this.options.map(item => ({...item, isChecked: true}));
-    } else {
-      this.options = this.options.map(item => ({...item, isChecked: false}));
-    }
+    this.options = this.options.map(item => ({...item, isChecked: this.selectAll}));
   }
 
   cancel(): void {
