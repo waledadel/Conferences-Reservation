@@ -19,16 +19,23 @@ export class HomeComponent implements OnInit {
   enableWaitingList = false;
   isReservationStart = false;
   isClosed = true;
+  isReservationAllowed = false;
 
   constructor(private fireStoreService: FireStoreService) {
     this.settings = {} as Observable<Array<ISettings>>;
   }
-  
+
   ngOnInit(): void {
     this.settings = this.fireStoreService.getAll(Constants.RealtimeDatabase.settings);
     this.settings.subscribe(res => {
+      console.log(res);
       this.enableWaitingList = res[0].enableWaitingList;
-      this.isReservationStart = this.currentDate > res[0].startReservationDate.toDate() ;
+      const startReservationDate = this.stripTime(res[0].startReservationDate.toDate());
+      const endReservationDate = this.stripTime(res[0].endReservationDate.toDate());
+      const currentDate = this.stripTime(this.currentDate);
+      this.isReservationAllowed = currentDate >= startReservationDate && currentDate <= endReservationDate;
+      this.isReservationStart = currentDate >= startReservationDate;
+      this.isClosed = currentDate > endReservationDate;
     });
   }
 
@@ -40,4 +47,7 @@ export class HomeComponent implements OnInit {
     this.showForm = show;
   }
 
+  private stripTime(date: Date): Date {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  }
 }
