@@ -5,13 +5,15 @@ import { ManageReservationComponent } from './manage-reservation/manage-reservat
 import { ConfirmBookingComponent } from './confirm-booking/confirm-booking.component';
 import { BookingSuccessfullyComponent } from './booking-successfully/booking-successfully.component';
 import { SharedModule } from 'app/shared/shared.module';
+import { ManageReservationFormComponent } from './manage-reservation-form/manage-reservation-form.component';
 
 
 const components = [
   ReservationComponent,
   ManageReservationComponent,
   ConfirmBookingComponent,
-  BookingSuccessfullyComponent
+  BookingSuccessfullyComponent,
+  ManageReservationFormComponent
 ];
 
 const modules = [

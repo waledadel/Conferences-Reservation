@@ -1,15 +1,18 @@
 <ng-container *ngIf="(settings | async) as setting">
+
   <div *ngIf="isReservationAllowed" class="container-fluid px-0">
     <mat-toolbar color="primary" class="col-12 px-0">
       <div *ngIf="setting && setting[0].title != ''" class="w-100 d-flex justify-content-center"
         [innerText]="setting[0].title"></div>
     </mat-toolbar>
   </div>
-  <ng-container *ngIf="isClosed; else home">
+
+  <ng-container *ngIf="(isReservationAllowed && isReservationCompleted)">
     <mat-toolbar color="primary" class="col-12 px-0">
       <div *ngIf="setting && setting[0].title != ''" class="w-100 d-flex justify-content-center"
         [innerText]="setting[0].title"></div>
     </mat-toolbar>
+
     <div class="p-5 m-5">
       <div class="alert alert-info text-center">
         نأسف لقد تم إكتمال الحجز. أنتظرونا في المؤتمر القادم
@@ -17,13 +20,19 @@
     </div>
   </ng-container>
 
-  <div *ngIf="!isReservationAllowed && !isClosed">
-    <div class="p-5 m-5">
-      <div class="alert alert-warning text-center">
+  <div *ngIf="!isReservationAllowed" class="container-fluid px-0">
+    <mat-toolbar color="primary" class="col-12 px-0">
+      <div class="w-100 d-flex justify-content-center">
+        موقع السامري الصالح لحجز المؤتمرات
+      </div>
+    </mat-toolbar>
+    <div class="m-5">
+      <div class="alert alert-info text-center p-5 font-weight-bold">
         لا توجد اي مؤتمرات متاحة حالياً
       </div>
     </div>
   </div>
+
 
   <!-- <div *ngIf="enableWaitingList && isReservationAllowed && !isClosed">
     <mat-toolbar color="primary" class="col-12 px-0">
@@ -37,51 +46,49 @@
     </div>
   </div> -->
 
-  <div *ngIf="isReservationAllowed && !showForm"
+  <div *ngIf="isReservationAllowed && showInfo"
     class="container my-md-4 p-md-3 p-0 container-border overflow-auto info-section">
     <app-info [settings]="setting" (showForm)="showTicketForm($event)"></app-info>
   </div>
 </ng-container>
 
 
-<ng-template #home>
-  <div *ngIf="showForm" class="container h-100 mt-lg-3 mt-0 px-0">
-    <div class="d-flex justify-content-center">
-      <div class="col-md-9 col-12 px-0 container-border">
-        <mat-tab-group class="w-100" [selectedIndex]="selectedTabIndex" (selectedIndexChange)="onTabChanged($event)">
-          <mat-tab [label]="'home.individualBooking' | translate">
-            <ng-container *ngIf="selectedTabIndex < 1">
-              <ng-container *ngIf="(settings | async) as setting">
-                <div *ngIf="enableWaitingList" class="alert alert-danger" [innerHtml]="setting[0].waitingListMessage">
-                </div>
-              </ng-container>
-              <app-reservation [type]="bookingType.individual" (showForm)="showTicketForm($event)"
-                [enableWaitingList]="enableWaitingList"></app-reservation>
-            </ng-container>
-          </mat-tab>
-          <mat-tab [label]="'home.groupBooking' | translate">
-            <ng-container *ngIf="selectedTabIndex > 0">
-              <ng-container *ngIf="(settings | async) as setting">
-                <div *ngIf="enableWaitingList" class="alert alert-danger" [innerHtml]="setting[0].waitingListMessage">
-                </div>
-              </ng-container>
-              <div class="alert alert-info">
-                <div>
-                  {{'common.childInfo' | translate}}
-                </div>
-                <div>
-                  {{'common.adultInfo' | translate}}
-                </div>
-                <div>
-                  {{'common.maximumPersons' | translate}}
-                </div>
+<div *ngIf="isReservationAllowed && showForm" class="container h-100 mt-lg-3 mt-0 px-0">
+  <div class="d-flex justify-content-center">
+    <div class="col-md-9 col-12 px-0 container-border main-tabs">
+      <mat-tab-group class="w-100" [selectedIndex]="selectedTabIndex" (selectedIndexChange)="onTabChanged($event)">
+        <mat-tab [label]="'home.individualBooking' | translate">
+          <ng-container *ngIf="selectedTabIndex < 1">
+            <ng-container *ngIf="(settings | async) as setting">
+              <div *ngIf="enableWaitingList" class="alert alert-danger" [innerHtml]="setting[0].waitingListMessage">
               </div>
-              <app-reservation [type]="bookingType.group" (showForm)="showTicketForm($event)"
-                [enableWaitingList]="enableWaitingList"></app-reservation>
             </ng-container>
-          </mat-tab>
-        </mat-tab-group>
-      </div>
+            <app-reservation [type]="bookingType.individual" (showForm)="showTicketForm($event)"
+              [enableWaitingList]="enableWaitingList"></app-reservation>
+          </ng-container>
+        </mat-tab>
+        <mat-tab [label]="'home.groupBooking' | translate">
+          <ng-container *ngIf="selectedTabIndex > 0">
+            <ng-container *ngIf="(settings | async) as setting">
+              <div *ngIf="enableWaitingList" class="alert alert-danger" [innerHtml]="setting[0].waitingListMessage">
+              </div>
+            </ng-container>
+            <div class="alert alert-info">
+              <div>
+                {{'common.childInfo' | translate}}
+              </div>
+              <div>
+                {{'common.adultInfo' | translate}}
+              </div>
+              <!-- <div>
+                {{'common.maximumPersons' | translate}}
+              </div> -->
+            </div>
+            <app-reservation [type]="bookingType.group" (showForm)="showTicketForm($event)"
+              [enableWaitingList]="enableWaitingList"></app-reservation>
+          </ng-container>
+        </mat-tab>
+      </mat-tab-group>
     </div>
   </div>
-</ng-template>
+</div>

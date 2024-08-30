@@ -1,229 +1,32 @@
-<div class="row mx-0 pb-4" [class.pt-4]="model.selectedType === model.bookingType.individual">
-    <form [formGroup]="model.form" novalidate class="col-12" (ngSubmit)="save()">
-        <div class="rounded primary-section col-12 pt-3">
-            <div class="w-100 d-flex px-2 pb-2">
-                <mat-icon color="primary">stars</mat-icon>
-            </div>
-            <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
-                <mat-label>{{'home.arabicFullName' | translate}}</mat-label>
-                <input type="text" matInput formControlName="name">
-                <mat-error *ngIf="model.form.get('name')!.hasError('required')">
-                    {{'validations.requiredField' | translate}}
-                </mat-error>
-                <mat-error *ngIf="model.form.get('name')!.hasError('pattern')">
-                    {{'validations.arabicLettersOnly' | translate}}
-                </mat-error>
-            </mat-form-field>
-            <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
-                <mat-label>{{'home.englishMobileNumber' | translate}}</mat-label>
-                <input type="text" matInput formControlName="mobile" inputmode="numeric">
-                <mat-error *ngIf="model.form.get('mobile')!.hasError('required')">
-                    {{'validations.requiredField' | translate}}
-                </mat-error>
-                <mat-error *ngIf="model.form.get('mobile')!.hasError('pattern')">
-                    {{'validations.mobileNumber' | translate}}
-                </mat-error>
-            </mat-form-field>
-            <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
-                <mat-label>{{'home.transportation' | translate}}</mat-label>
-                <mat-select formControlName="transportationId">
-                    <ng-container *ngFor="let item of model.busList">
-                        <mat-option [value]="item.id">
-                            {{ item.name }} 
-                            <span *ngIf="item.price > 0">{{ item.price }} {{'common.egp' | translate}}</span>
-                        </mat-option>
-                    </ng-container>
-                </mat-select>
-                <mat-error *ngIf="model.form.get('transportationId')!.hasError('required')">
-                    {{'validations.requiredField' | translate}}
-                </mat-error>
-            </mat-form-field>
-            <mat-form-field  class="col-md-6 col-12 px-md-2 px-0">
-                <mat-label>{{'address.title' | translate}}</mat-label>
-                <mat-select formControlName="addressId">
-                    <ng-container *ngFor="let item of model.addressList">
-                        <mat-option [value]="item.id">{{ item.name }}</mat-option>
-                    </ng-container>
-                </mat-select>
-                <mat-error *ngIf="model.form.get('addressId')!.hasError('required')">
-                    {{'validations.requiredField' | translate}}
-                </mat-error>
-            </mat-form-field>
-            <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
-                <mat-label>{{'common.birthDate' | translate}}</mat-label>
-                <input matInput [matDatepicker]="picker" formControlName="birthDate" [max]="model.maxDate" [min]="model.adultMinDate">
-                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker #picker></mat-datepicker>
-                <mat-error *ngIf="model.form.get('birthDate')!.hasError('required')">
-                    {{'validations.requiredField' | translate}}
-                </mat-error>
-            </mat-form-field>
-            <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
-                <mat-label>{{'common.gender' | translate}}</mat-label>
-                <mat-select formControlName="gender">
-                    <mat-option [value]="model.gender.male">{{'common.male' | translate}}</mat-option>
-                    <mat-option [value]="model.gender.female">{{'common.female' | translate}}</mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
-                <mat-label>{{'common.socialStatus' | translate}}</mat-label>
-                <mat-select formControlName="socialStatus">
-                    <mat-option [value]="model.socialStatus.single">{{'common.single' | translate}}</mat-option>
-                    <mat-option [value]="model.socialStatus.married">{{'common.married' | translate}}</mat-option>
-                    <mat-option [value]="model.socialStatus.widower">{{'common.widower' | translate}}</mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-form-field class="col-12 px-md-2 px-0">
-                <mat-label>{{'common.notes' | translate}}</mat-label>
-                <textarea type="text" matInput formControlName="userNotes"></textarea>
-                <mat-error *ngIf="model.form.get('userNotes')!.hasError('required')">
-                    {{'validations.requiredField' | translate}}
-                </mat-error>
-            </mat-form-field>
-            <ng-container *ngIf="canManageReservation">
-                <mat-form-field  class="col-md-6 col-12 px-md-2 px-0">
-                    <mat-label>{{'common.bookingStatus' | translate}}</mat-label>
-                    <mat-select formControlName="bookingStatus">
-                        <ng-container *ngFor="let item of model.bookingStatusList">
-                            <mat-option [value]="item.value">{{ item.key | translate }}</mat-option>
-                        </ng-container>
-                    </mat-select>
-                </mat-form-field>
-                <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
-                    <mat-label>{{'common.totalCost' | translate}}</mat-label>
-                    <input type="number" matInput formControlName="total" readonly>
-                </mat-form-field>
-                <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
-                    <mat-label>{{'common.paid' | translate}}</mat-label>
-                    <input type="number" matInput formControlName="paid" inputmode="numeric">
-                </mat-form-field>
-                <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
-                    <mat-label>{{'common.remaining' | translate}}</mat-label>
-                    <input type="number" matInput formControlName="remaining" inputmode="numeric" readonly>
-                    <mat-hint>
-                        سوف يتم إحتساب المبلغ المتبقي بعد الحفظ فقط
-                    </mat-hint>
-                </mat-form-field>
-                
-                <mat-form-field class="col-12 px-md-2 px-0">
-                    <mat-label>{{'common.adminNotes' | translate}}</mat-label>
-                    <textarea type="text" matInput formControlName="adminNotes"></textarea>
-                </mat-form-field>
-            </ng-container>
-        </div>
-        <ng-container formArrayName="participants">
-            <ng-container *ngIf="model.participants.controls.length > 0">
-                <div *ngFor="let participant of model.participants.controls; let i=index" class="rounded col-12 mt-3 pt-3"
-                [ngClass]="isChild(i) ? 'child-section' : 'adult-section'">
-                    <div [formGroupName]="i">
-                        <div *ngIf="model.selectedType === model.bookingType.group" class="d-flex w-100 align-items-center justify-content-between">
-                            <div class="d-flex align-items-center">
-                                <div class="d-flex justify-content-center align-items-center text-light count mx-2">{{i+1}}</div>
-                                {{ ( isChild(i) ? 'common.child' : 'common.individual') | translate}}
-                            </div>
-                            <button type="button" mat-icon-button color="warn" (click)="remove(i)">
-                                <mat-icon>delete</mat-icon>
-                            </button>
-                        </div>
-                        <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
-                            <mat-label>{{'home.arabicFullName' | translate}}</mat-label>
-                            <input type="text" matInput formControlName="name">
-                            <mat-error *ngIf="participant.get('name')!.hasError('required')">
-                                {{'validations.requiredField' | translate}}
-                            </mat-error>
-                            <mat-error *ngIf="participant.get('name')!.hasError('pattern')">
-                                {{'validations.arabicLettersOnly' | translate}}
-                            </mat-error>
-                        </mat-form-field>
-                        <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
-                            <mat-label>{{'home.englishMobileNumber' | translate}}</mat-label>
-                            <input type="text" matInput formControlName="mobile" inputmode="numeric">
-                            <mat-error *ngIf="participant.get('mobile')!.hasError('required')">
-                                {{'validations.requiredField' | translate}}
-                            </mat-error>
-                            <mat-error *ngIf="participant.get('mobile')!.hasError('pattern')">
-                                {{'validations.mobileNumber' | translate}}
-                            </mat-error>
-                        </mat-form-field>
-                        <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
-                            <mat-label>{{'home.transportation' | translate}}</mat-label>
-                            <mat-select formControlName="transportationId">
-                                <ng-container *ngFor="let item of model.busList">
-                                    <mat-option [value]="item.id">
-                                        {{ item.name }} 
-                                        <span *ngIf="item.price > 0">{{ item.price }} {{'common.egp' | translate}}</span>
-                                    </mat-option>
-                                </ng-container>
-                            </mat-select>
-                            <mat-error *ngIf="participant.get('transportationId')!.hasError('required')">
-                                {{'validations.requiredField' | translate}}
-                            </mat-error>
-                        </mat-form-field>
-                        <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
-                            <mat-label>{{'address.title' | translate}}</mat-label>
-                            <mat-select formControlName="addressId">
-                                <ng-container *ngFor="let item of model.addressList">
-                                    <mat-option [value]="item.id">{{ item.name }}</mat-option>
-                                </ng-container>
-                            </mat-select>
-                            <mat-error *ngIf="participant.get('addressId')!.hasError('required')">
-                                {{'validations.requiredField' | translate}}
-                            </mat-error>
-                        </mat-form-field>
-                        <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
-                            <mat-label>{{'common.birthDate' | translate}}</mat-label>
-                            <input matInput [matDatepicker]="picker" formControlName="birthDate" [max]="model.maxDate" [min]="isChild(i) ? model.childMinDate : model.adultMinDate">
-                            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                            <mat-datepicker #picker></mat-datepicker>
-                            <mat-error *ngIf="participant.get('birthDate')!.hasError('required')">
-                                {{'validations.requiredField' | translate}}
-                            </mat-error>
-                        </mat-form-field>
-                        <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
-                            <mat-label>{{'common.gender' | translate}}</mat-label>
-                            <mat-select formControlName="gender">
-                                <mat-option [value]="model.gender.male">{{'common.male' | translate}}</mat-option>
-                                <mat-option [value]="model.gender.female">{{'common.female' | translate}}</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                        <mat-form-field *ngIf="!isChild(i)" class="col-md-6 col-12 px-md-2 px-0">
-                            <mat-label>{{'common.socialStatus' | translate}}</mat-label>
-                            <mat-select formControlName="socialStatus">
-                                <mat-option [value]="model.socialStatus.single">{{'common.single' | translate}}</mat-option>
-                                <mat-option [value]="model.socialStatus.married">{{'common.married' | translate}}</mat-option>
-                                <mat-option [value]="model.socialStatus.widower">{{'common.widower' | translate}}</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                        <mat-form-field *ngIf="isChild(i)" class="col-md-6 col-12 px-md-2 px-0">
-                            <mat-label>{{'common.needChildBed' | translate}}</mat-label>
-                            <mat-select formControlName="needsSeparateBed">
-                                <mat-option [value]="true">{{'common.yes' | translate}}</mat-option>
-                                <mat-option [value]="false">{{'common.no' | translate}}</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                        <mat-form-field class="col-12 px-md-2 px-0">
-                            <mat-label>{{'common.notes' | translate}}</mat-label>
-                            <textarea type="text" matInput formControlName="userNotes"></textarea>
-                            <mat-error *ngIf="participant.get('userNotes')!.hasError('required')">
-                                {{'validations.requiredField' | translate}}
-                            </mat-error>
-                        </mat-form-field>
-                    </div>
-                </div>
-            </ng-container>
-        </ng-container>
-
-        <ng-container>
-            <div *ngIf="model.selectedType === model.bookingType.group && model.participants.controls.length < 4" class="mt-3">
-                <button type="button" mat-stroked-button color="primary" (click)="addAdult()">{{'common.AddAdult' | translate}}</button>
-                <button type="button" mat-stroked-button color="primary" (click)="addChild()" class="child-btn">{{'common.addChild' | translate}}</button>
-            </div>
-            <div *ngIf="!canManageReservation" class="col-12 pt-3 px-md-2 px-0 d-flex justify-content-end">
-                <button mat-flat-button type="submit" color="primary" [disabled]="model.isLoading">
-                    <i *ngIf="model.isLoading" class="fa-solid fa-spinner fa-spin"></i>
-                    {{'common.addBooking' | translate}}
-                </button>
-            </div>
-        </ng-container>
-    </form>
+<div class="row mx-0 pb-4" [class.pt-4]="type === model.bookingType.individual">
+  <ng-container *ngIf="type === model.bookingType.individual">
+    <app-manage-reservation-form [roomType]="model.roomType.single"
+      [type]="type" [canManageReservation]="canManageReservation"
+      [enableWaitingList]="enableWaitingList" [reservationData]="reservationData"
+      (showForm)="showForm.emit($event)" (closeModal)="closeModal.emit($event)">
+    </app-manage-reservation-form>
+  </ng-container>
+  <mat-tab-group *ngIf="type === model.bookingType.group">
+    <mat-tab label="حجز غرفة دبل">
+      <app-manage-reservation-form [roomType]="model.roomType.double"
+        [type]="type" [canManageReservation]="canManageReservation"
+        [enableWaitingList]="enableWaitingList" [reservationData]="reservationData"
+        (showForm)="showForm.emit($event)" (closeModal)="closeModal.emit($event)">
+      </app-manage-reservation-form>
+    </mat-tab>
+    <mat-tab label="حجز غرفة ثلاثية">
+      <app-manage-reservation-form [roomType]="model.roomType.triple"
+        [type]="type" [canManageReservation]="canManageReservation"
+        [enableWaitingList]="enableWaitingList" [reservationData]="reservationData"
+        (showForm)="showForm.emit($event)" (closeModal)="closeModal.emit($event)">
+      </app-manage-reservation-form>
+    </mat-tab>
+    <mat-tab label="حجز غرفة رباعية">
+      <app-manage-reservation-form [roomType]="model.roomType.quad"
+        [type]="type" [canManageReservation]="canManageReservation"
+        [enableWaitingList]="enableWaitingList" [reservationData]="reservationData"
+        (showForm)="showForm.emit($event)" (closeModal)="closeModal.emit($event)">
+      </app-manage-reservation-form>
+    </mat-tab>
+  </mat-tab-group>
 </div>
