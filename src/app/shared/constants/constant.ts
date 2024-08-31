@@ -8,6 +8,7 @@ export namespace Constants {
         public static readonly tickets = 'tickets';
         public static readonly settings = 'settings';
         public static readonly participants = 'participants';
+        public static readonly roomType = 'roomType';
     }
 
     export class Grid {
@@ -43,6 +44,7 @@ export namespace Constants {
         public static readonly all = 'all';
         public static readonly deletedMembers = 'deleted-members';
         public static readonly rooms = 'rooms';
+        public static readonly roomType = 'room-type';
         public static readonly buses = 'buses';
         public static readonly address = 'address';
         public static readonly statistics = 'statistics';
@@ -62,6 +64,6 @@ export namespace Constants {
     export class SocialMedia {
         static readonly whatsApp = 'whatsapp://send?text=&phone=';
         static readonly viber = 'viber://chat?number=';
-        static readonly telegram = 'tg://resolve?phone='; 
+        static readonly telegram = 'tg://resolve?phone=';
     }
 }

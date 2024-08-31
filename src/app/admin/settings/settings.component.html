@@ -64,13 +64,13 @@
                 {{'validations.requiredField' | translate}}
             </mat-error>
         </mat-form-field>
-        <mat-form-field class="col-md-2 col-12 px-md-3 px-0">
+        <!-- <mat-form-field class="col-md-2 col-12 px-md-3 px-0">
             <mat-label>{{'settings.reservationPrice' | translate}}</mat-label>
             <input type="text" matInput formControlName="reservationPrice" inputmode="numeric">
             <mat-error *ngIf="model.form.get('reservationPrice')!.hasError('required')">
                 {{'validations.requiredField' | translate}}
             </mat-error>
-        </mat-form-field>
+        </mat-form-field> -->
         <mat-form-field class="col-md-2 col-12 px-md-3 px-0">
             <mat-label>{{'settings.waitingListCount' | translate}}</mat-label>
             <input type="text" matInput formControlName="waitingListCount" inputmode="numeric">
@@ -78,34 +78,35 @@
                 {{'validations.requiredField' | translate}}
             </mat-error>
         </mat-form-field>
-        <mat-form-field class="col-md-3 col-12 px-md-3 px-0">
+        <mat-form-field class="col-md-2 col-12 px-md-3 px-0">
+          <mat-label>قائمة الإنتظار</mat-label>
+          <mat-select formControlName="enableWaitingList">
+              <mat-option [value]="true">تفعيل</mat-option>
+              <mat-option [value]="false">الغاء التفعيل</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <!-- <mat-form-field class="col-md-3 col-12 px-md-3 px-0">
             <mat-label>{{'settings.childBedPrice' | translate}}</mat-label>
             <input type="text" matInput formControlName="childBedPrice" inputmode="numeric">
             <mat-error *ngIf="model.form.get('childBedPrice')!.hasError('required')">
                 {{'validations.requiredField' | translate}}
             </mat-error>
-        </mat-form-field>
-        <mat-form-field class="col-md-3 col-12 px-md-3 px-0">
+        </mat-form-field> -->
+        <!-- <mat-form-field class="col-md-3 col-12 px-md-3 px-0">
             <mat-label>{{'settings.childReservationPriceMoreThanEight' | translate}}</mat-label>
             <input type="text" matInput formControlName="childReservationPriceMoreThanEight" inputmode="numeric">
             <mat-error *ngIf="model.form.get('childReservationPriceMoreThanEight')!.hasError('required')">
                 {{'validations.requiredField' | translate}}
             </mat-error>
-        </mat-form-field>
-        <mat-form-field class="col-md-3 col-12 px-md-3 px-0">
+        </mat-form-field> -->
+        <!-- <mat-form-field class="col-md-3 col-12 px-md-3 px-0">
             <mat-label>{{'settings.childReservationPriceLessThanEight' | translate}}</mat-label>
             <input type="text" matInput formControlName="childReservationPriceLessThanEight" inputmode="numeric">
             <mat-error *ngIf="model.form.get('childReservationPriceLessThanEight')!.hasError('required')">
                 {{'validations.requiredField' | translate}}
             </mat-error>
-        </mat-form-field>
-        <mat-form-field class="col-md-3 col-12 px-md-3 px-0">
-            <mat-label>قائمة الإنتظار</mat-label>
-            <mat-select formControlName="enableWaitingList">
-                <mat-option [value]="true">تفعيل</mat-option>
-                <mat-option [value]="false">الغاء التفعيل</mat-option>
-            </mat-select>
-        </mat-form-field>
+        </mat-form-field> -->
+
         <div class="col-12">
             <div class="editor">
                 <ngx-editor-menu [editor]="model.generalAlertsEditor" [toolbar]="model.toolbar"></ngx-editor-menu>

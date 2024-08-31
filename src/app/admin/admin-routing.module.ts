@@ -30,7 +30,11 @@ const routes: Routes = [
       },
       {
         path: Constants.Routes.rooms,
-        loadChildren: () => import('./rooms/rooms.module').then(mod => mod.RoomsModule),
+        loadChildren: () => import('./rooms/rooms.module').then(m => m.RoomsModule),
+      },
+      {
+        path: Constants.Routes.roomType,
+        loadChildren: () => import('./room-type/room-type.module').then(m => m.RoomTypeModule),
       },
       {
         path: Constants.Routes.buses,

@@ -92,10 +92,10 @@ export class SettingsComponent implements OnInit {
       importantDates: ['', Validators.required],
       startReservationDate: [null, Validators.required],
       endReservationDate: [null, Validators.required],
-      reservationPrice: [null, [Validators.required, Validators.min(1)]],
-      childReservationPriceMoreThanEight: [null, [Validators.required, Validators.min(1)]],
-      childReservationPriceLessThanEight: [null, [Validators.required, Validators.min(1)]],
-      childBedPrice: [null, [Validators.required, Validators.min(0)]],
+      // reservationPrice: [null, [Validators.required, Validators.min(1)]],
+      // childReservationPriceMoreThanEight: [null, [Validators.required, Validators.min(1)]],
+      // childReservationPriceLessThanEight: [null, [Validators.required, Validators.min(1)]],
+      // childBedPrice: [null, [Validators.required, Validators.min(0)]],
       waitingListCount: [null, [Validators.required, Validators.min(1)]],
       availableTicketsCount: [null, [Validators.required, Validators.min(1)]],
       waitingListMessage: ['', Validators.required],
@@ -157,14 +157,14 @@ export class SettingsComponent implements OnInit {
       importantDates: item.importantDates,
       startReservationDate: item.startReservationDate.toDate(),
       endReservationDate: item.endReservationDate.toDate(),
-      reservationPrice: item.reservationPrice,
-      childReservationPriceMoreThanEight: item.childReservationPriceMoreThanEight,
-      childReservationPriceLessThanEight: item.childReservationPriceLessThanEight,
+      // reservationPrice: item.reservationPrice,
+      // childReservationPriceMoreThanEight: item.childReservationPriceMoreThanEight,
+      // childReservationPriceLessThanEight: item.childReservationPriceLessThanEight,
       waitingListCount: item.waitingListCount,
       availableTicketsCount: item.availableTicketsCount,
       waitingListMessage: item.waitingListMessage,
       welcomeMessage: item.welcomeMessage,
-      childBedPrice: item.childBedPrice,
+      // childBedPrice: item.childBedPrice,
       enableWaitingList: item.enableWaitingList ?? false
     });
     if (item.imageUrl != '') {
@@ -176,12 +176,12 @@ export class SettingsComponent implements OnInit {
     const formValue = this.model.form.value;
     return {
       ...formValue,
-      reservationPrice: +formValue.reservationPrice,
-      childReservationPriceMoreThanEight: +formValue.childReservationPriceMoreThanEight,
-      childReservationPriceLessThanEight: +formValue.childReservationPriceLessThanEight,
+      // reservationPrice: +formValue.reservationPrice,
+      // childReservationPriceMoreThanEight: +formValue.childReservationPriceMoreThanEight,
+      // childReservationPriceLessThanEight: +formValue.childReservationPriceLessThanEight,
       availableTicketsCount: +formValue.availableTicketsCount,
       waitingListCount: +formValue.waitingListCount,
-      childBedPrice: +formValue.childBedPrice
+      // childBedPrice: +formValue.childBedPrice
     };
   }
 }

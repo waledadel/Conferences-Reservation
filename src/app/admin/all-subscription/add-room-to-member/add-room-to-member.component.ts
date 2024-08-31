@@ -84,7 +84,7 @@ export class AddRoomToMemberComponent implements OnInit {
     if (this.family.length > 0) {
       const checkedMembers = this.family.filter(m => !m.hasRoom && m.isChecked);
       if (checkedMembers && checkedMembers.length > 0) {
-        selectedIds.push(...checkedMembers.map(m => m.id)); 
+        selectedIds.push(...checkedMembers.map(m => m.id));
       }
     }
     if (selectedIds.length > 0) {
@@ -173,14 +173,13 @@ export class AddRoomToMemberComponent implements OnInit {
         this.primary = {
           id: data.id,
           isMain: data.isMain,
-          isChild: data.isChild,
+          // isChild: data.isChild,
           name: data.name,
           primaryId: data.primaryId,
           roomId: data.roomId,
           hasRoom: isPrimaryHasRoom,
           isChecked: isPrimaryHasRoom,
           roomName: isPrimaryHasRoom ? this.getRoomName(data.roomId) : '',
-          needsSeparateBed: data.needsSeparateBed,
           birthDate: data.birthDate,
           age: this.getAge(data.birthDate)
         };

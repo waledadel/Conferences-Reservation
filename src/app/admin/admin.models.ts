@@ -46,6 +46,12 @@ export const menuItems: Array<IMenu> = [
     roles: [Roles.admin]
   },
   {
+    icon: 'hotel',
+    text: 'menu.room-type',
+    url:  Constants.Routes.roomType,
+    roles: [Roles.admin]
+  },
+  {
     icon: 'directions_bus',
     text: 'menu.buses',
     url:  Constants.Routes.buses,

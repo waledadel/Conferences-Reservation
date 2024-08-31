@@ -1,9 +1,9 @@
 import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
-import { Timestamp } from '@angular/fire/firestore';
+// import { Timestamp } from '@angular/fire/firestore';
 
-import { IRelatedMemberViewModel, IPrimaryDataSourceVm, ISettings, ITicket, ICostDetailsDataSourceVm, Gender, BookingStatus, IUser, BookingType, IAddress, IBus } from '@app/models';
+import { IRelatedMemberViewModel, IPrimaryDataSourceVm, ITicket, ICostDetailsDataSourceVm, Gender, BookingStatus, IUser, BookingType, IAddress, IBus } from '@app/models';
 import { DialogService, FireStoreService, NotifyService, TranslationService } from '@app/services';
 import { ManageReservationComponent } from '../reservation/manage-reservation/manage-reservation.component';
 import { Constants } from '@app/constants';
@@ -14,6 +14,7 @@ import { PrimaryModel } from './primary.models';
 import { ExportMembersComponent } from '../export-members/export-members.component';
 import { AdvancedSearchComponent } from '../advanced-search/advanced-search.component';
 import { ExportPages, IExportMembers } from '../export-members/export-members.model';
+import { RoomType } from 'app/shared/models/ticket';
 
 @Component({
   templateUrl: './primary.component.html'
@@ -25,11 +26,11 @@ export class PrimaryComponent implements OnInit {
   get isMobile(): boolean {
     return window.innerWidth < Constants.Grid.large;
   }
-  
+
   @HostListener('window:resize', ['$event']) onWindowResize(): void {
     this.detectMobileView();
   }
-  
+
   constructor(
     private fireStoreService: FireStoreService,
     private dialogService: DialogService,
@@ -45,7 +46,8 @@ export class PrimaryComponent implements OnInit {
     this.getAllUsers();
     this.getBuses();
     this.getAddress();
-    this.getSettings();
+    // this.getSettings();
+    this.getNotPrimarySubscription();
     this.adminService.updatePageTitle('الإشتراكات الرئيسية');
   }
 
@@ -148,26 +150,24 @@ export class PrimaryComponent implements OnInit {
       isMain: true,
       name: item.name,
       bedPrice: 0,
-      needBed: true,
       privateTransport: this.isPrivateTransport(item.transportationId),
-      reservationPrice: this.model.adultReservationPrice,
+      reservationPrice: 0, // this.model.adultReservationPrice,
       transportPrice: this.getTransportPrice(item.transportationId)
     });
     // other members
     const allRelatedMembers = this.model.notPrimaryMembers.filter(m => m.primaryId === item.primaryId);
     if (allRelatedMembers.length > 0) {
-      const adults = allRelatedMembers.filter(m => !m.isChild);
-      const children = allRelatedMembers.filter(m => m.isChild);
+      const adults = allRelatedMembers.filter(m => m.birthDate.toDate().getFullYear() < 2000);
+      const children = allRelatedMembers.filter(m => m.birthDate.toDate().getFullYear() >= 2000);
       if (children && children.length > 0) {
         children.forEach(item => {
           list.push({
             isChild: true,
             isMain: false,
             name: item.name,
-            bedPrice: this.getChildBedPrice(item),
-            needBed: item.needsSeparateBed,
-            privateTransport: this.isPrivateTransport(item.transportationId),
-            reservationPrice: this.getChildReservationPrice(item.birthDate),
+            bedPrice: 0, // this.getChildBedPrice(item),
+            privateTransport: false, // this.isPrivateTransport(item.transportationId),
+            reservationPrice: 0, // this.getChildReservationPrice(item.birthDate),
             transportPrice: this.getTransportPrice(item.transportationId)
           });
         });
@@ -179,9 +179,8 @@ export class PrimaryComponent implements OnInit {
             isMain: false,
             name: item.name,
             bedPrice: 0,
-            needBed: item.needsSeparateBed,
             privateTransport: this.isPrivateTransport(item.transportationId),
-            reservationPrice: this.model.adultReservationPrice,
+            reservationPrice: 0, // this.model.adultReservationPrice,
             transportPrice: this.getTransportPrice(item.transportationId)
           });
         });
@@ -306,17 +305,17 @@ export class PrimaryComponent implements OnInit {
     return '';
   }
 
-  private getSettings(): void {
-    this.fireStoreService.getAll<ISettings>(Constants.RealtimeDatabase.settings).subscribe(data => {
-      if (data && data.length > 0) {
-        this.model.adultReservationPrice = data[0].reservationPrice;
-        this.model.childReservationPriceLessThanEight = data[0].childReservationPriceLessThanEight;
-        this.model.childReservationPriceMoreThanEight = data[0].childReservationPriceMoreThanEight;
-        this.model.childBedPrice = data[0].childBedPrice;
-        this.getNotPrimarySubscription();
-      }
-    });
-  }
+  // private getSettings(): void {
+  //   this.fireStoreService.getAll<ISettings>(Constants.RealtimeDatabase.settings).subscribe(data => {
+  //     if (data && data.length > 0) {
+  //       // this.model.adultReservationPrice = data[0].reservationPrice;
+  //       // this.model.childReservationPriceLessThanEight = data[0].childReservationPriceLessThanEight;
+  //       // this.model.childReservationPriceMoreThanEight = data[0].childReservationPriceMoreThanEight;
+  //       // this.model.childBedPrice = data[0].childBedPrice;
+  //       this.getNotPrimarySubscription();
+  //     }
+  //   });
+  // }
 
   private updateTableRow(item: Partial<ITicket>): void {
     this.fireStoreService.getById(`${Constants.RealtimeDatabase.tickets}/${item.id}`).subscribe((res: IPrimaryDataSourceVm) => {
@@ -363,68 +362,86 @@ export class PrimaryComponent implements OnInit {
 
   private getTotalCost(ticket: IPrimaryDataSourceVm, list: Array<IRelatedMemberViewModel>): number {
     if (ticket) {
-      let childrenCost = 0;
-      let adultCost = 0;
-      let primaryCost = 0;
-      primaryCost = this.model.adultReservationPrice + this.getTransportPrice(ticket.transportationId);
-      if (list.length > 0) {
-        if (ticket.childrenCount > 0) {
-          const children = list.filter(c => c.primaryId === ticket.id && c.isChild);
-          if (children && children.length > 0) {
-            children.forEach(child => {
-              const reservationPrice = this.getChildReservationPrice(child.birthDate);
-              const bedPrice = this.getChildBedPrice(child);
-              const transportPrice = this.getTransportPrice(child.transportationId);
-              childrenCost += (reservationPrice + bedPrice + transportPrice);
-            });
-          }
-        }
-        if (ticket.adultsCount > 0) {
-          const adults = list.filter(c => c.primaryId === ticket.id && !c.isChild);
-          if (adults && adults.length > 0) {
-            adults.forEach(adult => {
-              const price = this.model.adultReservationPrice;
-              const transportPrice = this.getTransportPrice(adult.transportationId);
-              adultCost += price + transportPrice;
-            });
-          }
-        }
-      }
-      return primaryCost + adultCost + childrenCost;
+      // let childrenCost = 0;
+      // let adultCost = 0;
+      // let primaryCost = 0;
+      // primaryCost = this.getPrice(ticket) + this.getTransportPrice(ticket.transportationId);
+      // let transportation = 0;
+      // if (list.length > 0) {
+        // if (ticket.childrenCount > 0) {
+      //     const children = list.filter(c => c.primaryId === ticket.id && c.birthDate.toDate().getFullYear() >= 2000);
+      //     if (children && children.length > 0) {
+      //       children.forEach(child => {
+      //         const reservationPrice = this.getChildReservationPrice(child.birthDate);
+      //         const bedPrice = this.getChildBedPrice(child);
+      //         const transportPrice = this.getTransportPrice(child.transportationId);
+      //         childrenCost += (reservationPrice + bedPrice + transportPrice);
+      //       });
+      //     }
+        // }
+        // if (ticket.adultsCount > 0) {
+      //     const adults = list.filter(c => c.primaryId === ticket.id && !c.isChild);
+      //     if (adults && adults.length > 0) {
+      //       adults.forEach(adult => {
+      //         const price = this.model.adultReservationPrice;
+      //         const transportPrice = this.getTransportPrice(adult.transportationId);
+      //         adultCost += price + transportPrice;
+      //       });
+      //     }
+        // }
+      // }
+      // return primaryCost + adultCost + childrenCost;
+      return this.getPrice(ticket) + this.getTransportPrice(ticket.transportationId);
     }
     return 0;
   }
 
-  private getChildReservationPrice(birthDate?: Timestamp): number {
-    if (birthDate) {
-      const today = new Date();
-      const userBirthDate = birthDate.toDate();
-      let childYears = today.getFullYear() - userBirthDate.getFullYear();
-      const monthDiff = today.getMonth() - userBirthDate.getMonth();
-      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < userBirthDate.getDate())) {
-        childYears--;
-      }
-      if (childYears >= 8 && childYears < 12) {
-        return this.model.childReservationPriceMoreThanEight;
-      } else if(childYears >= 4 && childYears < 8) {
-        return this.model.childReservationPriceLessThanEight;
-      } else {
-        return 0;
-      }
-    }
-    return 0;
-  }
+  // private getChildReservationPrice(birthDate?: Timestamp): number {
+  //   if (birthDate) {
+  //     return 0;
+  //     // const today = new Date();
+  //     // const userBirthDate = birthDate.toDate();
+  //     // let childYears = today.getFullYear() - userBirthDate.getFullYear();
+  //     // const monthDiff = today.getMonth() - userBirthDate.getMonth();
+  //     // if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < userBirthDate.getDate())) {
+  //     //   childYears--;
+  //     // }
+  //     // if (childYears >= 8 && childYears < 12) {
+  //     //   return this.model.childReservationPriceMoreThanEight;
+  //     // } else if(childYears >= 4 && childYears < 8) {
+  //     //   return this.model.childReservationPriceLessThanEight;
+  //     // } else {
+  //     //   return 0;
+  //     // }
+  //   }
+  //   return 0;
+  // }
 
-  private getChildBedPrice(child: IRelatedMemberViewModel ): number {
-    if (child) {
-      const childYears = new Date().getFullYear() - child.birthDate.toDate().getFullYear();
-      if (childYears >= 8 && childYears < 12) {
-        return 0; // Already pay as the adult
-      } else {
-        return child.needsSeparateBed ? this.model.childBedPrice : 0;
-      }
+  // private getChildBedPrice(child: IRelatedMemberViewModel ): number {
+  //   // if (child) {
+  //   //   // const childYears = new Date().getFullYear() - child.birthDate.toDate().getFullYear();
+  //   //   // if (childYears >= 8 && childYears < 12) {
+  //   //   //   return 0; // Already pay as the adult
+  //   //   // } else {
+  //   //   //   return child.needsSeparateBed ? this.model.childBedPrice : 0;
+  //   //   // }
+  //   // }
+  //   return 0;
+  // }
+
+  private getPrice(ticket: IPrimaryDataSourceVm): number {
+    const isGroup = ticket.bookingType === BookingType.group;
+    if (isGroup && ticket.roomType === RoomType.double) {
+      return 1050;
+    } else if (isGroup && ticket.roomType === RoomType.triple) {
+      return 950;
+    } else if (isGroup && ticket.roomType === RoomType.quad) {
+      return 800;
+    } else if(ticket.bookingType === BookingType.individual) {
+      return 800;
+    } else {
+      return 0;
     }
-    return 0;
   }
 
   private getBuses(): void {
@@ -501,7 +518,7 @@ export class PrimaryComponent implements OnInit {
       const customFilterName = columnName.toLowerCase().includes(name);
       const customFilterMobile = columnMobile.includes(mobile);
       // We minus 1 for primary count
-      const customFilterAdultsCount = adultsCount != 'null' ? +columnAdultsCount === (+adultsCount - 1) : true; 
+      const customFilterAdultsCount = adultsCount != 'null' ? +columnAdultsCount === (+adultsCount - 1) : true;
       const customFilterChildrenCount = childrenCount != 'null' ? +columnChildrenCount === +childrenCount : true;
       const customFilterFromAge = fromAge != 'null' ? +columnAge >= +fromAge : true;
       const customFilterToAge = toAge != 'null' ? +columnAge <= +toAge : true;

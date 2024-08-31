@@ -24,7 +24,7 @@
             <small *ngIf="primary.hasRoom" class="d-flex flex-column px-lg-0 px-2">
                 <span class="text-success">({{primary.roomName}})</span>
                 <a class="text-danger text-decoration-none" href="javascript:void(0)" (click)="openRoomCancellationModal(primary)">
-                    <i class="fa-solid fa-circle-minus"></i>&nbsp;إلغاء التسكين  
+                    <i class="fa-solid fa-circle-minus"></i>&nbsp;إلغاء التسكين
                 </a>
                 <a class="primary text-decoration-none" href="javascript:void(0)">
                     <i class="fa-solid fa-right-left"></i>&nbsp;نقل إلي غرفة أخري
@@ -43,32 +43,32 @@
                         <span class="text-dark font-weight-bold">{{f.name}}</span>
                         <div class="d-flex flex-column">
                             <small *ngIf="f.hasRoom; else notHasRoom" class="text-success">
-                                تم التسكين بنجاح 
+                                تم التسكين بنجاح
                             </small>
-                            <ng-container *ngIf="f.isChild">
+                            <!-- <ng-container *ngIf="f.isChild">
                                 <small>
-                                    <b>السن: </b> ({{f.age}}) 
+                                    <b>السن: </b> ({{f.age}})
                                     <i class="fa-solid fa-child primary px-2"></i>
                                 </small>
-                                <small>
-                                    <b>مطلوب سرير منفصل: </b> 
+                                <small> -->
+                                    <!-- <b>مطلوب سرير منفصل: </b>
                                     <ng-container *ngIf="f.needsSeparateBed; else noBedNeeded">
                                         <i class="fa-regular fa-circle-check text-success"></i>
-                                    </ng-container>
-                                </small>
-                            </ng-container>
+                                    </ng-container> -->
+                                <!-- </small>
+                            </ng-container> -->
                         </div>
                     </div>
                 </mat-checkbox>
                 <small *ngIf="f.hasRoom" class="d-flex flex-column px-lg-0 px-2">
                     <span class="text-success">({{f.roomName}})</span>
                     <a class="text-danger text-decoration-none" href="javascript:void(0)" (click)="openRoomCancellationModal(f)">
-                        <i class="fa-solid fa-circle-minus"></i>&nbsp;إلغاء التسكين  
+                        <i class="fa-solid fa-circle-minus"></i>&nbsp;إلغاء التسكين
                     </a>
                     <a class="primary text-decoration-none" href="javascript:void(0)" (click)="openRoomCancellationModal(f)">
                         <i class="fa-solid fa-right-left"></i>&nbsp;نقل إلي غرفة أخري
                     </a>
-                </small> 
+                </small>
             </div>
         </ng-container>
         <ng-template #noFamily>

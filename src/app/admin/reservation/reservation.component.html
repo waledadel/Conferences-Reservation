@@ -7,21 +7,21 @@
     </app-manage-reservation-form>
   </ng-container>
   <mat-tab-group *ngIf="type === model.bookingType.group">
-    <mat-tab label="حجز غرفة دبل">
+    <mat-tab label="حجز غرفة مزدوجة (1050 جنيه)">
       <app-manage-reservation-form [roomType]="model.roomType.double"
         [type]="type" [canManageReservation]="canManageReservation"
         [enableWaitingList]="enableWaitingList" [reservationData]="reservationData"
         (showForm)="showForm.emit($event)" (closeModal)="closeModal.emit($event)">
       </app-manage-reservation-form>
     </mat-tab>
-    <mat-tab label="حجز غرفة ثلاثية">
+    <mat-tab label="حجز غرفة ثلاثية (950 جنيه)">
       <app-manage-reservation-form [roomType]="model.roomType.triple"
         [type]="type" [canManageReservation]="canManageReservation"
         [enableWaitingList]="enableWaitingList" [reservationData]="reservationData"
         (showForm)="showForm.emit($event)" (closeModal)="closeModal.emit($event)">
       </app-manage-reservation-form>
     </mat-tab>
-    <mat-tab label="حجز غرفة رباعية">
+    <mat-tab label="حجز غرفة رباعية (800 جنيه)">
       <app-manage-reservation-form [roomType]="model.roomType.quad"
         [type]="type" [canManageReservation]="canManageReservation"
         [enableWaitingList]="enableWaitingList" [reservationData]="reservationData"

@@ -52,8 +52,9 @@ export class FireStoreService {
   updateTicket(item: ITicketForm, removedIds: Array<string>): Observable<unknown> {
     const currentLoggedInUser = localStorage.getItem('userId');
     const isParticipantsExists = item.participants && item.participants.length > 0;
-    const childrenCounts = item.participants?.filter(p => p.isChild).length ?? 0;
-    const adultsCounts = item.participants?.filter(p => !p.isChild).length ?? 0;
+    const isChildrenExists = item.children && item.children.length > 0;
+    const childrenCounts = item.children.length;
+    const adultsCounts = item.participants.length;
     const batch = this.angularFirestore.firestore.batch();
     const primaryRef = this.angularFirestore.doc(`/${Constants.RealtimeDatabase.tickets}/${item.id}`).ref;
     const primary: ITicket = {
@@ -74,53 +75,56 @@ export class FireStoreService {
       roomId: item.roomId,
       adultsCount: adultsCounts,
       childrenCount: childrenCounts,
-      needsSeparateBed: true,
-      isChild: false,
       isMain: true,
       primaryId: item.id,
       lastUpdateDate: Timestamp.fromDate(new Date()),
-      lastUpdateUserId: currentLoggedInUser ?? ''
+      lastUpdateUserId: currentLoggedInUser ?? '',
+      roomType: item.roomType
     };
     batch.set(primaryRef, primary);
     if (isParticipantsExists) {
       item.participants.filter(t => t.id != '' && t.id != null).forEach(p => {
-        const participant: ITicket = {
+        const participant: Partial<ITicket> = {
           ...p,
-          bookingDate: primary.bookingDate,
-          adminNotes: primary.adminNotes,
-          paid: primary.paid,
-          bookingStatus: primary.bookingStatus,
-          bookingType: primary.bookingType,
-          roomId: primary.roomId,
-          adultsCount: adultsCounts,
-          childrenCount: childrenCounts,
-          isMain: false,
-          primaryId: primary.id,
-          lastUpdateUserId: currentLoggedInUser ?? ''
+          isMain: false
         };
         const participantRef = this.angularFirestore.doc(`/${Constants.RealtimeDatabase.tickets}/${participant.id}`).ref;
-        batch.update(participantRef, {...participant});
+        batch.update(participantRef, { ...participant });
       });
       const newMembersAddedByAdmin = item.participants.filter(t => t.id == '');
       if (newMembersAddedByAdmin && newMembersAddedByAdmin.length > 0) {
         item.participants.filter(t => t.id == '').forEach(p => {
-          const participant: ITicket = {
+          const participant: Partial<ITicket> = {
             ...p,
             id: this.createId(),
-            bookingDate: primary.bookingDate,
-            adminNotes: primary.adminNotes,
-            paid: primary.paid,
-            bookingStatus: primary.bookingStatus,
-            bookingType: primary.bookingType,
-            roomId: primary.roomId,
-            adultsCount: adultsCounts,
-            childrenCount: childrenCounts,
             isMain: false,
             primaryId: primary.id,
-            lastUpdateUserId: currentLoggedInUser ?? ''
           };
           const participantRef = this.angularFirestore.doc(`/${Constants.RealtimeDatabase.tickets}/${participant.id}`).ref;
-          batch.set(participantRef, {...participant});
+          batch.set(participantRef, { ...participant });
+        });
+      }
+    }
+    if (isChildrenExists) {
+      item.children.filter(t => t.id != '' && t.id != null).forEach(p => {
+        const child: Partial<ITicket> = {
+          ...p,
+          isMain: false
+        };
+        const childRef = this.angularFirestore.doc(`/${Constants.RealtimeDatabase.tickets}/${child.id}`).ref;
+        batch.update(childRef, { ...child });
+      });
+      const newChildAddedByAdmin = item.children.filter(t => t.id == '');
+      if (newChildAddedByAdmin && newChildAddedByAdmin.length > 0) {
+        item.children.filter(t => t.id == '').forEach(p => {
+          const child: Partial<ITicket> = {
+            ...p,
+            id: this.createId(),
+            isMain: false,
+            primaryId: primary.id,
+          };
+          const childRef = this.angularFirestore.doc(`/${Constants.RealtimeDatabase.tickets}/${child.id}`).ref;
+          batch.set(childRef, { ...child });
         });
       }
     }
@@ -135,8 +139,9 @@ export class FireStoreService {
 
   addTicket(item: ITicketForm): Observable<unknown> {
     const isParticipantsExists = item.participants && item.participants.length > 0;
-    const childrenCounts = item.participants?.filter(p => p.isChild).length ?? 0;
-    const adultsCounts = item.participants?.filter(p => !p.isChild).length ?? 0;
+    const isChildrenExists = item.children && item.children.length > 0;
+    const childrenCounts = item.children.length;
+    const adultsCounts = item.participants.length;
     const primaryId = this.createId();
     const primary: ITicket = {
       id: primaryId,
@@ -156,54 +161,45 @@ export class FireStoreService {
       roomId: item.roomId,
       adultsCount: adultsCounts,
       childrenCount: childrenCounts,
-      needsSeparateBed: true,
-      isChild: false,
       isMain: true,
       primaryId: primaryId,
-      lastUpdateUserId: ''
+      lastUpdateUserId: '',
+      roomType: item.roomType
     };
     const batch = this.angularFirestore.firestore.batch();
     const primaryRef = this.angularFirestore.doc(`/${Constants.RealtimeDatabase.tickets}/${primaryId}`).ref;
     batch.set(primaryRef, primary);
     if (isParticipantsExists) {
       item.participants.forEach(p => {
-        const participant: ITicket = {
+        const participant: Partial<ITicket> = {
           ...p,
-          id: this.createId(),
-          bookingDate: primary.bookingDate,
-          adminNotes: primary.adminNotes,
-          paid: primary.paid,
-          bookingStatus: primary.bookingStatus,
-          bookingType: primary.bookingType,
-          roomId: primary.roomId,
-          adultsCount: adultsCounts,
-          childrenCount: childrenCounts,
+          primaryId,
           isMain: false,
-          primaryId: primaryId,
-          lastUpdateUserId: ''
+          id: this.createId(),
         };
         const participantRef = this.angularFirestore.doc(`/${Constants.RealtimeDatabase.tickets}/${participant.id}`).ref;
         batch.set(participantRef, participant);
       });
     }
+    if (isChildrenExists) {
+      item.children.forEach(p => {
+        const child: Partial<ITicket> = {
+          ...p,
+          primaryId,
+          isMain: false,
+          id: this.createId()
+        };
+        const childRef = this.angularFirestore.doc(`/${Constants.RealtimeDatabase.tickets}/${child.id}`).ref;
+        batch.set(childRef, child);
+      });
+    }
     return from(batch.commit()).pipe(map(() => null));
   }
-
-  // deleteReservationForever(ids: Array<string>): Observable<unknown> {
-  //   const batch = this.angularFirestore.firestore.batch();
-  //   if (ids && ids.length > 0) {
-  //     ids.forEach(id => {
-  //       const ref = this.angularFirestore.doc(`/${Constants.RealtimeDatabase.tickets}/${id}`).ref;
-  //       batch.delete(ref);
-  //     });
-  //   }
-  //   return from(batch.commit()).pipe(map(() => null));
-  // }
 
   softDeleteReservation(id: string): Observable<void> {
     const userId = localStorage.getItem('userId') ?? '';
     const collectionRef = this.angularFirestore.collection(Constants.RealtimeDatabase.tickets).ref;
-    const query = collectionRef.where('primaryId', '==', id);  
+    const query = collectionRef.where('primaryId', '==', id);
     return from(query.get().then((querySnapshot) => {
       const batch = this.angularFirestore.firestore.batch();
       querySnapshot.forEach((doc) => {
@@ -233,7 +229,7 @@ export class FireStoreService {
     const collectionRef = this.angularFirestore.collection(collectionPath).ref;
     docIds.forEach((docId) => {
       const documentRef = collectionRef.doc(docId);
-      batch.update(documentRef, {[propertyName]: propertyValue});
+      batch.update(documentRef, { [propertyName]: propertyValue });
     });
     return from(batch.commit());
   }
@@ -252,12 +248,9 @@ export class FireStoreService {
   }
 
   getAllMembers(): Observable<Array<IAllSubscriptionDataSourceVm>> {
-      return this.angularFirestore
-      .collection<IAllSubscriptionDataSourceVm>(Constants.RealtimeDatabase.tickets, ref => 
-        ref.where('bookingStatus', '<', BookingStatus.deleted).orderBy('bookingStatus', 'asc')
-      )
-      .valueChanges({ idField: 'id' })
-      .pipe(
+    // , ref => ref.where('bookingStatus', '<', BookingStatus.deleted).orderBy('bookingStatus', 'asc')
+
+    return this.angularFirestore.collection<IAllSubscriptionDataSourceVm>(Constants.RealtimeDatabase.tickets).valueChanges({ idField: 'id' }).pipe(
         map((tickets: Array<IAllSubscriptionDataSourceVm>) =>
           tickets.map((ticket: IAllSubscriptionDataSourceVm) => ({
             id: ticket.id,
@@ -269,7 +262,6 @@ export class FireStoreService {
             age: this.getAge(ticket.birthDate),
             gender: ticket.gender,
             isMain: ticket.isMain,
-            isChild: ticket.isChild,
             addressId: ticket.addressId,
             address: '',
             transportationId: ticket.transportationId,
@@ -278,10 +270,10 @@ export class FireStoreService {
             mainMemberName: '',
             primaryId: ticket.primaryId,
             displayedRoomName: '',
-            needsSeparateBed: ticket.needsSeparateBed,
             totalCost: 0,
             paid: ticket.paid,
-            remaining: 0
+            remaining: 0,
+            roomType: ticket.roomType
           }))
         ),
         take(1)
@@ -291,7 +283,7 @@ export class FireStoreService {
   getDeletedMembers(takeCount = 1): Observable<Array<IDeletedMembersDataSourceVm>> {
     const usersRef = this.angularFirestore.collection<IUser>(Constants.RealtimeDatabase.users).ref;
     return this.angularFirestore
-      .collection<IDeletedMembersDataSourceVm>(Constants.RealtimeDatabase.tickets, ref => 
+      .collection<IDeletedMembersDataSourceVm>(Constants.RealtimeDatabase.tickets, ref =>
         ref.where('bookingStatus', '==', BookingStatus.deleted)
       ).valueChanges({ idField: 'id' })
       .pipe(
@@ -334,7 +326,7 @@ export class FireStoreService {
 
   getPrimaryMembers(takeCount = 1): Observable<Array<IPrimaryDataSourceVm>> {
     return this.angularFirestore
-      .collection<IPrimaryDataSourceVm>(Constants.RealtimeDatabase.tickets, ref => 
+      .collection<IPrimaryDataSourceVm>(Constants.RealtimeDatabase.tickets, ref =>
         ref.where('isMain', '==', true).where('bookingStatus', '<', BookingStatus.deleted)
       ).valueChanges({ idField: 'id' })
       .pipe(
@@ -366,86 +358,17 @@ export class FireStoreService {
             addressId: ticket.addressId,
             addressName: '',
             mainMemberName: '',
-            remaining: 0
+            remaining: 0,
+            roomType: ticket.roomType
           }))
         ),
         take(takeCount)
       );
   }
 
-  // getPrimarySubscription(takeCount = 1): Observable<Array<IPrimaryDataSourceVm>> {
-  //   const busRef = this.angularFirestore.collection<IBus>(Constants.RealtimeDatabase.buses).ref;
-  //   const addressRef = this.angularFirestore.collection<IAddress>(Constants.RealtimeDatabase.address).ref;
-  //   return this.angularFirestore
-  //     .collection<IPrimaryDataSourceVm>(Constants.RealtimeDatabase.tickets, ref => 
-  //       ref.where('isMain', '==', true)
-  //     ).valueChanges({ idField: 'id' })
-  //     .pipe(
-  //       switchMap((tickets: Array<IPrimaryDataSourceVm>) => {
-  //         return combineLatest(
-  //           tickets.map((ticket: IPrimaryDataSourceVm) => {
-  //             const transportationId = ticket.transportationId;
-  //             const busDoc = busRef.doc(transportationId);
-  //             const addressId = ticket.addressId;
-  //             const addressDoc = addressRef.doc(addressId);
-  //             return forkJoin([
-  //               from(busDoc.get()).pipe(
-  //                 map((doc) => ({
-  //                   ...doc.data(),
-  //                   id: doc.id,
-  //                 }) as IBus)
-  //               ),
-  //               from(addressDoc.get()).pipe(
-  //                 map((doc) => ({
-  //                   ...doc.data(),
-  //                   id: doc.id,
-  //                 }) as IAddress)
-  //               )
-  //             ]);
-  //           })
-  //         ).pipe(
-  //           map((results: Array<[IBus, IAddress]>) =>
-  //             tickets.map((ticket: IPrimaryDataSourceVm, index: number) => {
-  //               const [bus, address] = results[index];
-  //               return {
-  //                 id: ticket.id,
-  //                 name: ticket.name,
-  //                 adultsCount: ticket.adultsCount,
-  //                 childrenCount: ticket.childrenCount,
-  //                 roomId: ticket.roomId,
-  //                 bookingType: ticket.bookingType,
-  //                 bookingStatus: ticket.bookingStatus,
-  //                 bookingDate: ticket.bookingDate,
-  //                 totalCost: 0,
-  //                 paid: ticket.paid,
-  //                 userNotes: ticket.userNotes,
-  //                 transportationId: ticket.transportationId,
-  //                 primaryId: ticket.primaryId,
-  //                 mobile: ticket.mobile,
-  //                 transportationName: bus.name,
-  //                 gender: ticket.gender,
-  //                 birthDate: ticket.birthDate,
-  //                 age: this.getAge(ticket.birthDate),
-  //                 birthDateMonth: ticket.birthDate.toDate().getMonth() + 1,
-  //                 adminNotes: ticket.adminNotes,
-  //                 lastUpdateUserId: ticket.lastUpdateUserId ?? '',
-  //                 lastUpdateDate: ticket.lastUpdateDate,
-  //                 lastUpdatedBy: '',
-  //                 addressId: ticket.addressId,
-  //                 addressName: address.name,
-  //                 deletedBy: ticket.deletedBy ?? '',
-  //               };
-  //             })
-  //           ),
-  //           take(takeCount)
-  //         );
-  //       })
-  //     );
-  // }
-
   getNotPrimarySubscription(takeCount = 1): Observable<Array<IRelatedMemberViewModel>> {
     return this.angularFirestore
-      .collection<IRelatedMemberViewModel>(Constants.RealtimeDatabase.tickets, ref => 
+      .collection<IRelatedMemberViewModel>(Constants.RealtimeDatabase.tickets, ref =>
         ref.where('isMain', '==', false)
       ).valueChanges({ idField: 'id' })
       .pipe(
@@ -455,9 +378,7 @@ export class FireStoreService {
             primaryId: ticket.primaryId,
             name: ticket.name,
             birthDate: ticket.birthDate,
-            needsSeparateBed: ticket.needsSeparateBed,
-            transportationId: ticket.transportationId,
-            isChild: ticket.isChild
+            transportationId: ticket.transportationId
           }))
         ),
         take(takeCount)
@@ -466,7 +387,7 @@ export class FireStoreService {
 
   getRelatedMembersByPrimaryId(primaryId: string, takeCount = 1): Observable<Array<IRelatedMemberViewModel>> {
     return this.angularFirestore
-      .collection<ITicket>(Constants.RealtimeDatabase.tickets, ref => 
+      .collection<ITicket>(Constants.RealtimeDatabase.tickets, ref =>
         ref.where('primaryId', '==', primaryId)
       ).valueChanges({ idField: 'id' })
       .pipe(
@@ -476,9 +397,7 @@ export class FireStoreService {
             primaryId: ticket.primaryId,
             name: ticket.name,
             birthDate: ticket.birthDate,
-            needsSeparateBed: ticket.needsSeparateBed,
             transportationId: ticket.transportationId,
-            isChild: ticket.isChild
           }))
         ),
         take(takeCount)
@@ -487,7 +406,7 @@ export class FireStoreService {
 
   getMembersByPrimaryId(primaryId: string, takeCount = 1): Observable<Array<IMemberRoomDataSource>> {
     return this.angularFirestore
-      .collection<ITicket>(Constants.RealtimeDatabase.tickets, ref => 
+      .collection<ITicket>(Constants.RealtimeDatabase.tickets, ref =>
         ref.where('primaryId', '==', primaryId)
       ).valueChanges({ idField: 'id' })
       .pipe(
@@ -496,10 +415,8 @@ export class FireStoreService {
             id: ticket.id,
             primaryId: ticket.primaryId,
             name: ticket.name,
-            isChild: ticket.isChild,
             isMain: ticket.isMain,
             roomId: ticket.roomId,
-            needsSeparateBed: ticket.needsSeparateBed,
             birthDate: ticket.birthDate
           }))
         ),
@@ -512,10 +429,6 @@ export class FireStoreService {
     const snapshot = await getCountFromServer(coll);
     return snapshot.data().count;
   }
-
-  // getTicketCount(): Observable<number> {
-  //   return this.angularFirestore.collection(Constants.RealtimeDatabase.tickets).get().pipe(map(snaps => snaps.size));
-  // }
 
   getAge(birthDate: Timestamp): number {
     return new Date().getFullYear() - birthDate.toDate().getFullYear();

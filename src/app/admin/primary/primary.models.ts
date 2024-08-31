@@ -4,12 +4,12 @@ import { BookingStatus, Gender, IAddress, IBus, IPrimaryDataSourceVm, IRelatedMe
 import { IAdvancedFilterForm } from '../advanced-search/advanced-search.models';
 
 export class PrimaryModel {
-  adultReservationPrice = 0;
-  childReservationPriceLessThanEight = 0;
-  childReservationPriceMoreThanEight = 0;
-  childBedPrice = 0;
+  // adultReservationPrice = 0;
+  // childReservationPriceLessThanEight = 0;
+  // childReservationPriceMoreThanEight = 0;
+  // childBedPrice = 0;
   readonly desktopColumn = ['name', 'mobile', 'adultsCount', 'childrenCount', 'roomId', 'transportation', 'addressName',
-  'bookingType', 'birthDate', 'age', 'bookingDate', 'gender', 'totalCost', 'paid', 'remaining', 'adminNotes', 'userNotes', 
+  'bookingType', 'birthDate', 'age', 'bookingDate', 'gender', 'totalCost', 'paid', 'remaining', 'adminNotes', 'userNotes',
   'lastUpdateDate', 'lastUpdatedBy', 'bookingStatus', 'actions'];
   displayedColumns: string[] = [];
   dataSource = new MatTableDataSource<IPrimaryDataSourceVm>([]);

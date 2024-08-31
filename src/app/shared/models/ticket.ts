@@ -19,13 +19,12 @@ export interface ITicket {
   roomId: string;
   adultsCount: number;
   childrenCount: number;
-  needsSeparateBed: boolean;
-  isChild: boolean;
   isMain: boolean;
   primaryId: string;
   age?: number;
   lastUpdateDate?: Timestamp;
   lastUpdateUserId: string;
+  roomType: RoomType;
 }
 
 export interface IUserInfo {
@@ -50,19 +49,24 @@ export interface IPrimary extends IUserInfo {
   bookingType: BookingType;
   roomId: string;
   primaryId: string;
-  isChild: boolean;
   isMain: boolean;
-  needsSeparateBed: boolean;
+  roomType: RoomType;
 }
 
 export interface IParticipant extends IUserInfo {
   id: string;
-  needsSeparateBed: boolean;
-  isChild: boolean;
+}
+
+export interface IChild {
+  id: string;
+  name: string;
+  birthDate: Timestamp;
+  gender: Gender;
 }
 
 export interface ITicketForm extends IPrimary {
   participants: Array<IParticipant>;
+  children: Array<IParticipant>;
 }
 
 export interface IPrimaryDataSourceVm {
@@ -91,6 +95,7 @@ export interface IPrimaryDataSourceVm {
   lastUpdateDate?: Timestamp;
   lastUpdateUserId: string;
   lastUpdatedBy: string;
+  roomType: RoomType;
   remaining: number; // for export only
   mainMemberName: string; // for export only in all page
 }
@@ -106,7 +111,6 @@ export interface IAllSubscriptionDataSourceVm {
   birthDate: Timestamp;
   bookingStatus: BookingStatus;
   gender: Gender;
-  isChild: boolean;
   isMain: boolean;
   mobile: string;
   name: string;
@@ -119,10 +123,10 @@ export interface IAllSubscriptionDataSourceVm {
   mainMemberName: string;
   primaryId: string;
   displayedRoomName: string;
-  needsSeparateBed: boolean;
   totalCost: number;
   paid: number;
   remaining: number;
+  roomType: RoomType;
 }
 
 export interface IDeletedMembersDataSourceVm {
@@ -141,7 +145,6 @@ export interface ICostDetailsDataSourceVm {
   reservationPrice: number;
   bedPrice: number;
   transportPrice: number;
-  needBed: boolean;
   privateTransport: boolean;
   isChild: boolean;
   isMain: boolean;
@@ -152,19 +155,15 @@ export interface IRelatedMemberViewModel {
   primaryId: string;
   name: string;
   birthDate: Timestamp;
-  needsSeparateBed: boolean;
   transportationId: string;
-  isChild: boolean;
 }
 
 export interface IMemberRoomDataSource {
   id: string;
   primaryId: string;
   name: string;
-  isChild: boolean;
   isMain: boolean;
   roomId: string;
-  needsSeparateBed: boolean;
   birthDate: Timestamp;
 }
 

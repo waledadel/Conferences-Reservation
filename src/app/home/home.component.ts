@@ -46,7 +46,7 @@ export class HomeComponent implements OnInit {
   }
 
   showTicketForm(show: boolean): void {
-    this.showInfo = false;
+    this.showInfo = !show;
     this.showForm = show;
   }
 

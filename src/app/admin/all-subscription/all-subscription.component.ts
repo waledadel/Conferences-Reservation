@@ -24,13 +24,13 @@ export class AllSubscriptionComponent implements OnInit {
   get isMobile(): boolean {
     return window.innerWidth < Constants.Grid.large;
   }
-  
+
   @HostListener('window:resize', ['$event']) onWindowResize(): void {
     this.detectMobileView();
   }
 
   constructor(
-    private fireStoreService: FireStoreService, 
+    private fireStoreService: FireStoreService,
     private adminService: AdminService,
     private dialogService: DialogService
   ) {
@@ -45,7 +45,7 @@ export class AllSubscriptionComponent implements OnInit {
     this.getAddress();
     this.adminService.updatePageTitle('كل المشتركين');
   }
-  
+
   openExportModal(): void {
     this.dialogService.openAddEditDialog(ExportMembersComponent, 'lg', true, ExportPages.All)
     .afterClosed().subscribe((res: {exportData: boolean, options: Array<IExportMembers>}) => {
@@ -352,8 +352,8 @@ export class AllSubscriptionComponent implements OnInit {
       const primaryMember = list.find(m => m.id === ticket.primaryId && m.isMain);
       if (primaryMember) {
         primaryCost = this.model.adultReservationPrice + this.getTransportPrice(primaryMember.transportationId);
-        const children = list.filter(m => m.primaryId === primaryMember.id && m.isChild);
-        const adults = list.filter(m => m.primaryId === primaryMember.id && !m.isChild && !m.isMain);
+        const children = list.filter(m => m.primaryId === primaryMember.id && (new Date().getFullYear() - m.birthDate.toDate().getFullYear() <= 4));
+        const adults = list.filter(m => m.primaryId === primaryMember.id && (new Date().getFullYear() - m.birthDate.toDate().getFullYear() > 4) && !m.isMain);
         if (children && children.length > 0) {
           children.forEach(child => {
             const reservationPrice = this.getChildReservationPrice(child.birthDate);
@@ -379,10 +379,10 @@ export class AllSubscriptionComponent implements OnInit {
   private getSettings(): void {
     this.fireStoreService.getAll<ISettings>(Constants.RealtimeDatabase.settings).subscribe(data => {
       if (data && data.length > 0) {
-        this.model.adultReservationPrice = data[0].reservationPrice;
-        this.model.childReservationPriceLessThanEight = data[0].childReservationPriceLessThanEight;
-        this.model.childReservationPriceMoreThanEight = data[0].childReservationPriceMoreThanEight;
-        this.model.childBedPrice = data[0].childBedPrice;
+        // this.model.adultReservationPrice = data[0].reservationPrice;
+        // this.model.childReservationPriceLessThanEight = data[0].childReservationPriceLessThanEight;
+        // this.model.childReservationPriceMoreThanEight = data[0].childReservationPriceMoreThanEight;
+        // this.model.childBedPrice = data[0].childBedPrice;
       }
     });
   }
@@ -404,7 +404,7 @@ export class AllSubscriptionComponent implements OnInit {
       if (childYears >= 8 && childYears < 12) {
         return 0; // Already pay as the adult
       } else {
-        return child.needsSeparateBed ? this.model.childBedPrice : 0;
+        return 0; //child.needsSeparateBed ? this.model.childBedPrice : 0;
       }
     }
     return 0;

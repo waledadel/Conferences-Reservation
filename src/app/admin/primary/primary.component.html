@@ -120,7 +120,7 @@
                             </div>
                         </td>
                     </ng-container>
-        
+
                     <ng-container matColumnDef="mobile">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'table.mobile' | translate}}</th>
                         <td mat-cell *matCellDef="let element" class="width-135">
@@ -131,19 +131,19 @@
                         </td>
                         <td mat-footer-cell *matFooterCellDef></td>
                     </ng-container>
-        
+
                     <ng-container matColumnDef="adultsCount">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'table.adultsCount' | translate}}</th>
                         <td mat-cell *matCellDef="let element">{{ element.adultsCount + 1 }}</td>
                         <td mat-footer-cell *matFooterCellDef> {{getAllAdultsCount()}} </td>
                     </ng-container>
-        
+
                     <ng-container matColumnDef="childrenCount">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'table.childrenCount' | translate}}</th>
                         <td mat-cell *matCellDef="let element">{{ element.childrenCount }}</td>
                         <td mat-footer-cell *matFooterCellDef> {{getAllChildrenCount()}} </td>
                     </ng-container>
-        
+
                     <ng-container matColumnDef="roomId">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.room' | translate}}</th>
                         <td mat-cell *matCellDef="let element">
@@ -159,13 +159,13 @@
                         <td mat-cell *matCellDef="let element">{{ element.transportationName }}</td>
                         <td mat-footer-cell *matFooterCellDef></td>
                     </ng-container>
-                    
+
                     <ng-container matColumnDef="addressName">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'menu.address' | translate}}</th>
                         <td mat-cell *matCellDef="let element">{{ element.addressName }}</td>
                         <td mat-footer-cell *matFooterCellDef></td>
                     </ng-container>
-        
+
                     <ng-container matColumnDef="bookingType">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.bookingType' | translate}}</th>
                         <td mat-cell *matCellDef="let element">
@@ -180,7 +180,7 @@
                         </td>
                         <td mat-footer-cell *matFooterCellDef></td>
                     </ng-container>
-        
+
                     <ng-container matColumnDef="birthDate">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.birthDate' | translate}}</th>
                         <td mat-cell *matCellDef="let element" class="width-135">{{ element.birthDate.toMillis() | date }}</td>
@@ -213,7 +213,7 @@
                         </td>
                         <td mat-footer-cell *matFooterCellDef></td>
                     </ng-container>
-        
+
                     <ng-container matColumnDef="totalCost">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.totalCost' | translate}}</th>
                         <td mat-cell *matCellDef="let element">
@@ -223,13 +223,13 @@
                         </td>
                         <td mat-footer-cell *matFooterCellDef> {{getAllTotalCost()}} </td>
                     </ng-container>
-        
+
                     <ng-container matColumnDef="paid">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.paid' | translate}}</th>
                         <td mat-cell *matCellDef="let element">{{element.paid}}</td>
                         <td mat-footer-cell *matFooterCellDef> {{ getAllPaid() }} </td>
                     </ng-container>
-        
+
                     <ng-container matColumnDef="remaining">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.remaining' | translate}}</th>
                         <td mat-cell *matCellDef="let element">
@@ -237,7 +237,7 @@
                         </td>
                         <td mat-footer-cell *matFooterCellDef> {{getAllRemaining()}} </td>
                     </ng-container>
-        
+
                     <ng-container matColumnDef="bookingStatus">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'table.bookingStatus' | translate}}</th>
                         <td mat-cell *matCellDef="let element">
@@ -245,7 +245,7 @@
                         </td>
                         <td mat-footer-cell *matFooterCellDef></td>
                     </ng-container>
-        
+
                     <ng-container matColumnDef="userNotes">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.userNotes' | translate}}</th>
                         <td mat-cell *matCellDef="let element" class="width-100 text-truncate" [matTooltip]="element.userNotes" matTooltipPosition="above">
@@ -283,7 +283,7 @@
                         </td>
                         <td mat-footer-cell *matFooterCellDef></td>
                     </ng-container>
-        
+
                     <ng-container matColumnDef="actions" stickyEnd>
                         <th mat-header-cell *matHeaderCellDef></th>
                         <td mat-cell *matCellDef="let element">
@@ -301,7 +301,7 @@
                         </td>
                         <td mat-footer-cell *matFooterCellDef></td>
                     </ng-container>
-        
+
                     <tr mat-header-row *matHeaderRowDef="model.displayedColumns; sticky: true"></tr>
                     <tr mat-row *matRowDef="let row; columns: model.displayedColumns;"></tr>
                     <tr mat-footer-row *matFooterRowDef="model.displayedColumns; sticky: true"></tr>
@@ -321,11 +321,11 @@
       </button>
       <button mat-menu-item class="primary" (click)="openExportModal()">
         <i class="fa-solid fa-download"></i>&nbsp;
-        تصدير الأعضاء 
+        تصدير الأعضاء
       </button>
       <button mat-menu-item class="primary" (click)="add()">
         <i class="fa-regular fa-square-plus"></i>&nbsp;
-        إضافة أشتراك 
+        إضافة أشتراك
       </button>
     </mat-menu>
 </button>

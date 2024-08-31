@@ -9,10 +9,10 @@ export interface ISettings {
     importantDates: string;
     startReservationDate: Timestamp;
     endReservationDate: Timestamp;
-    reservationPrice: number;
-    childReservationPriceMoreThanEight: number;
-    childReservationPriceLessThanEight: number;
-    childBedPrice: number;
+    // reservationPrice: number;
+    // childReservationPriceMoreThanEight: number;
+    // childReservationPriceLessThanEight: number;
+    // childBedPrice: number;
     waitingListCount: number;
     availableTicketsCount: number;
     waitingListMessage: string;
