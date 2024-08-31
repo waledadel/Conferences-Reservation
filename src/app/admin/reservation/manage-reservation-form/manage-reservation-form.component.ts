@@ -18,9 +18,12 @@ export class ManageReservationFormComponent implements OnInit {
   @Input() canManageReservation = false;
   @Input() enableWaitingList = false;
   @Input() set roomType(val: RoomType) {
-    this.model.form.patchValue({
-      roomType: val
-    });
+    this.model.form.patchValue({ roomType: val });
+    if (val > 1) {
+      Array.from({ length: val - 1 }).forEach(element => {
+        this.addAdult();
+      });
+    }
   }
   @Input() reservationData: Array<ITicket> = [];
   @Input() set type (val: BookingType) {
