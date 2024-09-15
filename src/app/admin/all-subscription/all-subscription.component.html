@@ -25,11 +25,11 @@
                   <small class="text-success">
                     {{element.mainMemberName}} <i *ngIf="!element.isMain" class="fa-solid fa-star"></i>
                   </small>
-                  <div> <b>{{'common.totalCost' | translate}}:</b>
+                  <div *ngIf="element.isMain"> <b>{{'common.totalCost' | translate}}:</b>
                     {{element.totalCost}} جنيه
                   </div>
-                  <div> <b>{{'common.paid' | translate}}: &nbsp;</b> {{element.paid}} جنيه</div>
-                  <div>
+                  <div *ngIf="element.isMain"> <b>{{'common.paid' | translate}}: &nbsp;</b> {{element.paid}} جنيه</div>
+                  <div *ngIf="element.isMain">
                     <b>{{'common.remaining' | translate}}:</b>
                     {{ element.totalCost - element.paid }}
                     جنيه
@@ -51,8 +51,8 @@
                       </div>
                     </ng-container>
                   </div>
-                  <div><b>{{'menu.address' | translate}}:</b> {{element.address}}</div>
-                  <div><b>{{'common.transportationName' | translate}}:</b> {{element.transportationName}}</div>
+                  <div *ngIf="element.address"><b>{{'menu.address' | translate}}:</b> {{element.address}}</div>
+                  <div *ngIf="element.transportationName"><b>{{'common.transportationName' | translate}}:</b> {{element.transportationName}}</div>
                   <div class="d-flex">
                     <b>{{'common.room' | translate}}:</b>&nbsp;
                     <ng-container *ngIf="element.displayedRoomName; else empty">
@@ -133,22 +133,28 @@
             <td mat-footer-cell *matFooterCellDef></td>
           </ng-container>
 
-          <ng-container matColumnDef="address">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'menu.address' | translate}}</th>
-            <td mat-cell *matCellDef="let element" class="col-1">{{element.address}}</td>
-            <td mat-footer-cell *matFooterCellDef></td>
-          </ng-container>
-
           <ng-container matColumnDef="age">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.age' | translate}}</th>
             <td mat-cell *matCellDef="let element" class="col-1">{{element.age}}</td>
             <td mat-footer-cell *matFooterCellDef></td>
           </ng-container>
 
+          <ng-container matColumnDef="address">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'menu.address' | translate}}</th>
+            <td mat-cell *matCellDef="let element" class="col-1">
+              <ng-container *ngIf="element.isMain; else empty">
+                {{element.address}}
+              </ng-container>
+            </td>
+            <td mat-footer-cell *matFooterCellDef></td>
+          </ng-container>
+
           <ng-container matColumnDef="transportation">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.transportationName' | translate}}</th>
             <td mat-cell *matCellDef="let element">
-              {{ element.transportationName }}
+              <ng-container *ngIf="element.isMain; else empty">
+                {{element.transportationName}}
+              </ng-container>
             </td>
             <td mat-footer-cell *matFooterCellDef></td>
           </ng-container>
@@ -196,7 +202,7 @@
           </ng-container>
 
           <ng-container matColumnDef="roomType">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.roomType' | translate}}</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.reservationType' | translate}}</th>
             <td mat-cell *matCellDef="let element" class="col-1">
               <ng-container *ngIf="element.roomType; else empty">
                 <ng-container [ngSwitch]="element.roomType">
@@ -218,6 +224,26 @@
             <td mat-footer-cell *matFooterCellDef></td>
           </ng-container>
 
+          <ng-container matColumnDef="userNotes">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.userNotes' | translate}}</th>
+            <td mat-cell *matCellDef="let element" class="width-100 text-truncate" [matTooltip]="element.userNotes" matTooltipPosition="above">
+                <ng-container *ngIf="element.userNotes; else empty">
+                    {{element.userNotes}}
+                </ng-container>
+            </td>
+            <td mat-footer-cell *matFooterCellDef></td>
+          </ng-container>
+
+          <ng-container matColumnDef="adminNotes">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.adminNotes' | translate}}</th>
+            <td mat-cell *matCellDef="let element" class="width-100 text-truncate" [matTooltip]="element.adminNotes" matTooltipPosition="above">
+                <ng-container *ngIf="element.adminNotes; else empty">
+                  {{element.adminNotes}}
+                </ng-container>
+            </td>
+            <td mat-footer-cell *matFooterCellDef></td>
+          </ng-container>
+
           <ng-container matColumnDef="room">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.room' | translate}}</th>
             <td mat-cell *matCellDef="let element" class="col-3">
@@ -227,7 +253,7 @@
             </td>
             <td mat-footer-cell *matFooterCellDef></td>
           </ng-container>
-
+          
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef class="col-1"></th>
             <td mat-cell *matCellDef="let element">
@@ -261,4 +287,4 @@
   </mat-menu>
 </button>
 
-<ng-template #empty>---</ng-template>
+<ng-template #empty>-</ng-template>

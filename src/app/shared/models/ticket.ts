@@ -125,8 +125,11 @@ export interface IAllSubscriptionDataSourceVm {
   displayedRoomName: string;
   totalCost: number;
   paid: number;
-  remaining: number;
+  remaining: number; // For Export
   roomType: RoomType;
+  adminNotes: string;
+  userNotes: string;
+  bookingType: BookingType;
 }
 
 export interface IDeletedMembersDataSourceVm {

@@ -273,7 +273,10 @@ export class FireStoreService {
             totalCost: 0,
             paid: ticket.paid,
             remaining: 0,
-            roomType: ticket.roomType
+            roomType: ticket.roomType,
+            adminNotes: ticket.adminNotes,
+            userNotes: ticket.userNotes,
+            bookingType: ticket.bookingType
           }))
         ),
         take(1)

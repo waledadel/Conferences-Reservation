@@ -3,7 +3,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { Constants } from '@app/constants';
-import { BookingStatus, Gender, IAddress, IAllSubscriptionDataSourceVm, IBus, IRoom, IRoomDataSource, ISettings, MemberRoom } from '@app/models';
+import { BookingStatus, BookingType, Gender, IAddress, IAllSubscriptionDataSourceVm, IBus, IRoom, IRoomDataSource, MemberRoom } from '@app/models';
 import { DialogService, FireStoreService } from '@app/services';
 import { AdminService } from '../admin.service';
 import { IAdvancedFilterForm } from '../advanced-search/advanced-search.models';
@@ -11,8 +11,8 @@ import { ExportMembersComponent } from '../export-members/export-members.compone
 import { AllSubscriptionModel } from './all-subscription.models';
 import { AdvancedSearchComponent } from '../advanced-search/advanced-search.component';
 import { AddRoomToMemberComponent } from './add-room-to-member/add-room-to-member.component';
-import { Timestamp } from '@angular/fire/firestore';
 import { ExportPages, IExportMembers } from '../export-members/export-members.model';
+import { RoomType } from 'app/shared/models/ticket';
 
 @Component({
   templateUrl: './all-subscription.component.html'
@@ -39,7 +39,6 @@ export class AllSubscriptionComponent implements OnInit {
 
   ngOnInit(): void {
     this.detectMobileView();
-    this.getSettings();
     this.getBuses();
     this.getRooms();
     this.getAddress();
@@ -345,46 +344,27 @@ export class AllSubscriptionComponent implements OnInit {
   }
 
   private getTotalCost(ticket: IAllSubscriptionDataSourceVm, list: Array<IAllSubscriptionDataSourceVm>): number {
-    if (ticket && list && list.length > 0) {
-      let childrenCost = 0;
-      let adultCost = 0;
-      let primaryCost = 0;
-      const primaryMember = list.find(m => m.id === ticket.primaryId && m.isMain);
-      if (primaryMember) {
-        primaryCost = this.model.adultReservationPrice + this.getTransportPrice(primaryMember.transportationId);
-        const children = list.filter(m => m.primaryId === primaryMember.id && (new Date().getFullYear() - m.birthDate.toDate().getFullYear() <= 4));
-        const adults = list.filter(m => m.primaryId === primaryMember.id && (new Date().getFullYear() - m.birthDate.toDate().getFullYear() > 4) && !m.isMain);
-        if (children && children.length > 0) {
-          children.forEach(child => {
-            const reservationPrice = this.getChildReservationPrice(child.birthDate);
-            const bedPrice = this.getChildBedPrice(child);
-            const transportPrice = this.getTransportPrice(child.transportationId);
-            childrenCost += (reservationPrice + bedPrice + transportPrice);
-          });
+    if (ticket.isMain) {
+      if (ticket && list && list.length > 0) {
+        let adultCost = 0;
+        let primaryCost = 0;
+        const reservationPrice = this.getReservationPrice(ticket);
+        const primaryMember = list.find(m => m.id === ticket.primaryId && m.isMain);
+        if (primaryMember) {
+          primaryCost = this.getTransportPrice(primaryMember.transportationId);
+          const adults = list.filter(m => m.primaryId === primaryMember.id && (new Date().getFullYear() - m.birthDate.toDate().getFullYear() > 4) && !m.isMain);
+          if (adults && adults.length > 0) {
+            adults.forEach(adult => {
+              const transportPrice = this.getTransportPrice(adult.transportationId);
+              adultCost += transportPrice;
+            });
+          }
+          return reservationPrice + primaryCost + adultCost;
         }
-        if (adults && adults.length > 0) {
-          adults.forEach(adult => {
-            const price = this.model.adultReservationPrice;
-            const transportPrice = this.getTransportPrice(adult.transportationId);
-            adultCost += price + transportPrice;
-          });
-        }
-        return primaryCost + adultCost + childrenCost;
       }
       return 0;
     }
     return 0;
-  }
-
-  private getSettings(): void {
-    this.fireStoreService.getAll<ISettings>(Constants.RealtimeDatabase.settings).subscribe(data => {
-      if (data && data.length > 0) {
-        // this.model.adultReservationPrice = data[0].reservationPrice;
-        // this.model.childReservationPriceLessThanEight = data[0].childReservationPriceLessThanEight;
-        // this.model.childReservationPriceMoreThanEight = data[0].childReservationPriceMoreThanEight;
-        // this.model.childBedPrice = data[0].childBedPrice;
-      }
-    });
   }
 
   private getTransportPrice(transportId: string): number {
@@ -398,35 +378,18 @@ export class AllSubscriptionComponent implements OnInit {
     return 0;
   }
 
-  private getChildBedPrice(child: IAllSubscriptionDataSourceVm): number {
-    if (child) {
-      const childYears = new Date().getFullYear() - child.birthDate.toDate().getFullYear();
-      if (childYears >= 8 && childYears < 12) {
-        return 0; // Already pay as the adult
-      } else {
-        return 0; //child.needsSeparateBed ? this.model.childBedPrice : 0;
-      }
+  private getReservationPrice(ticket: IAllSubscriptionDataSourceVm): number {
+    const isGroup = ticket.bookingType === BookingType.group;
+    if (isGroup && ticket.roomType === RoomType.double) {
+      return 1050;
+    } else if (isGroup && ticket.roomType === RoomType.triple) {
+      return 950;
+    } else if (isGroup && ticket.roomType === RoomType.quad) {
+      return 800;
+    } else if(ticket.bookingType === BookingType.individual) {
+      return 800;
+    } else {
+      return 0;
     }
-    return 0;
-  }
-
-  private getChildReservationPrice(birthDate?: Timestamp): number {
-    if (birthDate) {
-      const today = new Date();
-      const userBirthDate = birthDate.toDate();
-      let childYears = today.getFullYear() - userBirthDate.getFullYear();
-      const monthDiff = today.getMonth() - userBirthDate.getMonth();
-      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < userBirthDate.getDate())) {
-        childYears--;
-      }
-      if (childYears >= 8 && childYears < 12) {
-        return this.model.childReservationPriceMoreThanEight;
-      } else if(childYears >= 4 && childYears < 8) {
-        return this.model.childReservationPriceLessThanEight;
-      } else {
-        return 0;
-      }
-    }
-    return 0;
   }
 }

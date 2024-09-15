@@ -6,7 +6,8 @@ import { IAdvancedFilterForm } from '../advanced-search/advanced-search.models';
 import { RoomType } from 'app/shared/models/ticket';
 
 export class AllSubscriptionModel {
-  readonly desktopColumns = ['name', 'mobile', 'birthDate', 'age', 'address', 'transportation', 'gender', 'status', 'total', 'paid', 'remaining', 'roomType', 'room', 'actions'];
+  readonly desktopColumns = ['name', 'mobile', 'birthDate', 'age', 'gender', 'address', 'transportation', 
+    'status', 'total', 'paid', 'remaining', 'roomType', 'userNotes', 'adminNotes', 'room', 'actions'];
   readonly roomType = RoomType;
   displayedColumns: string[] = [];
   dataSource = new MatTableDataSource<IAllSubscriptionDataSourceVm>([]);
@@ -19,8 +20,4 @@ export class AllSubscriptionModel {
   bookingStatus = BookingStatus;
   selection = new SelectionModel<IAllSubscriptionDataSourceVm>(true, []);
   rooms: Array<IRoom> = [];
-  adultReservationPrice = 0;
-  childReservationPriceLessThanEight = 0;
-  childReservationPriceMoreThanEight = 0;
-  childBedPrice = 0;
 }
