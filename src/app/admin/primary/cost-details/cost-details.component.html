@@ -13,16 +13,11 @@
                     <th mat-header-cell *matHeaderCellDef></th>
                     <td mat-cell *matCellDef="let element" class="py-2">
                         <div class="d-flex flex-column">
+                            <mat-icon *ngIf="element.isMain" color="primary" class="mx-2">star</mat-icon>
+                            <mat-icon *ngIf="element.isChild" color="primary" class="mx-2">child_care</mat-icon>
                             <div> <b>{{'common.name' | translate}}:</b> {{element.name}}</div>
                             <div> <b>{{'common.reservationPrice' | translate}}:</b> {{element.reservationPrice}}</div>
-                            <div> <b>{{'common.bedPrice' | translate}}:</b> {{element.bedPrice}}</div>
                             <div> <b>{{'common.transportPrice' | translate}}:</b> {{element.transportPrice}}</div>
-                            <!-- <div class="d-flex align-items-center">
-                                <b>{{'common.needBed' | translate}}:</b>&nbsp;
-                                <ng-container *ngIf="element.needBed; else unCheck">
-                                    <i class="fa-solid fa-square-check text-success"></i>
-                                </ng-container>
-                            </div> -->
                             <div class="d-flex align-items-center">
                                 <b>{{'common.privateTransport' | translate}}:</b>&nbsp;
                                 <ng-container *ngIf="element.privateTransport; else unCheck">
@@ -62,26 +57,10 @@
                     <td mat-footer-cell *matFooterCellDef></td>
                 </ng-container>
 
-                <ng-container matColumnDef="bedPrice">
-                    <th mat-header-cell *matHeaderCellDef>{{'common.bedPrice' | translate}}</th>
-                    <td mat-cell *matCellDef="let element">{{ element.bedPrice }}</td>
-                    <td mat-footer-cell *matFooterCellDef></td>
-                </ng-container>
-
                 <ng-container matColumnDef="transportPrice">
                     <th mat-header-cell *matHeaderCellDef>{{'common.transportPrice' | translate}}</th>
                     <td mat-cell *matCellDef="let element">
                         {{element.transportPrice}}
-                    </td>
-                    <td mat-footer-cell *matFooterCellDef></td>
-                </ng-container>
-
-                <ng-container matColumnDef="needBed">
-                    <th mat-header-cell *matHeaderCellDef>{{'common.needBed' | translate}}</th>
-                    <td mat-cell *matCellDef="let element">
-                        <ng-container *ngIf="element.needBed; else unCheck">
-                            <i class="fa-solid fa-square-check text-success"></i>
-                        </ng-container>
                     </td>
                     <td mat-footer-cell *matFooterCellDef></td>
                 </ng-container>

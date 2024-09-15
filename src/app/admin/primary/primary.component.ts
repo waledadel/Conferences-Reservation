@@ -46,7 +46,6 @@ export class PrimaryComponent implements OnInit {
     this.getAllUsers();
     this.getBuses();
     this.getAddress();
-    // this.getSettings();
     this.getNotPrimarySubscription();
     this.adminService.updatePageTitle('الإشتراكات الرئيسية');
   }
@@ -149,25 +148,23 @@ export class PrimaryComponent implements OnInit {
       isChild: false,
       isMain: true,
       name: item.name,
-      bedPrice: 0,
       privateTransport: this.isPrivateTransport(item.transportationId),
-      reservationPrice: 0, // this.model.adultReservationPrice,
+      reservationPrice: this.getReservationPrice(item),
       transportPrice: this.getTransportPrice(item.transportationId)
     });
     // other members
     const allRelatedMembers = this.model.notPrimaryMembers.filter(m => m.primaryId === item.primaryId);
     if (allRelatedMembers.length > 0) {
-      const adults = allRelatedMembers.filter(m => m.birthDate.toDate().getFullYear() < 2000);
-      const children = allRelatedMembers.filter(m => m.birthDate.toDate().getFullYear() >= 2000);
+      const adults = allRelatedMembers.filter(m => new Date().getFullYear() - m.birthDate.toDate().getFullYear() > 4);
+      const children = allRelatedMembers.filter(m => new Date().getFullYear() - m.birthDate.toDate().getFullYear() <= 4);
       if (children && children.length > 0) {
         children.forEach(item => {
           list.push({
             isChild: true,
             isMain: false,
             name: item.name,
-            bedPrice: 0, // this.getChildBedPrice(item),
-            privateTransport: false, // this.isPrivateTransport(item.transportationId),
-            reservationPrice: 0, // this.getChildReservationPrice(item.birthDate),
+            privateTransport: this.isPrivateTransport(item.transportationId),
+            reservationPrice: 0,
             transportPrice: this.getTransportPrice(item.transportationId)
           });
         });
@@ -178,9 +175,8 @@ export class PrimaryComponent implements OnInit {
             isChild: false,
             isMain: false,
             name: item.name,
-            bedPrice: 0,
             privateTransport: this.isPrivateTransport(item.transportationId),
-            reservationPrice: 0, // this.model.adultReservationPrice,
+            reservationPrice: 0,
             transportPrice: this.getTransportPrice(item.transportationId)
           });
         });
@@ -305,18 +301,6 @@ export class PrimaryComponent implements OnInit {
     return '';
   }
 
-  // private getSettings(): void {
-  //   this.fireStoreService.getAll<ISettings>(Constants.RealtimeDatabase.settings).subscribe(data => {
-  //     if (data && data.length > 0) {
-  //       // this.model.adultReservationPrice = data[0].reservationPrice;
-  //       // this.model.childReservationPriceLessThanEight = data[0].childReservationPriceLessThanEight;
-  //       // this.model.childReservationPriceMoreThanEight = data[0].childReservationPriceMoreThanEight;
-  //       // this.model.childBedPrice = data[0].childBedPrice;
-  //       this.getNotPrimarySubscription();
-  //     }
-  //   });
-  // }
-
   private updateTableRow(item: Partial<ITicket>): void {
     this.fireStoreService.getById(`${Constants.RealtimeDatabase.tickets}/${item.id}`).subscribe((res: IPrimaryDataSourceVm) => {
       if (res) {
@@ -362,74 +346,27 @@ export class PrimaryComponent implements OnInit {
 
   private getTotalCost(ticket: IPrimaryDataSourceVm, list: Array<IRelatedMemberViewModel>): number {
     if (ticket) {
-      // let childrenCost = 0;
-      // let adultCost = 0;
-      // let primaryCost = 0;
-      // primaryCost = this.getPrice(ticket) + this.getTransportPrice(ticket.transportationId);
-      // let transportation = 0;
-      // if (list.length > 0) {
-        // if (ticket.childrenCount > 0) {
-      //     const children = list.filter(c => c.primaryId === ticket.id && c.birthDate.toDate().getFullYear() >= 2000);
-      //     if (children && children.length > 0) {
-      //       children.forEach(child => {
-      //         const reservationPrice = this.getChildReservationPrice(child.birthDate);
-      //         const bedPrice = this.getChildBedPrice(child);
-      //         const transportPrice = this.getTransportPrice(child.transportationId);
-      //         childrenCost += (reservationPrice + bedPrice + transportPrice);
-      //       });
-      //     }
-        // }
-        // if (ticket.adultsCount > 0) {
-      //     const adults = list.filter(c => c.primaryId === ticket.id && !c.isChild);
-      //     if (adults && adults.length > 0) {
-      //       adults.forEach(adult => {
-      //         const price = this.model.adultReservationPrice;
-      //         const transportPrice = this.getTransportPrice(adult.transportationId);
-      //         adultCost += price + transportPrice;
-      //       });
-      //     }
-        // }
-      // }
-      // return primaryCost + adultCost + childrenCost;
-      return this.getPrice(ticket) + this.getTransportPrice(ticket.transportationId);
+      let adultTransportCost = 0;
+      let primaryTransportCost = 0;
+      const reservationPrice = this.getReservationPrice(ticket);
+      primaryTransportCost = this.getTransportPrice(ticket.transportationId);
+      if (list.length > 0) {
+        if (ticket.adultsCount > 0) {
+          const adults = list.filter(c => c.primaryId === ticket.id);
+          if (adults && adults.length > 0) {
+            adults.forEach(adult => {
+              const transportPrice = this.getTransportPrice(adult.transportationId);
+              adultTransportCost += transportPrice;
+            });
+          }
+        }
+      }
+      return reservationPrice + primaryTransportCost + adultTransportCost;
     }
     return 0;
   }
 
-  // private getChildReservationPrice(birthDate?: Timestamp): number {
-  //   if (birthDate) {
-  //     return 0;
-  //     // const today = new Date();
-  //     // const userBirthDate = birthDate.toDate();
-  //     // let childYears = today.getFullYear() - userBirthDate.getFullYear();
-  //     // const monthDiff = today.getMonth() - userBirthDate.getMonth();
-  //     // if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < userBirthDate.getDate())) {
-  //     //   childYears--;
-  //     // }
-  //     // if (childYears >= 8 && childYears < 12) {
-  //     //   return this.model.childReservationPriceMoreThanEight;
-  //     // } else if(childYears >= 4 && childYears < 8) {
-  //     //   return this.model.childReservationPriceLessThanEight;
-  //     // } else {
-  //     //   return 0;
-  //     // }
-  //   }
-  //   return 0;
-  // }
-
-  // private getChildBedPrice(child: IRelatedMemberViewModel ): number {
-  //   // if (child) {
-  //   //   // const childYears = new Date().getFullYear() - child.birthDate.toDate().getFullYear();
-  //   //   // if (childYears >= 8 && childYears < 12) {
-  //   //   //   return 0; // Already pay as the adult
-  //   //   // } else {
-  //   //   //   return child.needsSeparateBed ? this.model.childBedPrice : 0;
-  //   //   // }
-  //   // }
-  //   return 0;
-  // }
-
-  private getPrice(ticket: IPrimaryDataSourceVm): number {
+  private getReservationPrice(ticket: IPrimaryDataSourceVm): number {
     const isGroup = ticket.bookingType === BookingType.group;
     if (isGroup && ticket.roomType === RoomType.double) {
       return 1050;
@@ -482,7 +419,7 @@ export class PrimaryComponent implements OnInit {
     }
   }
 
-   getFilterPredicate(): ((data: IPrimaryDataSourceVm, filter: string) => boolean) {
+  private getFilterPredicate(): ((data: IPrimaryDataSourceVm, filter: string) => boolean) {
     return (row: IPrimaryDataSourceVm, filters: string) => {
       // split string per '$' to array
       const filterArray = filters.split('$');

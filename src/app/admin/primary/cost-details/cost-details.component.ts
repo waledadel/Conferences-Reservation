@@ -10,7 +10,7 @@ import { ICostDetailsDataSourceVm } from '@app/models';
 })
 export class CostDetailsComponent implements OnInit {
 
-  readonly desktopColumns: string[] = ['name', 'reservationPrice', 'bedPrice', 'transportPrice', 'needBed', 'privateTransport', 'isChild'];
+  readonly desktopColumns: string[] = ['name', 'reservationPrice', 'transportPrice', 'privateTransport', 'isChild'];
   displayedColumns: string[] = [];
   dataSource: MatTableDataSource<ICostDetailsDataSourceVm> = new MatTableDataSource<ICostDetailsDataSourceVm>([]);
   total = 0;
@@ -33,7 +33,7 @@ export class CostDetailsComponent implements OnInit {
     if (this.data && this.data.length > 0) {
       this.dataSource.data = this.data;
       this.data.forEach(item => {
-        this.total += item.bedPrice + item.reservationPrice + item.transportPrice;
+        this.total += item.reservationPrice + item.transportPrice;
       });
     }
   }

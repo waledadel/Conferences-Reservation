@@ -146,7 +146,6 @@ export interface IDeletedMembersDataSourceVm {
 export interface ICostDetailsDataSourceVm {
   name: string;
   reservationPrice: number;
-  bedPrice: number;
   transportPrice: number;
   privateTransport: boolean;
   isChild: boolean;
