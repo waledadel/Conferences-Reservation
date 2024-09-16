@@ -55,6 +55,27 @@
                                             <div *ngSwitchDefault>
                                                 {{ 'common.group' | translate }}
                                             </div>
+                                            &nbsp;
+                                            <div class="d-flex">
+                                                (
+                                                    <ng-container *ngIf="element.roomType; else empty">
+                                                        <ng-container [ngSwitch]="element.roomType">
+                                                        <div *ngSwitchCase="model.roomType.double">
+                                                            {{ 'common.double' | translate }}
+                                                        </div>
+                                                        <div *ngSwitchCase="model.roomType.triple">
+                                                            {{ 'common.triple' | translate }}
+                                                        </div>
+                                                        <div *ngSwitchCase="model.roomType.quad">
+                                                            {{ 'common.quad' | translate }}
+                                                        </div>
+                                                        <div *ngSwitchDefault>
+                                                            {{ 'room.single' | translate }}
+                                                        </div>
+                                                        </ng-container>
+                                                    </ng-container>
+                                                )
+                                            </div>
                                         </ng-container>
                                     </div>
                                     <div><b>{{'common.transportationName' | translate}}</b>: {{ element.transportationName }} </div>
@@ -123,16 +144,28 @@
                         </td>
                     </ng-container>
 
-                    <ng-container matColumnDef="adultsCount">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'table.adultsCount' | translate}}</th>
-                        <td mat-cell *matCellDef="let element">{{ element.adultsCount + 1 }}</td>
-                        <td mat-footer-cell *matFooterCellDef> {{getAllAdultsCount()}} </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="childrenCount">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'table.childrenCount' | translate}}</th>
-                        <td mat-cell *matCellDef="let element">{{ element.childrenCount }}</td>
-                        <td mat-footer-cell *matFooterCellDef> {{getAllChildrenCount()}} </td>
+                    <ng-container matColumnDef="counts">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'table.counts' | translate}}</th>
+                        <td mat-cell *matCellDef="let element">
+                            <div class="d-flex">
+                                <div class="font-weight-bold">{{'table.adultsCount' | translate}}: &nbsp;</div>
+                                <div>{{ element.adultsCount + 1 }}</div>
+                            </div>
+                            <div class="d-flex">
+                                <div class="font-weight-bold">{{'table.childrenCount' | translate}}: &nbsp;</div>
+                                <div>{{ element.childrenCount + 1 }}</div>
+                            </div>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef>
+                            <div class="d-flex">
+                                <div class="font-weight-bold">{{'table.adultsCount' | translate}}: &nbsp;</div>
+                                <div>{{getAllAdultsCount()}}</div>
+                            </div>
+                            <div class="d-flex">
+                                <div class="font-weight-bold">{{'table.childrenCount' | translate}}: &nbsp;</div>
+                                <div>{{ getAllChildrenCount() }}</div>
+                            </div>
+                        </td>
                     </ng-container>
 
                     <ng-container matColumnDef="roomId">
@@ -159,7 +192,7 @@
 
                     <ng-container matColumnDef="bookingType">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.bookingType' | translate}}</th>
-                        <td mat-cell *matCellDef="let element">
+                        <td mat-cell *matCellDef="let element" class="width-135">
                             <ng-container [ngSwitch]="element.bookingType">
                                 <div *ngSwitchCase="1">
                                     {{ 'common.individual' | translate }}
@@ -168,6 +201,26 @@
                                     {{ 'common.group' | translate }}
                                 </div>
                             </ng-container>
+                            <div class="d-flex">
+                                (
+                                    <ng-container *ngIf="element.roomType; else empty">
+                                        <ng-container [ngSwitch]="element.roomType">
+                                        <div *ngSwitchCase="model.roomType.double">
+                                            {{ 'common.double' | translate }}
+                                        </div>
+                                        <div *ngSwitchCase="model.roomType.triple">
+                                            {{ 'common.triple' | translate }}
+                                        </div>
+                                        <div *ngSwitchCase="model.roomType.quad">
+                                            {{ 'common.quad' | translate }}
+                                        </div>
+                                        <div *ngSwitchDefault>
+                                            {{ 'room.single' | translate }}
+                                        </div>
+                                        </ng-container>
+                                    </ng-container>
+                                )
+                            </div>
                         </td>
                         <td mat-footer-cell *matFooterCellDef></td>
                     </ng-container>

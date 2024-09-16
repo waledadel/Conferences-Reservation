@@ -359,7 +359,7 @@ export class AllSubscriptionComponent implements OnInit {
               adultCost += transportPrice;
             });
           }
-          return reservationPrice + primaryCost + adultCost;
+          return (reservationPrice * (adults.length + 1)) + primaryCost + adultCost;
         }
       }
       return 0;

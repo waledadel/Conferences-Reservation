@@ -185,6 +185,7 @@
     "mobile": "الموبايل",
     "bookingStatus": "الحالة",
     "adultsCount": "البالغين",
-    "childrenCount": "الأطفال"
+    "childrenCount": "الأطفال",
+    "counts": "العدد"
   }
 }

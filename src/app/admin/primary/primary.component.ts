@@ -143,13 +143,14 @@ export class PrimaryComponent implements OnInit {
 
   viewCostDetails(item: IPrimaryDataSourceVm): void {
     const list: Array<ICostDetailsDataSourceVm> = [];
+    const price = this.getReservationPrice(item);
     // Primary
     list.push({
       isChild: false,
       isMain: true,
       name: item.name,
       privateTransport: this.isPrivateTransport(item.transportationId),
-      reservationPrice: this.getReservationPrice(item),
+      reservationPrice: price,
       transportPrice: this.getTransportPrice(item.transportationId)
     });
     // other members
@@ -165,7 +166,7 @@ export class PrimaryComponent implements OnInit {
             name: item.name,
             privateTransport: this.isPrivateTransport(item.transportationId),
             reservationPrice: 0,
-            transportPrice: this.getTransportPrice(item.transportationId)
+            transportPrice: 0
           });
         });
       }
@@ -176,7 +177,7 @@ export class PrimaryComponent implements OnInit {
             isMain: false,
             name: item.name,
             privateTransport: this.isPrivateTransport(item.transportationId),
-            reservationPrice: 0,
+            reservationPrice: price,
             transportPrice: this.getTransportPrice(item.transportationId)
           });
         });
@@ -361,7 +362,7 @@ export class PrimaryComponent implements OnInit {
           }
         }
       }
-      return reservationPrice + primaryTransportCost + adultTransportCost;
+      return (reservationPrice * (ticket.adultsCount + 1)) + primaryTransportCost + adultTransportCost;
     }
     return 0;
   }

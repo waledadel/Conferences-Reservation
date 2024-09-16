@@ -2,9 +2,10 @@ import { MatTableDataSource } from '@angular/material/table';
 
 import { BookingStatus, Gender, IAddress, IBus, IPrimaryDataSourceVm, IRelatedMemberViewModel, IUser } from '@app/models';
 import { IAdvancedFilterForm } from '../advanced-search/advanced-search.models';
+import { RoomType } from 'app/shared/models/ticket';
 
 export class PrimaryModel {
-  readonly desktopColumn = ['name', 'adultsCount', 'childrenCount', 'roomId', 'transportation', 'addressName',
+  readonly desktopColumn = ['name', 'counts', 'roomId', 'transportation', 'addressName',
   'bookingType', 'birthDate', 'age', 'bookingDate', 'gender', 'price', 'notes',
   'lastUpdate', 'bookingStatus', 'actions'];
   displayedColumns: string[] = [];
@@ -19,4 +20,5 @@ export class PrimaryModel {
   total = 0;
   previousFilter!: IAdvancedFilterForm;
   bookingStatus = BookingStatus;
+  readonly roomType = RoomType;
 }
