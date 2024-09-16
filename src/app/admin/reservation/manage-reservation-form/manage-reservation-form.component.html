@@ -1,5 +1,5 @@
-<form [formGroup]="model.form" novalidate class="col-12" (ngSubmit)="save()">
-  <div class="rounded primary-section col-12 pt-3">
+<form [formGroup]="model.form" novalidate class="row mx-0" (ngSubmit)="save()">
+  <div class="rounded primary-section row mx-0 pt-3">
     <div class="w-100 d-flex px-2 pb-2">
       <mat-icon color="primary">stars</mat-icon>
     </div>
@@ -48,7 +48,7 @@
         {{'validations.requiredField' | translate}}
       </mat-error>
     </mat-form-field>
-    <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
+    <mat-form-field class="col-md-4 col-12 px-md-2 px-0">
       <mat-label>{{'common.birthDate' | translate}}</mat-label>
       <input matInput [matDatepicker]="picker" formControlName="birthDate" [max]="model.childMinDate"
         [min]="model.adultMinDate">
@@ -58,14 +58,14 @@
         {{'validations.requiredField' | translate}}
       </mat-error>
     </mat-form-field>
-    <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
+    <mat-form-field class="col-md-4 col-12 px-md-2 px-0">
       <mat-label>{{'common.gender' | translate}}</mat-label>
       <mat-select formControlName="gender">
         <mat-option [value]="model.gender.male">{{'common.male' | translate}}</mat-option>
         <mat-option [value]="model.gender.female">{{'common.female' | translate}}</mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
+    <mat-form-field class="col-md-4 col-12 px-md-2 px-0">
       <mat-label>{{'common.socialStatus' | translate}}</mat-label>
       <mat-select formControlName="socialStatus">
         <mat-option [value]="model.socialStatus.single">{{'common.single' | translate}}</mat-option>
@@ -90,25 +90,30 @@
         </mat-select>
       </mat-form-field>
       <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
-        <mat-label>{{'common.totalCost' | translate}}</mat-label>
-        <input type="number" matInput formControlName="total" readonly>
-      </mat-form-field>
-      <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
         <mat-label>{{'common.paid' | translate}}</mat-label>
         <input type="number" matInput formControlName="paid" inputmode="numeric">
       </mat-form-field>
-      <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
-        <mat-label>{{'common.remaining' | translate}}</mat-label>
-        <input type="number" matInput formControlName="remaining" inputmode="numeric" readonly>
-        <mat-hint>
-          سوف يتم إحتساب المبلغ المتبقي بعد الحفظ فقط
-        </mat-hint>
-      </mat-form-field>
-
       <mat-form-field class="col-12 px-md-2 px-0">
         <mat-label>{{'common.adminNotes' | translate}}</mat-label>
         <textarea type="text" matInput formControlName="adminNotes"></textarea>
       </mat-form-field>
+      <div class="col-md-6 col-12 px-md-2 px-0 pb-4">
+        <div class="bg-white rounded p-2">
+          <label>{{'common.totalCost' | translate}}</label>
+          <div class="font-weight-bold text-dark">{{model.totalCost}} جنيه</div>
+        </div>
+      </div>
+      <div class="col-md-6 col-12 px-md-2 px-0 pb-4">
+        <div class="bg-white rounded p-2">
+          <label>
+            {{'common.remaining' | translate}}
+            <small class="text-muted">
+              (سوف يتم إحتساب المبلغ المتبقي بعد الحفظ فقط)
+            </small>
+          </label>
+          <div class="font-weight-bold text-dark">{{model.remaining}} جنيه</div>
+        </div>
+      </div>
     </ng-container>
   </div>
   <ng-container formArrayName="participants">

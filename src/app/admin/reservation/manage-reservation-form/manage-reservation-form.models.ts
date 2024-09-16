@@ -14,8 +14,9 @@ export class ManageReservationFormModel {
   maxDate: Date;
   adultMinDate: Date;
   childMinDate: Date;
-  isEditMode = false;
   isLoading = false;
+  remaining = 0;
+  totalCost = 0;
   idsNeedToRemoved: Array<string> = [];
   bookingStatusList: Array<KeyValue<string, BookingStatus>> = [
     {key: 'bookingStatus.new', value: BookingStatus.new},

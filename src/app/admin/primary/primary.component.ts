@@ -110,7 +110,7 @@ export class PrimaryComponent implements OnInit {
     });
   }
 
-  update(item: Partial<ITicket>): void {
+  update(item: IPrimaryDataSourceVm): void {
     this.dialogService.openAddEditDialog(ManageReservationComponent, 'lg', true, item).afterClosed()
     .subscribe((res: {fireRefresh: boolean}) => {
       if (res.fireRefresh) {

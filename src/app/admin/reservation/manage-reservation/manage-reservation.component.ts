@@ -1,8 +1,9 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
-import { BookingType, ITicket } from '@app/models';
+import { BookingType, IPrimaryDataSourceVm, ITicket } from '@app/models';
 import { FireStoreService } from '@app/services';
+import { ManageReservationFormComponent } from '../manage-reservation-form/manage-reservation-form.component';
 
 @Component({
   templateUrl: './manage-reservation.component.html'
@@ -10,15 +11,16 @@ import { FireStoreService } from '@app/services';
 export class ManageReservationComponent implements OnInit  {
 
   reservationData: Array<ITicket> = [];
-  fireSave = false;
   isDataLoaded = false;
+  isSaveInProgress = false;
   selectedTabIndex = 0;
-  bookingType = BookingType;
+  readonly bookingType = BookingType;
+  @ViewChild('manageReservationForm') manageReservationForm: ManageReservationFormComponent;
 
   constructor(
     private dialogRef: MatDialogRef<ManageReservationComponent>,
     private fireStoreService: FireStoreService,
-    @Inject(MAT_DIALOG_DATA) public data: Partial<ITicket>
+    @Inject(MAT_DIALOG_DATA) public data: IPrimaryDataSourceVm
   ) {}
 
   ngOnInit(): void {
@@ -35,7 +37,8 @@ export class ManageReservationComponent implements OnInit  {
   }
 
   save(): void {
-    this.fireSave = true;
+    this.isSaveInProgress = true;
+    this.manageReservationForm.update();
   }
 
   onTabChanged(index: number): void {

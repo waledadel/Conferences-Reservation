@@ -6,7 +6,11 @@
 </div>
 <div mat-dialog-content>
     <ng-container *ngIf="(data && data.bookingType && isDataLoaded); else add">
-        <app-reservation [type]="data.bookingType" [canManageReservation]="true" [reservationData]="reservationData" [fireSaveAction]="fireSave" (closeModal)="close(true)"></app-reservation>
+        <app-manage-reservation-form [roomType]="data.roomType" #manageReservationForm
+            [type]="data.bookingType" [canManageReservation]="true"
+            [enableWaitingList]="false" [reservationData]="reservationData"
+            [isEditMode]="true" (closeModal)="close(true)">
+        </app-manage-reservation-form>
     </ng-container>
     <ng-template #add>
         <mat-tab-group class="w-100" [selectedIndex]="selectedTabIndex" (selectedIndexChange)="onTabChanged($event)">
@@ -37,8 +41,8 @@
     </ng-template>
 </div>
 <div *ngIf="data && data.bookingType && isDataLoaded" mat-dialog-actions>
-    <button color="primary" mat-flat-button type="button" cdkFocusInitial (click)="save()" [disabled]="fireSave">
+    <button color="primary" mat-flat-button type="button" cdkFocusInitial (click)="save()" [disabled]="isSaveInProgress">
         <span> {{ 'common.save' | translate }}</span>
-        <i *ngIf="fireSave" class="fa-solid fa-spinner fa-spin px-2"></i>
+        <i *ngIf="isSaveInProgress" class="fa-solid fa-spinner fa-spin px-2"></i>
     </button>
 </div>

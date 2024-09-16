@@ -17,6 +17,7 @@ export class ManageReservationFormComponent implements OnInit {
 
   @Input() canManageReservation = false;
   @Input() enableWaitingList = false;
+  @Input() isEditMode = false;
   @Input() set roomType(val: RoomType) {
     this.model.form.patchValue({ roomType: val });
     if (val > 1) {
@@ -31,12 +32,6 @@ export class ManageReservationFormComponent implements OnInit {
       bookingType: val
     });
   }
-  @Input() set fireSaveAction (update: boolean) {
-    if (update) {
-      this.model.isEditMode = true;
-      this.save();
-    }
-  }
   @Output() showForm: EventEmitter<boolean> = new EventEmitter<boolean>(false);
   @Output() closeModal: EventEmitter<boolean> = new EventEmitter<boolean>(false);
   model: ManageReservationFormModel;
@@ -50,13 +45,13 @@ export class ManageReservationFormComponent implements OnInit {
     private dialogService: DialogService
   ) {
     this.model = new ManageReservationFormModel();
+
     this.model.form = this.initFormModels();
   }
 
   ngOnInit(): void {
     this.model.isArabic = this.storageService.getItem(Constants.Languages.languageKey) === Constants.Languages.ar;
     this.getBusList();
-    this.patchFormValue();
     this.getAddressList();
   }
 
@@ -98,19 +93,27 @@ export class ManageReservationFormComponent implements OnInit {
 
   save(): void {
     if (this.model.form.valid) {
-      if (this.model.isEditMode) {
-        this.update();
-      } else {
-        const isGrouping = this.model.form.value.bookingType === BookingType.group;
-        this.dialogService.openConfirmBookingDialog(isGrouping).afterClosed().subscribe((res: {confirmBooking: boolean}) => {
-          if (res && res.confirmBooking) {
-            this.model.isLoading = true;
-            this.add();
-          } else {
-            this.model.isLoading = false;
-          }
-        });
-      }
+      const isGrouping = this.model.form.value.bookingType === BookingType.group;
+      this.dialogService.openConfirmBookingDialog(isGrouping).afterClosed().subscribe((res: {confirmBooking: boolean}) => {
+        if (res && res.confirmBooking) {
+          this.model.isLoading = true;
+          this.add();
+        } else {
+          this.model.isLoading = false;
+        }
+      });
+    }
+  }
+
+  update(): void {
+    if (this.model.form.valid && this.isEditMode) {
+      const formValue = this.model.form.value;
+      this.fireStoreService.updateTicket(formValue, this.model.idsNeedToRemoved).subscribe(() => {
+        this.closeModal.emit(true);
+        this.notifyService.showNotifier(this.translationService.instant('notifications.bookedUpdatedSuccessfully'));
+        this.model.form.reset();
+        this.model.isLoading = false;
+      });
     }
   }
 
@@ -152,16 +155,6 @@ export class ManageReservationFormComponent implements OnInit {
     });
   }
 
-  private update(): void {
-    const formValue = this.model.form.value;
-    this.fireStoreService.updateTicket(formValue, this.model.idsNeedToRemoved).subscribe(() => {
-      this.closeModal.emit(true);
-      this.notifyService.showNotifier(this.translationService.instant('notifications.bookedUpdatedSuccessfully'));
-      this.model.form.reset();
-      this.model.isLoading = false;
-    });
-  }
-
   private getAddressList(): void {
     this.fireStoreService.getAll<IAddress>(Constants.RealtimeDatabase.address).subscribe(data => {
       this.model.addressList = data.sort((a, b) => a.name > b.name ? 1 : -1);
@@ -171,6 +164,7 @@ export class ManageReservationFormComponent implements OnInit {
   private getBusList(): void {
     this.fireStoreService.getAll<IBus>(Constants.RealtimeDatabase.buses).subscribe(data => {
       this.model.busList = data;
+      this.patchFormValue();
     });
   }
 
@@ -201,7 +195,8 @@ export class ManageReservationFormComponent implements OnInit {
   private patchFormValue(): void {
     if (this.reservationData && this.reservationData.length > 0) {
       const primary = this.reservationData.find(m => m.isMain);
-      const allParticipants = this.reservationData.filter(p => !p.isMain);
+      const allParticipants = this.reservationData.filter(p => !p.isMain && new Date().getFullYear() - p.birthDate.toDate().getFullYear() > 4);
+      const allChildren = this.reservationData.filter(p => !p.isMain && new Date().getFullYear() - p.birthDate.toDate().getFullYear() <= 4);
       if (primary && primary != null) {
         const totalCost = this.getTotalCost();
         this.model.form.patchValue({
@@ -218,127 +213,72 @@ export class ManageReservationFormComponent implements OnInit {
           userNotes: primary.userNotes,
           total: totalCost,
           paid: primary.paid,
-          remaining: totalCost - primary.paid,
           bookingStatus: primary.bookingStatus,
           bookingType: primary.bookingType,
           roomId: primary.roomId,
           participants: [],
+          children: [],
           roomType: primary.roomType
         });
+        this.model.totalCost = totalCost;
+        this.model.remaining = primary.paid ? totalCost - primary.paid : totalCost;
       }
       if (allParticipants.length > 0) {
-        allParticipants.forEach(p => {
-          if (p.birthDate.toDate().getFullYear() >= 2000) {
-            this.addChild();
-          } else {
-            this.addAdult();
-          }
-        });
         this.model.form.patchValue({
           participants: allParticipants.map(item => ({...item, birthDate: new Date(item.birthDate.toMillis())}))
         });
       }
+      if (allChildren.length > 0) {
+        allChildren.forEach(() => {
+          this.addChild();
+        });
+        this.model.form.patchValue({
+          children: allChildren.map(item => ({...item, birthDate: new Date(item.birthDate.toMillis())}))
+        });
+      }
     }
   }
 
-  // private getSettings(): void {
-  //   this.fireStoreService.getAll<ISettings>(Constants.RealtimeDatabase.settings).subscribe(data => {
-  //     if (data && data.length > 0) {
-  //       // this.model.adultReservationPrice = data[0].reservationPrice;
-  //       // this.model.childReservationPriceLessThanEight = data[0].childReservationPriceLessThanEight;
-  //       // this.model.childReservationPriceMoreThanEight = data[0].childReservationPriceMoreThanEight;
-  //       // this.model.childBedPrice = data[0].childBedPrice;
-  //       this.patchFormValue();
-  //     }
-  //   });
-  // }
-
   private getTotalCost(): number {
     if (this.reservationData.length > 0) {
+      let adultTransportCost = 0;
+      let primaryTransportCost = 0;
+      const reservationPrice = this.getReservationPrice();
       const primary = this.reservationData.find(m => m.isMain);
       if (primary) {
-        const roomType = this.model.form.value.roomType;
-        if (roomType === RoomType.single) {
-          return 800 + this.getTransportPrice(primary.transportationId);
-        } else if (roomType === RoomType.double) {
-          return 1050 + this.getTransportPrice(primary.transportationId);
-        } else if (roomType === RoomType.triple) {
-          return 950 + this.getTransportPrice(primary.transportationId);
-        } else {
-          return 800 + this.getTransportPrice(primary.transportationId);
+        primaryTransportCost = this.getTransportPrice(primary.transportationId);
+        const adults = this.reservationData.filter(c => !c.isMain && new Date().getFullYear() - c.birthDate.toDate().getFullYear() > 4 );
+        if (primary.adultsCount > 0 && adults && adults.length > 0) {
+          adults.forEach(adult => {
+            const transportPrice = this.getTransportPrice(adult.transportationId);
+            adultTransportCost += transportPrice;
+          });
         }
+        return reservationPrice + primaryTransportCost + adultTransportCost;
       }
       return 0;
-
-      // let childrenCost = 0;
-      // let adultCost = 0;
-      // let primaryCost = 0;
-      // const primary = this.reservationData.find(m => m.isMain);
-      // if (primary) {
-      //   primaryCost = this.model.adultReservationPrice + this.getTransportPrice(primary.transportationId);
-      //   const children = this.reservationData.filter(c => c.isChild);
-      //   const adults = this.reservationData.filter(c => !c.isChild && !c.isMain);
-      //   if (primary.childrenCount > 0 && children && children.length > 0) {
-      //     children.forEach(child => {
-      //       const reservationPrice = this.getChildReservationPrice(child.birthDate);
-      //       const bedPrice = this.getChildBedPrice(child);
-      //       const transportPrice = this.getTransportPrice(child.transportationId);
-      //       childrenCost += (reservationPrice + bedPrice + transportPrice);
-      //     });
-      //   }
-      //   if (primary.adultsCount > 0 && adults && adults.length > 0) {
-      //     adults.forEach(adult => {
-      //       const price = this.model.adultReservationPrice;
-      //       const transportPrice = this.getTransportPrice(adult.transportationId);
-      //       adultCost += price + transportPrice;
-      //     });
-      //   }
-      //   return primaryCost + adultCost + childrenCost;
-      // }
-      // return 0;
     }
     return 0;
   }
 
-  // private getChildReservationPrice(birthDate?: Timestamp): number {
-  //   if (birthDate) {
-  //     const today = new Date();
-  //     const userBirthDate = birthDate.toDate();
-  //     let childYears = today.getFullYear() - userBirthDate.getFullYear();
-  //     const monthDiff = today.getMonth() - userBirthDate.getMonth();
-  //     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < userBirthDate.getDate())) {
-  //       childYears--;
-  //     }
-  //     if(childYears > 4 ) {
-  //       return ;
-  //     } else {
-  //       return 0;
-  //     }
-  //   }
-  //   return 0;
-  // }
+  private getReservationPrice(): number {
+    const roomType = this.model.form.value.roomType;
+    if (roomType === RoomType.single) {
+      return 800;
+    } else if (roomType === RoomType.double) {
+      return 1050;
+    } else if (roomType === RoomType.triple) {
+      return 950;
+    } else {
+      return 800;
+    }
+  }
 
   private getTransportPrice(transportId: string): number {
     if (transportId && this.model.busList.length > 0) {
       const bus = this.model.busList.find(b => b.id === transportId);
-      if (bus) {
-        return +bus.price;
-      }
-      return 0;
+      return bus ? +bus.price : 0;
     }
     return 0;
   }
-
-  // private getChildBedPrice(child: ITicket): number {
-  //   if (child) {
-  //     const childYears = new Date().getFullYear() - child.birthDate.toDate().getFullYear();
-  //     if (childYears <= 4) {
-  //       return 0; // Already pay as the adult
-  //     } else {
-  //       return child.needsSeparateBed ? this.model.childBedPrice : 0;
-  //     }
-  //   }
-  //   return 0;
-  // }
-
 }

@@ -16,7 +16,6 @@ export class ReservationComponent implements OnInit {
   @Input() enableWaitingList = false;
   @Input() reservationData: Array<ITicket> = [];
   @Input() type: BookingType = BookingType.individual;
-  @Input() fireSaveAction = false;
   @Output() showForm = new EventEmitter<boolean>(false);
   @Output() closeModal = new EventEmitter<boolean>(false);
   model: ReservationModel;

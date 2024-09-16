@@ -197,10 +197,6 @@ button:focus {
   --mdc-typography-button-letter-spacing: 0;
 }
 
-.mdc-text-field--filled:not(.mdc-text-field--disabled) {
-  background-color: #ecefef;
-}
-
 @media(min-width: 960px) {
   .container-border {
     border-radius: 10px;
