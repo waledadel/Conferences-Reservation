@@ -76,8 +76,8 @@
     "all": "الكل",
     "birthDateMonth": "عيد الميلاد",
     "ageRange": "الفئة العمرية",
-    "lastUpdateDate": "تاريخ آخر تحديث",
-    "lastUpdatedBy": "آخر تحديث بواسطة",
+    "lastUpdateDate": "التاريخ",
+    "lastUpdatedBy": "بواسطة",
     "send": "إرسال",
     "ok": "موافق",
     "servants": "الخدام",
@@ -89,7 +89,8 @@
     "quad": "غرفة رباعية",
     "childrenNotes": "يمكن إحضار الأطفال تحت سن 4 سنوات مجانا، لكن ليس لهم سرير ولا وجبات",
     "addFreeChild": "إضافة طفل أقل من 4 سنوات مجانا وبدون سرير",
-    "reservationType": "نوع الحجز"
+    "reservationType": "نوع الحجز",
+    "lastUpdate": "أخر تحديث"
   },
   "languages": {
     "arabic": "العربية",

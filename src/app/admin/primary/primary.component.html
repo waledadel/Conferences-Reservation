@@ -112,24 +112,15 @@
                     <ng-container matColumnDef="name" sticky>
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.name' | translate}}</th>
                         <td mat-cell *matCellDef="let element" class="width-175">
-                            {{element.name}}
+                            <div>{{element.name}}</div>
+                            <div class="py-2">{{element.mobile}}</div>
+                            <app-social-media [mobile]="element.mobile"></app-social-media>
                         </td>
                         <td mat-footer-cell *matFooterCellDef>
                             <div class="d-flex">
                                 {{'common.total' | translate}}: <b>{{model.total}}</b>
                             </div>
                         </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="mobile">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'table.mobile' | translate}}</th>
-                        <td mat-cell *matCellDef="let element" class="width-135">
-                            <div class="text-center">
-                                <div>{{element.mobile}}</div>
-                                <app-social-media [mobile]="element.mobile"></app-social-media>
-                            </div>
-                        </td>
-                        <td mat-footer-cell *matFooterCellDef></td>
                     </ng-container>
 
                     <ng-container matColumnDef="adultsCount">
@@ -214,28 +205,25 @@
                         <td mat-footer-cell *matFooterCellDef></td>
                     </ng-container>
 
-                    <ng-container matColumnDef="totalCost">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.totalCost' | translate}}</th>
+                    <ng-container matColumnDef="price">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.price' | translate}}</th>
                         <td mat-cell *matCellDef="let element">
-                            <a (click)="viewCostDetails(element)" class="total">
-                                {{element.totalCost}}
-                            </a>
+                            <div class="d-flex">
+                                <div class="font-weight-bold">{{'common.totalCost' | translate}}:&nbsp;</div>
+                                <a (click)="viewCostDetails(element)" class="total">
+                                    {{element.totalCost}}
+                                </a>
+                            </div>
+                            <div class="d-flex">
+                                <div class="font-weight-bold">{{'common.paid' | translate}}:&nbsp;</div>
+                                <div>{{element.paid}}</div>
+                            </div>
+                            <div class="d-flex">
+                                <div class="font-weight-bold">{{'common.remaining' | translate}}:&nbsp;</div>
+                                <div>{{ element.totalCost - element.paid }}</div>
+                            </div>
                         </td>
                         <td mat-footer-cell *matFooterCellDef> {{getAllTotalCost()}} </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="paid">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.paid' | translate}}</th>
-                        <td mat-cell *matCellDef="let element">{{element.paid}}</td>
-                        <td mat-footer-cell *matFooterCellDef> {{ getAllPaid() }} </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="remaining">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.remaining' | translate}}</th>
-                        <td mat-cell *matCellDef="let element">
-                            {{ element.totalCost - element.paid }}
-                        </td>
-                        <td mat-footer-cell *matFooterCellDef> {{getAllRemaining()}} </td>
                     </ng-container>
 
                     <ng-container matColumnDef="bookingStatus">
@@ -246,40 +234,38 @@
                         <td mat-footer-cell *matFooterCellDef></td>
                     </ng-container>
 
-                    <ng-container matColumnDef="userNotes">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.userNotes' | translate}}</th>
-                        <td mat-cell *matCellDef="let element" class="width-100 text-truncate" [matTooltip]="element.userNotes" matTooltipPosition="above">
-                            <ng-container *ngIf="element.userNotes; else empty">
-                                {{element.userNotes}}
-                            </ng-container>
+                    <ng-container matColumnDef="notes">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.notes' | translate}}</th>
+                        <td mat-cell *matCellDef="let element" class="text-truncate">
+                            <div class="d-flex" [matTooltip]="element.userNotes" matTooltipPosition="above">
+                                <div>{{'common.userNotes' | translate}}:&nbsp;</div>
+                                <ng-container *ngIf="element.userNotes; else empty">
+                                    {{element.userNotes}}
+                                </ng-container>
+                            </div>
+                            <div class="d-flex" [matTooltip]="element.adminNotes" matTooltipPosition="above">
+                                <div>{{'common.adminNotes' | translate}}:&nbsp;</div>
+                                <ng-container *ngIf="element.adminNotes; else empty">
+                                    {{element.adminNotes}}
+                                </ng-container>
+                            </div>
                         </td>
                         <td mat-footer-cell *matFooterCellDef></td>
                     </ng-container>
 
-                    <ng-container matColumnDef="adminNotes">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.adminNotes' | translate}}</th>
-                        <td mat-cell *matCellDef="let element" class="width-100 text-truncate" [matTooltip]="element.adminNotes" matTooltipPosition="above">
-                            <ng-container *ngIf="element.adminNotes; else empty">
-                                {{element.adminNotes}}
-                            </ng-container>
-                        </td>
-                        <td mat-footer-cell *matFooterCellDef></td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="lastUpdateDate">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.lastUpdateDate' | translate}}</th>
-                        <td mat-cell *matCellDef="let element" class="width-135">
-                            <ng-container *ngIf="element.lastUpdateDate; else empty">
-                                {{element.lastUpdateDate.toMillis() | date:'medium'}}
-                            </ng-container>
-                        </td>
-                        <td mat-footer-cell *matFooterCellDef></td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="lastUpdatedBy">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.lastUpdatedBy' | translate}}</th>
-                        <td mat-cell *matCellDef="let element" class="width-135">
-                            <ng-container *ngIf="element.lastUpdatedBy; else empty">{{element.lastUpdatedBy}}</ng-container>
+                    <ng-container matColumnDef="lastUpdate">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.lastUpdate' | translate}}</th>
+                        <td mat-cell *matCellDef="let element">
+                            <div class="d-flex">
+                                <div class="font-weight-bold">{{'common.lastUpdatedBy' | translate}}:&nbsp;</div>
+                                <ng-container *ngIf="element.lastUpdatedBy; else empty">{{element.lastUpdatedBy}}</ng-container>
+                            </div>
+                            <div class="d-flex">
+                                <div class="font-weight-bold">{{'common.lastUpdateDate' | translate}}:&nbsp;</div>
+                                <ng-container *ngIf="element.lastUpdateDate; else empty">
+                                    <div>{{element.lastUpdateDate.toMillis() | date:'medium'}}</div>
+                                </ng-container>
+                            </div>
                         </td>
                         <td mat-footer-cell *matFooterCellDef></td>
                     </ng-container>
