@@ -197,6 +197,25 @@ button:focus {
   --mdc-typography-button-letter-spacing: 0;
 }
 
+.mat-mdc-tab-group  {
+  .mat-mdc-tab {
+    font-weight: bold;
+    font-size: 1rem;
+  }
+}
+
+.mat-mdc-form-field  {
+  mat-label {
+    color: #000;
+    font-weight: bold;
+  }
+}
+
+.mdc-text-field--filled:not(.mdc-text-field--disabled) {
+  background-color: #fff !important;
+}
+
+
 @media(min-width: 960px) {
   .container-border {
     border-radius: 10px;

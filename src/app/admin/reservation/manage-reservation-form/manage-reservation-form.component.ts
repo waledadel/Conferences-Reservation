@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { Timestamp } from 'firebase/firestore';
 
 import { Constants } from '@app/constants';
@@ -11,11 +12,17 @@ import { RoomType } from 'app/shared/models/ticket';
 @Component({
   selector: 'app-manage-reservation-form',
   templateUrl: './manage-reservation-form.component.html',
-  styleUrls: ['./manage-reservation-form.component.scss']
+  styleUrls: ['./manage-reservation-form.component.scss'],
+  providers: [
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: { appearance: 'fill', floatLabel: 'always' }
+    }
+  ]
 })
 export class ManageReservationFormComponent implements OnInit {
 
-  @Input() canManageReservation = false;
+  @Input() isAdmin = false;
   @Input() enableWaitingList = false;
   @Input() isEditMode = false;
   @Input() set roomType(val: RoomType) {
@@ -64,7 +71,7 @@ export class ManageReservationFormComponent implements OnInit {
     this.dialogService.openConfirmDeleteDialog(this.translationService.instant(`${text}: ${index + 1}`))
     .afterClosed().subscribe((res: {confirmDelete: boolean}) => {
       if (res && res.confirmDelete) {
-        if (this.canManageReservation) {
+        if (this.isAdmin) {
           const id = this.model.participants.at(index).value.id;
           this.model.idsNeedToRemoved.push(id);
         }
@@ -82,7 +89,7 @@ export class ManageReservationFormComponent implements OnInit {
     this.dialogService.openConfirmDeleteDialog(this.translationService.instant(`${text}: ${index + 1}`))
     .afterClosed().subscribe((res: {confirmDelete: boolean}) => {
       if (res && res.confirmDelete) {
-        if (this.canManageReservation) {
+        if (this.isAdmin) {
           const id = this.model.children.at(index).value.id;
           this.model.idsNeedToRemoved.push(id);
         }
@@ -94,26 +101,19 @@ export class ManageReservationFormComponent implements OnInit {
   save(): void {
     if (this.model.form.valid) {
       const isGrouping = this.model.form.value.bookingType === BookingType.group;
-      this.dialogService.openConfirmBookingDialog(isGrouping).afterClosed().subscribe((res: {confirmBooking: boolean}) => {
-        if (res && res.confirmBooking) {
-          this.model.isLoading = true;
-          this.add();
-        } else {
-          this.model.isLoading = false;
-        }
-      });
-    }
-  }
-
-  update(): void {
-    if (this.model.form.valid && this.isEditMode) {
-      const formValue = this.model.form.value;
-      this.fireStoreService.updateTicket(formValue, this.model.idsNeedToRemoved).subscribe(() => {
-        this.closeModal.emit(true);
-        this.notifyService.showNotifier(this.translationService.instant('notifications.bookedUpdatedSuccessfully'));
-        this.model.form.reset();
-        this.model.isLoading = false;
-      });
+      if (this.isEditMode && this.isAdmin) {
+        this.model.isLoading = true;
+        this.update();
+      } else {
+        this.dialogService.openConfirmBookingDialog(isGrouping).afterClosed().subscribe((res: {confirmBooking: boolean}) => {
+          if (res && res.confirmBooking) {
+            this.model.isLoading = true;
+            this.add();
+          } else {
+            this.model.isLoading = false;
+          }
+        });
+      }
     }
   }
 
@@ -150,6 +150,16 @@ export class ManageReservationFormComponent implements OnInit {
     this.fireStoreService.addTicket(formValue).subscribe(() => {
       this.showForm.emit(false);
       this.dialogService.openSuccessfullyBookingDialog();
+      this.model.form.reset();
+      this.model.isLoading = false;
+    });
+  }
+
+  private update(): void {
+    const formValue = this.model.form.value;
+    this.fireStoreService.updateTicket(formValue, this.model.idsNeedToRemoved).subscribe(() => {
+      this.closeModal.emit(true);
+      this.notifyService.showNotifier(this.translationService.instant('notifications.bookedUpdatedSuccessfully'));
       this.model.form.reset();
       this.model.isLoading = false;
     });
@@ -254,7 +264,7 @@ export class ManageReservationFormComponent implements OnInit {
             adultTransportCost += transportPrice;
           });
         }
-        return reservationPrice + primaryTransportCost + adultTransportCost;
+        return (reservationPrice * (primary.adultsCount + 1)) + primaryTransportCost + adultTransportCost;
       }
       return 0;
     }

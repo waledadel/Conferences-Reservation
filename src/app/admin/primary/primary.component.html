@@ -157,13 +157,15 @@
                             </div>
                         </td>
                         <td mat-footer-cell *matFooterCellDef>
-                            <div class="d-flex">
-                                <div class="font-weight-bold">{{'table.adultsCount' | translate}}: &nbsp;</div>
-                                <div>{{getAllAdultsCount()}}</div>
-                            </div>
-                            <div class="d-flex">
-                                <div class="font-weight-bold">{{'table.childrenCount' | translate}}: &nbsp;</div>
-                                <div>{{ getAllChildrenCount() }}</div>
+                            <div class="d-flex flex-column justify-content-center align-items-center">
+                                <div class="d-flex">
+                                    <div class="font-weight-bold">{{'table.adultsCount' | translate}}: &nbsp;</div>
+                                    <div>{{getAllAdultsCount()}}</div>
+                                </div>
+                                <div class="d-flex">
+                                    <div class="font-weight-bold">{{'table.childrenCount' | translate}}: &nbsp;</div>
+                                    <div>{{ getAllChildrenCount() }}</div>
+                                </div>
                             </div>
                         </td>
                     </ng-container>

@@ -4,4 +4,5 @@ import { RoomType } from 'app/shared/models/ticket';
 export class ReservationModel {
   readonly bookingType = BookingType;
   readonly roomType = RoomType;
+  selectedRoomTab = 0;
 }

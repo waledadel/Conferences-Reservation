@@ -21,28 +21,6 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule } from '@angular/mat
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-// import { MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-// import { A11yModule } from '@angular/cdk/a11y';
-// import { ScrollingModule } from '@angular/cdk/scrolling';
-// import { CdkTableModule } from '@angular/cdk/table';
-// import { CdkTreeModule } from '@angular/cdk/tree';
-// import { MatButtonToggleModule } from '@angular/material/button-toggle';
-// import { MatDividerModule } from '@angular/material/divider';
-// import { MatProgressBarModule } from '@angular/material/progress-bar';
-// import { PortalModule } from '@angular/cdk/portal';
-// import { MatSliderModule } from '@angular/material/slider';
-// import { BidiModule } from '@angular/cdk/bidi';
-// import { MatTreeModule } from '@angular/material/tree';
-// import { DragDropModule } from '@angular/cdk/drag-drop';
-// import { MatGridListModule } from '@angular/material/grid-list';
-// import { MatChipsModule } from '@angular/material/chips';
-// import { MatStepperModule } from '@angular/material/stepper';
-// import { MatCardModule } from '@angular/material/card';
-// import { MatAutocompleteModule } from '@angular/material/autocomplete';
-// import { MatBadgeModule } from '@angular/material/badge';
-// import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
-// import { CdkStepperModule } from '@angular/cdk/stepper';
-
 
 const modules = [
   MatButtonModule,
@@ -67,36 +45,11 @@ const modules = [
   MatFormFieldModule,
   MatTooltipModule,
   MatCheckboxModule,
-  MatSlideToggleModule,
-  // MatProgressSpinnerModule,
-  // ScrollingModule,
-  // A11yModule,
-  // CdkTableModule,
-  // CdkTreeModule,
-  // MatButtonToggleModule,
-  // MatProgressBarModule,
-  // MatDividerModule,
-  // PortalModule,
-  // MatSliderModule,
-  // BidiModule,
-  // MatChipsModule,
-  // MatStepperModule,
-  // MatGridListModule,
-  // MatTreeModule,
-  // MatCardModule,
-  // DragDropModule,
-  // MatAutocompleteModule,
-  // MatBadgeModule,
-  // MatBottomSheetModule,
-  // CdkStepperModule,
+  MatSlideToggleModule
 ];
 @NgModule({
-  imports: [
-    ...modules
-  ],
-  exports: [
-    ...modules
-  ],
+  imports: modules,
+  exports: modules,
   providers: [
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,

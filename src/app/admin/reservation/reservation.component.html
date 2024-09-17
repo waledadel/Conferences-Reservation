@@ -1,29 +1,29 @@
-<div class="row mx-0 pb-4" [class.pt-4]="type === model.bookingType.individual">
+<div class="row mx-0">
   <ng-container *ngIf="type === model.bookingType.individual">
     <app-manage-reservation-form [roomType]="model.roomType.single"
-      [type]="type" [canManageReservation]="canManageReservation"
+      [type]="type" [isAdmin]="isAdmin" [isEditMode]="isEditMode" [roomType]="roomType"
       [enableWaitingList]="enableWaitingList" [reservationData]="reservationData"
       (showForm)="showForm.emit($event)" (closeModal)="closeModal.emit($event)">
     </app-manage-reservation-form>
   </ng-container>
-  <mat-tab-group *ngIf="type === model.bookingType.group">
+  <mat-tab-group dynamicHeight mat-align-tabs="start" *ngIf="type === model.bookingType.group" [(selectedIndex)]="model.selectedRoomTab">
     <mat-tab label="حجز غرفة مزدوجة (1050 جنيه)">
       <app-manage-reservation-form [roomType]="model.roomType.double"
-        [type]="type" [canManageReservation]="canManageReservation"
+        [type]="type" [isAdmin]="isAdmin" [isEditMode]="isEditMode" [roomType]="roomType"
         [enableWaitingList]="enableWaitingList" [reservationData]="reservationData"
         (showForm)="showForm.emit($event)" (closeModal)="closeModal.emit($event)">
       </app-manage-reservation-form>
     </mat-tab>
     <mat-tab label="حجز غرفة ثلاثية (950 جنيه)">
       <app-manage-reservation-form [roomType]="model.roomType.triple"
-        [type]="type" [canManageReservation]="canManageReservation"
+        [type]="type" [isAdmin]="isAdmin" [isEditMode]="isEditMode" [roomType]="roomType"
         [enableWaitingList]="enableWaitingList" [reservationData]="reservationData"
         (showForm)="showForm.emit($event)" (closeModal)="closeModal.emit($event)">
       </app-manage-reservation-form>
     </mat-tab>
     <mat-tab label="حجز غرفة رباعية (800 جنيه)">
       <app-manage-reservation-form [roomType]="model.roomType.quad"
-        [type]="type" [canManageReservation]="canManageReservation"
+        [type]="type" [isAdmin]="isAdmin" [isEditMode]="isEditMode" [roomType]="roomType"
         [enableWaitingList]="enableWaitingList" [reservationData]="reservationData"
         (showForm)="showForm.emit($event)" (closeModal)="closeModal.emit($event)">
       </app-manage-reservation-form>
