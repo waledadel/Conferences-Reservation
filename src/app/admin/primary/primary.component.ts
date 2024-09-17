@@ -336,15 +336,6 @@ export class PrimaryComponent implements OnInit {
     });
   }
 
-  // Case delete forever
-  // private removeRow(item: Partial<ITicket>): void {
-  //   const index = this.model.dataSource.data.findIndex(t => t.id === item.id);
-  //   if (index > -1) {
-  //     this.model.dataSource.data.splice(index, 1);
-  //     this.model.dataSource._updateChangeSubscription();
-  //   }
-  // }
-
   private getTotalCost(ticket: IPrimaryDataSourceVm, list: Array<IRelatedMemberViewModel>): number {
     if (ticket) {
       let adultTransportCost = 0;
@@ -353,7 +344,7 @@ export class PrimaryComponent implements OnInit {
       primaryTransportCost = this.getTransportPrice(ticket.transportationId);
       if (list.length > 0) {
         if (ticket.adultsCount > 0) {
-          const adults = list.filter(c => c.primaryId === ticket.id);
+          const adults = list.filter(c => c.primaryId === ticket.id && new Date().getFullYear() - c.birthDate.toDate().getFullYear() > 4);
           if (adults && adults.length > 0) {
             adults.forEach(adult => {
               const transportPrice = this.getTransportPrice(adult.transportationId);
