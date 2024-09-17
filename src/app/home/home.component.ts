@@ -11,7 +11,6 @@ import { Observable } from 'rxjs';
 })
 export class HomeComponent implements OnInit {
 
-  selectedTabIndex = 0;
   bookingType = BookingType;
   settings: Observable<Array<ISettings>>;
   showForm = false;
@@ -41,8 +40,9 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  onTabChanged(index: number): void {
-    this.selectedTabIndex = index;
+  bookingSuccessfully(): void {
+    this.showForm = false;
+    this.showInfo = true;
   }
 
   showTicketForm(show: boolean): void {

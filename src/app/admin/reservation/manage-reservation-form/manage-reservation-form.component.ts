@@ -28,19 +28,19 @@ export class ManageReservationFormComponent implements OnInit {
   @Input() set roomType(val: RoomType) {
     this.model.form.patchValue({ roomType: val });
     if (val > 1) {
-      Array.from({ length: val - 1 }).forEach(element => {
+      Array.from({ length: val - 1 }).forEach(() => {
         this.addAdult();
       });
     }
   }
   @Input() reservationData: Array<ITicket> = [];
-  @Input() set type (val: BookingType) {
+  @Input() set bookingType (val: BookingType) {
     this.model.form.patchValue({
       bookingType: val
     });
   }
-  @Output() showForm: EventEmitter<boolean> = new EventEmitter<boolean>(false);
-  @Output() closeModal: EventEmitter<boolean> = new EventEmitter<boolean>(false);
+  @Output() bookingDone = new EventEmitter<void>();
+  @Output() closeModal = new EventEmitter<void>();
   model: ManageReservationFormModel;
 
   constructor(
@@ -148,7 +148,7 @@ export class ManageReservationFormComponent implements OnInit {
     }
     const formValue = this.model.form.value;
     this.fireStoreService.addTicket(formValue).subscribe(() => {
-      this.showForm.emit(false);
+      this.bookingDone.emit();
       this.dialogService.openSuccessfullyBookingDialog();
       this.model.form.reset();
       this.model.isLoading = false;
@@ -158,7 +158,7 @@ export class ManageReservationFormComponent implements OnInit {
   private update(): void {
     const formValue = this.model.form.value;
     this.fireStoreService.updateTicket(formValue, this.model.idsNeedToRemoved).subscribe(() => {
-      this.closeModal.emit(true);
+      this.closeModal.emit();
       this.notifyService.showNotifier(this.translationService.instant('notifications.bookedUpdatedSuccessfully'));
       this.model.form.reset();
       this.model.isLoading = false;
@@ -264,7 +264,7 @@ export class ManageReservationFormComponent implements OnInit {
             adultTransportCost += transportPrice;
           });
         }
-        return (reservationPrice * (primary.adultsCount + 1)) + primaryTransportCost + adultTransportCost;
+        return reservationPrice + primaryTransportCost + adultTransportCost;
       }
       return 0;
     }
@@ -272,13 +272,9 @@ export class ManageReservationFormComponent implements OnInit {
   }
 
   private getReservationPrice(): number {
-    const roomType = this.model.form.value.roomType;
-    if (roomType === RoomType.single) {
-      return 800;
-    } else if (roomType === RoomType.double) {
-      return 1050;
-    } else if (roomType === RoomType.triple) {
-      return 950;
+    const isGroup = this.model.form.value.bookingType === BookingType.group;
+    if (isGroup) {
+      return 3200;
     } else {
       return 800;
     }

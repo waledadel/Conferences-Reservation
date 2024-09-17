@@ -1,17 +1,17 @@
 import { NgModule } from '@angular/core';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
 import { InfoComponent } from './info/info.component';
 import { ReservationModule } from 'app/admin/reservation/reservation.module';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatTabsModule } from '@angular/material/tabs';
 
 
 @NgModule({
   declarations: [
     HomeComponent,
-    InfoComponent,
+    InfoComponent
   ],
   imports: [
     MatTabsModule,

@@ -5,54 +5,8 @@
     </button>
 </div>
 <div mat-dialog-content>
-    <ng-container *ngIf="(data && data.bookingType && isDataLoaded); else add">
-        <mat-tab-group class="w-100" dynamicHeight mat-align-tabs="start" [(selectedIndex)]="activeBookingTab" (selectedIndexChange)="onBookingTabChanged($event)">
-            <mat-tab [label]="'home.individualBooking' | translate">
-                <ng-container *ngIf="activeBookingTab === 0">
-                    <app-reservation [type]="bookingType.individual" [roomType]="data.roomType" [isEditMode]="true"
-                        [isAdmin]="true" [enableWaitingList]="false" (closeModal)="close(true)"
-                        [reservationData]="reservationData"></app-reservation>
-                </ng-container>
-            </mat-tab>
-            <mat-tab [label]="'home.groupBooking' | translate">
-                <ng-container *ngIf="activeBookingTab === 1">
-                    <div class="alert alert-info">
-                        <div class="font-weight-bold">
-                            {{'common.notes' | translate}}:
-                        </div>
-                        <div>
-                            {{'common.childrenNotes' | translate}}
-                        </div>
-                    </div>
-                    <app-reservation [type]="bookingType.group" [roomType]="data.roomType" [isEditMode]="true"
-                        [isAdmin]="true" [enableWaitingList]="false" (closeModal)="close(true)"
-                        [reservationData]="reservationData" [selectedRoomTab]="activeRoomTab"></app-reservation>
-                </ng-container>
-            </mat-tab>
-        </mat-tab-group>
+    <ng-container *ngIf="isDataLoaded">
+        <app-reservation [isAdmin]="true" [isEditMode]="!!data" [reservationData]="reservationData"
+            (closeModal)="close(true)"></app-reservation>
     </ng-container>
-    <ng-template #add>
-        <mat-tab-group class="w-100" dynamicHeight mat-align-tabs="start" [(selectedIndex)]="activeBookingTab" (selectedIndexChange)="onBookingTabChanged($event)">
-            <mat-tab [label]="'home.individualBooking' | translate">
-                <div class="bg-white" *ngIf="activeBookingTab === 0">
-                    <app-reservation [type]="bookingType.individual" [enableWaitingList]="false"
-                        (closeModal)="close(true)"></app-reservation>
-                </div>
-            </mat-tab>
-            <mat-tab [label]="'home.groupBooking' | translate">
-                <div class="bg-white" *ngIf="activeBookingTab === 1">
-                    <div class="alert alert-info">
-                        <div class="font-weight-bold">
-                            {{'common.notes' | translate}}:
-                        </div>
-                        <div>
-                            {{'common.childrenNotes' | translate}}
-                        </div>
-                    </div>
-                    <app-reservation [type]="bookingType.group" [enableWaitingList]="false"
-                        (closeModal)="close(true)"></app-reservation>
-                </div>
-            </mat-tab>
-        </mat-tab-group>
-    </ng-template>
 </div>

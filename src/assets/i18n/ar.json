@@ -90,7 +90,8 @@
     "childrenNotes": "يمكن إحضار الأطفال تحت سن 4 سنوات مجانا، لكن ليس لهم سرير ولا وجبات",
     "addFreeChild": "إضافة طفل أقل من 4 سنوات مجانا وبدون سرير",
     "reservationType": "نوع الحجز",
-    "lastUpdate": "أخر تحديث"
+    "lastUpdate": "أخر تحديث",
+    "booking": "حجز"
   },
   "languages": {
     "arabic": "العربية",

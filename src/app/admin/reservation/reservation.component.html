@@ -1,32 +1,42 @@
-<div class="row mx-0">
-  <ng-container *ngIf="type === model.bookingType.individual">
-    <app-manage-reservation-form [roomType]="model.roomType.single"
-      [type]="type" [isAdmin]="isAdmin" [isEditMode]="isEditMode" [roomType]="roomType"
-      [enableWaitingList]="enableWaitingList" [reservationData]="reservationData"
-      (showForm)="showForm.emit($event)" (closeModal)="closeModal.emit($event)">
+<mat-tab-group class="w-100" dynamicHeight mat-align-tabs="start" #mainTabGroup>
+  <mat-tab [label]="'home.individualBooking' | translate">
+    <app-manage-reservation-form
+      [bookingType]="model.bookingType.individual" [isAdmin]="isAdmin" [isEditMode]="isEditMode" 
+      [roomType]="model.roomType.single" [reservationData]="reservationData" 
+      (bookingDone)="bookingDone.emit()" (closeModal)="closeModal.emit()">
     </app-manage-reservation-form>
-  </ng-container>
-  <mat-tab-group dynamicHeight mat-align-tabs="start" *ngIf="type === model.bookingType.group" [(selectedIndex)]="model.selectedRoomTab">
-    <mat-tab label="حجز غرفة مزدوجة (1050 جنيه)">
-      <app-manage-reservation-form [roomType]="model.roomType.double"
-        [type]="type" [isAdmin]="isAdmin" [isEditMode]="isEditMode" [roomType]="roomType"
-        [enableWaitingList]="enableWaitingList" [reservationData]="reservationData"
-        (showForm)="showForm.emit($event)" (closeModal)="closeModal.emit($event)">
-      </app-manage-reservation-form>
-    </mat-tab>
-    <mat-tab label="حجز غرفة ثلاثية (950 جنيه)">
-      <app-manage-reservation-form [roomType]="model.roomType.triple"
-        [type]="type" [isAdmin]="isAdmin" [isEditMode]="isEditMode" [roomType]="roomType"
-        [enableWaitingList]="enableWaitingList" [reservationData]="reservationData"
-        (showForm)="showForm.emit($event)" (closeModal)="closeModal.emit($event)">
-      </app-manage-reservation-form>
-    </mat-tab>
-    <mat-tab label="حجز غرفة رباعية (800 جنيه)">
-      <app-manage-reservation-form [roomType]="model.roomType.quad"
-        [type]="type" [isAdmin]="isAdmin" [isEditMode]="isEditMode" [roomType]="roomType"
-        [enableWaitingList]="enableWaitingList" [reservationData]="reservationData"
-        (showForm)="showForm.emit($event)" (closeModal)="closeModal.emit($event)">
-      </app-manage-reservation-form>
-    </mat-tab>
-  </mat-tab-group>
-</div>
+  </mat-tab>
+  <mat-tab [label]="'home.groupBooking' | translate">
+    <div class="alert alert-info">
+      <div class="font-weight-bold">
+        {{'common.notes' | translate}}:
+      </div>
+      <div>
+        {{'common.childrenNotes' | translate}}
+      </div>
+    </div>
+    <mat-tab-group dynamicHeight mat-align-tabs="start" #roomTabGroup>
+      <mat-tab label="حجز غرفة مزدوجة (1050 جنيه)">
+        <app-manage-reservation-form
+          [bookingType]="model.bookingType.group" [isAdmin]="isAdmin" [isEditMode]="isEditMode" 
+          [roomType]="model.roomType.double" [reservationData]="reservationData" 
+          (bookingDone)="bookingDone.emit()" (closeModal)="closeModal.emit()">
+        </app-manage-reservation-form>
+      </mat-tab>
+      <mat-tab label="حجز غرفة ثلاثية (950 جنيه)">
+        <app-manage-reservation-form
+          [bookingType]="model.bookingType.group" [isAdmin]="isAdmin" [isEditMode]="isEditMode" 
+          [roomType]="model.roomType.triple" [reservationData]="reservationData" 
+          (bookingDone)="bookingDone.emit()" (closeModal)="closeModal.emit()">
+        </app-manage-reservation-form>
+      </mat-tab>
+      <mat-tab label="حجز غرفة رباعية (800 جنيه)">
+        <app-manage-reservation-form
+          [bookingType]="model.bookingType.group" [isAdmin]="isAdmin" [isEditMode]="isEditMode" 
+          [roomType]="model.roomType.quad" [reservationData]="reservationData" 
+          (bookingDone)="bookingDone.emit()" (closeModal)="closeModal.emit()">
+        </app-manage-reservation-form>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-tab>
+</mat-tab-group>

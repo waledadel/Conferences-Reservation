@@ -1,7 +1,6 @@
 import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
-// import { Timestamp } from '@angular/fire/firestore';
 
 import { IRelatedMemberViewModel, IPrimaryDataSourceVm, ITicket, ICostDetailsDataSourceVm, Gender, BookingStatus, IUser, BookingType, IAddress, IBus } from '@app/models';
 import { DialogService, FireStoreService, NotifyService, TranslationService } from '@app/services';
@@ -14,7 +13,6 @@ import { PrimaryModel } from './primary.models';
 import { ExportMembersComponent } from '../export-members/export-members.component';
 import { AdvancedSearchComponent } from '../advanced-search/advanced-search.component';
 import { ExportPages, IExportMembers } from '../export-members/export-members.model';
-import { RoomType } from 'app/shared/models/ticket';
 
 @Component({
   templateUrl: './primary.component.html'
@@ -143,7 +141,8 @@ export class PrimaryComponent implements OnInit {
 
   viewCostDetails(item: IPrimaryDataSourceVm): void {
     const list: Array<ICostDetailsDataSourceVm> = [];
-    const price = this.getReservationPrice(item);
+    const totalPrice = this.getReservationPrice(item);
+    const price = totalPrice / (item.adultsCount + 1); // primary + adults
     // Primary
     list.push({
       isChild: false,
@@ -353,23 +352,17 @@ export class PrimaryComponent implements OnInit {
           }
         }
       }
-      return (reservationPrice * (ticket.adultsCount + 1)) + primaryTransportCost + adultTransportCost;
+      return reservationPrice + primaryTransportCost + adultTransportCost;
     }
     return 0;
   }
 
   private getReservationPrice(ticket: IPrimaryDataSourceVm): number {
     const isGroup = ticket.bookingType === BookingType.group;
-    if (isGroup && ticket.roomType === RoomType.double) {
-      return 1050;
-    } else if (isGroup && ticket.roomType === RoomType.triple) {
-      return 950;
-    } else if (isGroup && ticket.roomType === RoomType.quad) {
-      return 800;
-    } else if(ticket.bookingType === BookingType.individual) {
-      return 800;
+    if (isGroup) {
+      return 3200;
     } else {
-      return 0;
+      return 800;
     }
   }
 
