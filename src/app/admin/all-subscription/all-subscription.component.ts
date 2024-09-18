@@ -12,6 +12,7 @@ import { AllSubscriptionModel } from './all-subscription.models';
 import { AdvancedSearchComponent } from '../advanced-search/advanced-search.component';
 import { AddRoomToMemberComponent } from './add-room-to-member/add-room-to-member.component';
 import { ExportPages, IExportMembers } from '../export-members/export-members.model';
+import { RoomType } from 'app/shared/models/ticket';
 
 @Component({
   templateUrl: './all-subscription.component.html'
@@ -347,7 +348,7 @@ export class AllSubscriptionComponent implements OnInit {
       if (ticket && list && list.length > 0) {
         let adultCost = 0;
         let primaryCost = 0;
-        const reservationPrice = this.getReservationPrice(ticket);
+        const price = this.getReservationPrice(ticket);
         const primaryMember = list.find(m => m.id === ticket.primaryId && m.isMain);
         if (primaryMember) {
           primaryCost = this.getTransportPrice(primaryMember.transportationId);
@@ -358,7 +359,7 @@ export class AllSubscriptionComponent implements OnInit {
               adultCost += transportPrice;
             });
           }
-          return reservationPrice + primaryCost + adultCost;
+          return (price * (adults.length + 1)) + primaryCost + adultCost;
         }
       }
       return 0;
@@ -379,8 +380,12 @@ export class AllSubscriptionComponent implements OnInit {
 
   private getReservationPrice(ticket: IAllSubscriptionDataSourceVm): number {
     const isGroup = ticket.bookingType === BookingType.group;
-    if (isGroup) {
-      return 3200;
+    if (isGroup && ticket.roomType === RoomType.double) {
+      return 1050;
+    } else if (isGroup && ticket.roomType === RoomType.triple) {
+      return 950;
+    } else if (isGroup && ticket.roomType === RoomType.quad) {
+      return 800;
     } else {
       return 800;
     }

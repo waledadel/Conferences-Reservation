@@ -253,7 +253,7 @@ export class ManageReservationFormComponent implements OnInit {
     if (this.reservationData.length > 0) {
       let adultTransportCost = 0;
       let primaryTransportCost = 0;
-      const reservationPrice = this.getReservationPrice();
+      const price = this.getReservationPrice();
       const primary = this.reservationData.find(m => m.isMain);
       if (primary) {
         primaryTransportCost = this.getTransportPrice(primary.transportationId);
@@ -264,7 +264,7 @@ export class ManageReservationFormComponent implements OnInit {
             adultTransportCost += transportPrice;
           });
         }
-        return reservationPrice + primaryTransportCost + adultTransportCost;
+        return (price * (primary.adultsCount + 1)) + primaryTransportCost + adultTransportCost;
       }
       return 0;
     }
@@ -273,8 +273,13 @@ export class ManageReservationFormComponent implements OnInit {
 
   private getReservationPrice(): number {
     const isGroup = this.model.form.value.bookingType === BookingType.group;
-    if (isGroup) {
-      return 3200;
+    const roomType = this.model.form.value.roomType;
+    if (isGroup && roomType === RoomType.double) {
+      return 1050;
+    } else if (isGroup && roomType === RoomType.triple) {
+      return 950;
+    } else if (isGroup && roomType === RoomType.quad) {
+      return 800;
     } else {
       return 800;
     }

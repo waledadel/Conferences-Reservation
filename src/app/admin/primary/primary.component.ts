@@ -13,6 +13,7 @@ import { PrimaryModel } from './primary.models';
 import { ExportMembersComponent } from '../export-members/export-members.component';
 import { AdvancedSearchComponent } from '../advanced-search/advanced-search.component';
 import { ExportPages, IExportMembers } from '../export-members/export-members.model';
+import { RoomType } from 'app/shared/models/ticket';
 
 @Component({
   templateUrl: './primary.component.html'
@@ -141,8 +142,7 @@ export class PrimaryComponent implements OnInit {
 
   viewCostDetails(item: IPrimaryDataSourceVm): void {
     const list: Array<ICostDetailsDataSourceVm> = [];
-    const totalPrice = this.getReservationPrice(item);
-    const price = totalPrice / (item.adultsCount + 1); // primary + adults
+    const price = this.getReservationPrice(item);
     // Primary
     list.push({
       isChild: false,
@@ -339,7 +339,7 @@ export class PrimaryComponent implements OnInit {
     if (ticket) {
       let adultTransportCost = 0;
       let primaryTransportCost = 0;
-      const reservationPrice = this.getReservationPrice(ticket);
+      const price = this.getReservationPrice(ticket);
       primaryTransportCost = this.getTransportPrice(ticket.transportationId);
       if (list.length > 0) {
         if (ticket.adultsCount > 0) {
@@ -352,15 +352,19 @@ export class PrimaryComponent implements OnInit {
           }
         }
       }
-      return reservationPrice + primaryTransportCost + adultTransportCost;
+      return (price * (ticket.adultsCount + 1)) + primaryTransportCost + adultTransportCost;
     }
     return 0;
   }
 
   private getReservationPrice(ticket: IPrimaryDataSourceVm): number {
     const isGroup = ticket.bookingType === BookingType.group;
-    if (isGroup) {
-      return 3200;
+    if (isGroup && ticket.roomType === RoomType.double) {
+      return 1050;
+    } else if (isGroup && ticket.roomType === RoomType.triple) {
+      return 950;
+    } else if (isGroup && ticket.roomType === RoomType.quad) {
+      return 800;
     } else {
       return 800;
     }
