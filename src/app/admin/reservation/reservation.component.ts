@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 
 import { ReservationModel } from './reservation.models';
-import { BookingType, ITicket } from '@app/models';
+import { ITicket } from '@app/models';
 import { MatTabGroup } from '@angular/material/tabs';
 import { RoomType } from 'app/shared/models/ticket';
 
@@ -10,48 +10,71 @@ import { RoomType } from 'app/shared/models/ticket';
   selector: 'app-reservation',
   templateUrl: './reservation.component.html'
 })
-export class ReservationComponent implements AfterViewInit {
+export class ReservationComponent {
 
   @Input() isAdmin = false;
   @Input() isEditMode = false;
   @Input() reservationData: Array<ITicket> = [];
   @Output() bookingDone = new EventEmitter<void>();
   @Output() closeModal = new EventEmitter<void>();
-  @ViewChild('mainTabGroup') mainTabGroup!: MatTabGroup;
-  @ViewChild('roomTabGroup') groupTabGroup!: MatTabGroup;
+  @ViewChild('tabs') tabs!: MatTabGroup;
   model: ReservationModel;
 
   constructor() {
     this.model = new ReservationModel();
   }
 
-  ngAfterViewInit(): void {
-    this.selectTabBasedOnReservationData();
+  onTabChanged(tabIndex: number): void {
+    // Tabs are 0 based index
+    this.setGroupTabBasedOnRoomType(tabIndex + 1);
   }
 
-  private selectTabBasedOnReservationData(): void {
-    if (this.reservationData && this.reservationData.length > 0) {
-      const primary = this.reservationData.find(r => r.isMain);
-      if (primary) {
-        const reservationType = primary.bookingType;
-        if (reservationType === BookingType.individual) {
-          this.mainTabGroup.selectedIndex = 0;
-        } else {
-          this.mainTabGroup.selectedIndex = 1;
-          const roomType = primary.roomType;
-          switch (roomType) {
-            case RoomType.double:
-              this.groupTabGroup.selectedIndex = 0;
-              break;
-            case RoomType.triple:
-              this.groupTabGroup.selectedIndex = 1;
-              break;
-            case RoomType.quad:
-              this.groupTabGroup.selectedIndex = 2;
-              break;
-          }
-        }
-      }
+  setGroupTabBasedOnRoomType(roomType: RoomType): void {
+    switch (roomType) {
+      case RoomType.double:
+        this.setIsDouble();
+        break;
+      case RoomType.triple:
+        this.setIsTriple();
+        break;
+      case RoomType.quad:
+        this.setIsQuad();
+        break;
+      default:
+        this.setIsIndividual();
+        break;
     }
+  }
+
+  private setIsIndividual(): void {
+    this.tabs.selectedIndex = 0;
+    this.model.isIndividual = true;
+    this.model.isDouble = false;
+    this.model.isTriple = false;
+    this.model.isQuad = false;
+  }
+
+  private setIsDouble(): void {
+    this.tabs.selectedIndex = 1;
+    this.model.isIndividual = false;
+    this.model.isDouble = true;
+    this.model.isTriple = false;
+    this.model.isQuad = false;
+  }
+
+  private setIsTriple(): void {
+    this.tabs.selectedIndex = 2;
+    this.model.isIndividual = false;
+    this.model.isDouble = false;
+    this.model.isTriple = true;
+    this.model.isQuad = false;
+  }
+
+  private setIsQuad(): void {
+    this.tabs.selectedIndex = 3;
+    this.model.isIndividual = false;
+    this.model.isDouble = false;
+    this.model.isTriple = false;
+    this.model.isQuad = true;
   }
 }

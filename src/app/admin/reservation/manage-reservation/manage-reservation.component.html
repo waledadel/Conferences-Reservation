@@ -7,6 +7,6 @@
 <div mat-dialog-content>
     <ng-container *ngIf="isDataLoaded">
         <app-reservation [isAdmin]="true" [isEditMode]="!!data" [reservationData]="reservationData"
-            (closeModal)="close(true)"></app-reservation>
+            (closeModal)="close(true)" #reservationComp></app-reservation>
     </ng-container>
 </div>

@@ -18,6 +18,7 @@ export class ManageReservationFormModel {
   remaining = 0;
   totalCost = 0;
   idsNeedToRemoved: Array<string> = [];
+  showEditMessage = false;
   bookingStatusList: Array<KeyValue<string, BookingStatus>> = [
     {key: 'bookingStatus.new', value: BookingStatus.new},
     {key: 'bookingStatus.confirmed', value: BookingStatus.confirmed},

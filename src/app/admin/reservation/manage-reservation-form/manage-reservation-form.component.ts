@@ -27,8 +27,16 @@ export class ManageReservationFormComponent implements OnInit {
   @Input() isEditMode = false;
   @Input() set roomType(val: RoomType) {
     this.model.form.patchValue({ roomType: val });
+    const maximum = val - 1;
+    const canUpdate = this.isEditMode && this.isAdmin && this.reservationData.length > 0;
+    let max = maximum;
+    if (canUpdate) {
+      const adults = this.reservationData.filter(c => new Date().getFullYear() - c.birthDate.toDate().getFullYear() > 4 );
+      max = adults.length - 1;
+    }
+    this.model.showEditMessage = max !== maximum;
     if (val > 1) {
-      Array.from({ length: val - 1 }).forEach(() => {
+      Array.from({ length: max }).forEach(() => {
         this.addAdult();
       });
     }
@@ -102,7 +110,6 @@ export class ManageReservationFormComponent implements OnInit {
     if (this.model.form.valid) {
       const isGrouping = this.model.form.value.bookingType === BookingType.group;
       if (this.isEditMode && this.isAdmin) {
-        this.model.isLoading = true;
         this.update();
       } else {
         this.dialogService.openConfirmBookingDialog(isGrouping).afterClosed().subscribe((res: {confirmBooking: boolean}) => {
@@ -157,12 +164,15 @@ export class ManageReservationFormComponent implements OnInit {
 
   private update(): void {
     const formValue = this.model.form.value;
-    this.fireStoreService.updateTicket(formValue, this.model.idsNeedToRemoved).subscribe(() => {
-      this.closeModal.emit();
-      this.notifyService.showNotifier(this.translationService.instant('notifications.bookedUpdatedSuccessfully'));
-      this.model.form.reset();
-      this.model.isLoading = false;
-    });
+    if (this.isEditMode && this.isAdmin && this.canUpdate()) {
+      this.model.isLoading = true;
+      this.fireStoreService.updateTicket(formValue, this.model.idsNeedToRemoved).subscribe(() => {
+        this.closeModal.emit();
+        this.notifyService.showNotifier(this.translationService.instant('notifications.bookedUpdatedSuccessfully'));
+        this.model.form.reset();
+        this.model.isLoading = false;
+      });
+    }
   }
 
   private getAddressList(): void {
@@ -224,11 +234,11 @@ export class ManageReservationFormComponent implements OnInit {
           total: totalCost,
           paid: primary.paid,
           bookingStatus: primary.bookingStatus,
-          bookingType: primary.bookingType,
+          // bookingType: primary.bookingType,
           roomId: primary.roomId,
           participants: [],
           children: [],
-          roomType: primary.roomType
+          // roomType: primary.roomType
         });
         this.model.totalCost = totalCost;
         this.model.remaining = primary.paid ? totalCost - primary.paid : totalCost;
@@ -238,10 +248,8 @@ export class ManageReservationFormComponent implements OnInit {
           participants: allParticipants.map(item => ({...item, birthDate: new Date(item.birthDate.toMillis())}))
         });
       }
-      if (allChildren.length > 0) {
-        allChildren.forEach(() => {
-          this.addChild();
-        });
+      if (allChildren.length > 0 && this.model.form.value.roomType !== RoomType.single) {
+        allChildren.forEach(() => this.addChild());
         this.model.form.patchValue({
           children: allChildren.map(item => ({...item, birthDate: new Date(item.birthDate.toMillis())}))
         });
@@ -272,17 +280,21 @@ export class ManageReservationFormComponent implements OnInit {
   }
 
   private getReservationPrice(): number {
-    const isGroup = this.model.form.value.bookingType === BookingType.group;
-    const roomType = this.model.form.value.roomType;
-    if (isGroup && roomType === RoomType.double) {
-      return 1050;
-    } else if (isGroup && roomType === RoomType.triple) {
-      return 950;
-    } else if (isGroup && roomType === RoomType.quad) {
-      return 800;
-    } else {
-      return 800;
+    const primary = this.reservationData.find(p => p.isMain);
+    if (primary) {
+      const roomType = primary.roomType;
+      switch (roomType) {
+        case RoomType.double:
+          return 1050;
+        case RoomType.triple:
+          return 950;
+        case RoomType.quad:
+          return 800;
+        default:
+          return 800;
+      }
     }
+    return 0;
   }
 
   private getTransportPrice(transportId: string): number {
@@ -291,5 +303,22 @@ export class ManageReservationFormComponent implements OnInit {
       return bus ? +bus.price : 0;
     }
     return 0;
+  }
+
+  private canUpdate(): boolean {
+    const formValue = this.model.form.value;
+    const roomType = this.model.form.value.roomType;
+    const adults = formValue.participants.length;
+    const children = formValue.children.length;
+    switch (roomType) {
+      case RoomType.double:
+        return adults === 1;
+      case RoomType.triple:
+        return adults === 2;
+      case RoomType.quad:
+        return adults === 3;
+      default:
+        return adults === 0 && children === 0;
+    }
   }
 }

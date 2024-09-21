@@ -110,7 +110,7 @@ export class PrimaryComponent implements OnInit {
   }
 
   update(item: IPrimaryDataSourceVm): void {
-    this.dialogService.openAddEditDialog(ManageReservationComponent, 'lg', true, item).afterClosed()
+    this.dialogService.openAddEditDialog(ManageReservationComponent, 'xlg', true, item).afterClosed()
     .subscribe((res: {fireRefresh: boolean}) => {
       if (res.fireRefresh) {
         this.updateTableRow(item);
@@ -358,15 +358,16 @@ export class PrimaryComponent implements OnInit {
   }
 
   private getReservationPrice(ticket: IPrimaryDataSourceVm): number {
-    const isGroup = ticket.bookingType === BookingType.group;
-    if (isGroup && ticket.roomType === RoomType.double) {
-      return 1050;
-    } else if (isGroup && ticket.roomType === RoomType.triple) {
-      return 950;
-    } else if (isGroup && ticket.roomType === RoomType.quad) {
-      return 800;
-    } else {
-      return 800;
+    const roomType = ticket.roomType;
+    switch (roomType) {
+      case RoomType.double:
+        return 1050;
+      case RoomType.triple:
+        return 950;
+      case RoomType.quad:
+        return 800;
+      default:
+        return 800;
     }
   }
 

@@ -1,4 +1,9 @@
 <form [formGroup]="model.form" novalidate class="row mx-0" (ngSubmit)="save()">
+  
+  <div *ngIf="model.showEditMessage" class="alert alert-danger m-3">
+    {{'common.editMessage' | translate}}
+  </div>
+
   <div class="rounded bg-white border w-100 m-3">
     <div class="w-100 d-flex align-items-center p-2 border-bottom cr-bg-gray">
       <mat-icon color="primary">stars</mat-icon>
@@ -87,12 +92,16 @@
     <ng-container *ngIf="model.participants.controls.length > 0">
       <ng-container *ngFor="let participant of model.participants.controls; let i=index">
         <div [formGroupName]="i" class="rounded bg-white border w-100 m-3">
-          <ng-container *ngIf="model.form.value.bookingType === model.bookingType.group">
-            <div class="d-flex align-items-center border-bottom cr-bg-gray p-2">
+          <div *ngIf="model.form.value.bookingType === model.bookingType.group" 
+            class="d-flex align-items-center justify-content-between border-bottom cr-bg-gray px-2">
+            <div class="d-flex align-items-center">
               <div class="d-flex justify-content-center align-items-center text-light rounded-circle count">{{i+1}}</div>
               <div class="px-2">{{ 'common.individual' | translate}}</div>
             </div>
-          </ng-container>
+            <button type="button" mat-icon-button color="warn" (click)="removeParticipant(i)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
           <div class="row mx-0 p-3">
             <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
               <mat-label>{{'home.arabicFullName' | translate}}</mat-label>
@@ -247,6 +256,11 @@
           <mat-label>{{'common.adminNotes' | translate}}</mat-label>
           <textarea type="text" matInput formControlName="adminNotes"></textarea>
         </mat-form-field>
+        <div class="col-12 px-0">
+          <div class="alert alert-success">
+            سوف يتم إحتساب الإجمالي والمبلغ المتبقي بعد الحفظ فقط
+          </div>
+        </div>
         <div class="col-md-5 col-12">
           <label>{{'common.totalCost' | translate}}</label>
           <div class="font-weight-bold text-dark">{{model.totalCost}} جنيه</div>
@@ -254,9 +268,6 @@
         <div class="col-md-7 col-12">
           <label>
             {{'common.remaining' | translate}}
-            <small class="text-muted">
-              (سوف يتم إحتساب المبلغ المتبقي بعد الحفظ فقط)
-            </small>
           </label>
           <div class="font-weight-bold text-dark">{{model.remaining}} جنيه</div>
         </div>

@@ -3,7 +3,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { Constants } from '@app/constants';
-import { BookingStatus, BookingType, Gender, IAddress, IAllSubscriptionDataSourceVm, IBus, IRoom, IRoomDataSource, MemberRoom } from '@app/models';
+import { BookingStatus, Gender, IAddress, IAllSubscriptionDataSourceVm, IBus, IRoom, IRoomDataSource, MemberRoom } from '@app/models';
 import { DialogService, FireStoreService } from '@app/services';
 import { AdminService } from '../admin.service';
 import { IAdvancedFilterForm } from '../advanced-search/advanced-search.models';
@@ -379,15 +379,16 @@ export class AllSubscriptionComponent implements OnInit {
   }
 
   private getReservationPrice(ticket: IAllSubscriptionDataSourceVm): number {
-    const isGroup = ticket.bookingType === BookingType.group;
-    if (isGroup && ticket.roomType === RoomType.double) {
-      return 1050;
-    } else if (isGroup && ticket.roomType === RoomType.triple) {
-      return 950;
-    } else if (isGroup && ticket.roomType === RoomType.quad) {
-      return 800;
-    } else {
-      return 800;
+    const roomType = ticket.roomType;
+    switch (roomType) {
+      case RoomType.double:
+        return 1050;
+      case RoomType.triple:
+        return 950;
+      case RoomType.quad:
+        return 800;
+      default:
+        return 800;
     }
   }
 }

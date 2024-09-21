@@ -252,7 +252,7 @@ export class FireStoreService {
 
     return this.angularFirestore.collection<IAllSubscriptionDataSourceVm>(Constants.RealtimeDatabase.tickets).valueChanges({ idField: 'id' }).pipe(
         map((tickets: Array<IAllSubscriptionDataSourceVm>) =>
-          tickets.map((ticket: IAllSubscriptionDataSourceVm) => ({
+          tickets.filter(t => t.bookingStatus !== BookingStatus.deleted).map((ticket: IAllSubscriptionDataSourceVm) => ({
             id: ticket.id,
             name: ticket.name,
             mobile: ticket.mobile,
