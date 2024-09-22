@@ -28,6 +28,7 @@
     "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
     "useDefineForClassFields": false,
+    "strictPropertyInitialization": false,
     "paths": {
       "@app/models": ["app/shared/models"],
       "@app/constants": ["app/shared/constants"],

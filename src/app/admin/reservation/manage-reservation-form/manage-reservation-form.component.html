@@ -92,13 +92,13 @@
     <ng-container *ngIf="model.participants.controls.length > 0">
       <ng-container *ngFor="let participant of model.participants.controls; let i=index">
         <div [formGroupName]="i" class="rounded bg-white border w-100 m-3">
-          <div *ngIf="model.form.value.bookingType === model.bookingType.group" 
+          <div *ngIf="(model.form.value.bookingType === model.bookingType.group) || (isAdmin && isEditMode)" 
             class="d-flex align-items-center justify-content-between border-bottom cr-bg-gray px-2">
-            <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center" [class.py-2]="!(isAdmin && isEditMode)">
               <div class="d-flex justify-content-center align-items-center text-light rounded-circle count">{{i+1}}</div>
               <div class="px-2">{{ 'common.individual' | translate}}</div>
             </div>
-            <button type="button" mat-icon-button color="warn" (click)="removeParticipant(i)">
+            <button *ngIf="isAdmin && isEditMode" type="button" mat-icon-button color="warn" (click)="removeParticipant(i)">
               <mat-icon>delete</mat-icon>
             </button>
           </div>

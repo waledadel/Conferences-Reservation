@@ -36,7 +36,7 @@ export class ManageReservationFormComponent implements OnInit {
       max = adults.length - 1;
     }
     this.model.showEditMessage = max !== maximum;
-    if (val > 1) {
+    if ((val > 1) || canUpdate) {
       Array.from({ length: max }).forEach(() => {
         this.addAdult();
       });

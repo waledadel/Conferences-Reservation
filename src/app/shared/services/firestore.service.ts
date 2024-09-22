@@ -126,9 +126,11 @@ export class FireStoreService {
       }
     }
     if (removedIds && removedIds.length > 0) {
-      removedIds.forEach(item => {
-        const participantRef = this.angularFirestore.doc(`/${Constants.RealtimeDatabase.tickets}/${item}`).ref;
-        batch.delete(participantRef);
+      removedIds.filter(id => id != '' && id != null).forEach(item => {
+        if (item && item != '') {
+          const participantRef = this.angularFirestore.doc(`/${Constants.RealtimeDatabase.tickets}/${item}`).ref;
+          batch.delete(participantRef);
+        }
       });
     }
     return from(batch.commit()).pipe(map(() => null));
