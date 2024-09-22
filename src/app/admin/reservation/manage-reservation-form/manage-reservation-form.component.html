@@ -1,10 +1,10 @@
 <form [formGroup]="model.form" novalidate class="row mx-0" (ngSubmit)="save()">
   
-  <div *ngIf="model.showEditMessage" class="alert alert-danger m-3" id="editMessage">
+  <div *ngIf="model.showEditMessage" class="alert alert-danger my-3 mx-lg-3 mx-0" id="editMessage">
     {{'common.editMessage' | translate}}
   </div>
 
-  <div class="rounded bg-white border w-100 m-3">
+  <div class="rounded bg-white border w-100 my-3 mx-lg-3 mx-0">
     <div class="w-100 d-flex align-items-center p-2 border-bottom cr-bg-gray">
       <mat-icon color="primary">stars</mat-icon>
     </div>
@@ -91,7 +91,7 @@
   <ng-container formArrayName="participants">
     <ng-container *ngIf="model.participants.controls.length > 0">
       <ng-container *ngFor="let participant of model.participants.controls; let i=index">
-        <div [formGroupName]="i" class="rounded bg-white border w-100 m-3">
+        <div [formGroupName]="i" class="rounded bg-white border w-100 my-3 mx-lg-3 mx-0">
           <div *ngIf="(model.form.value.bookingType === model.bookingType.group) || (isAdmin && isEditMode)" 
             class="d-flex align-items-center justify-content-between border-bottom cr-bg-gray px-2">
             <div class="d-flex align-items-center" [class.py-2]="!(isAdmin && isEditMode)">
@@ -188,7 +188,7 @@
   <ng-container formArrayName="children">
     <ng-container *ngIf="model.children.controls.length > 0">
       <ng-container *ngFor="let child of model.children.controls; let i=index">
-        <div [formGroupName]="i" class="rounded bg-white border w-100 m-3">
+        <div [formGroupName]="i" class="rounded bg-white border w-100 my-3 mx-lg-3 mx-0">
           <div *ngIf="model.form.value.bookingType === model.bookingType.group" 
             class="d-flex align-items-center justify-content-between border-bottom cr-bg-gray px-2">
             <div class="d-flex align-items-center">
@@ -233,7 +233,7 @@
     </ng-container>
   </ng-container>
   <ng-container>
-    <div class="col-12 px-2">
+    <div class="col-12 px-lg-2 px-0">
       <div class="d-flex flex-lg-row flex-column">
         <div *ngIf="isAdmin && isEditMode && model.form.value.bookingType === model.bookingType.group && model.form.value.roomType !== model.roomType.single"
           class="mb-lg-0 mb-2">
@@ -248,7 +248,7 @@
         </div>
       </div>
     </div>
-    <div *ngIf="isAdmin && isEditMode" class="bg-white border rounded w-100 m-3">
+    <div *ngIf="isAdmin && isEditMode" class="bg-white border rounded w-100 my-3 mx-lg-3 mx-0">
       <div class="row mx-0 p-3">
         <mat-form-field class="col-md-6 col-12 px-md-2 px-0">
           <mat-label>{{'common.bookingStatus' | translate}}</mat-label>
