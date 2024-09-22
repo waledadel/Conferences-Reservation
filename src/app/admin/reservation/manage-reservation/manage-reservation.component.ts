@@ -34,7 +34,7 @@ export class ManageReservationComponent implements OnInit {
       this.fireStoreService.getPrimaryWithRelatedParticipants(this.data.id).subscribe(res => {
         this.reservationData = res;
         this.isDataLoaded = true;
-        timer(100).subscribe(() => {
+        timer(300).subscribe(() => {
           if (this.reservationComp && this.data && this.reservationData) {
             const primary = this.reservationData.find(r => r.isMain);
             if (primary) {
