@@ -2,11 +2,13 @@ import { KeyValue } from '@angular/common';
 import { FormArray, FormGroup } from '@angular/forms';
 
 import { Gender, IAddress, IBus, SocialStatus, BookingType, BookingStatus } from '@app/models';
+import { RoomType } from 'app/shared/models/ticket';
 
 export class ManageReservationFormModel {
   readonly gender = Gender;
   readonly bookingType = BookingType;
   readonly socialStatus = SocialStatus;
+  readonly roomType = RoomType;
   form: FormGroup;
   addressList: Array<IAddress> = [];
   busList: Array<IBus> = [];

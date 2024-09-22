@@ -9,10 +9,11 @@ import { timer } from 'rxjs';
 @Component({
   templateUrl: './manage-reservation.component.html'
 })
-export class ManageReservationComponent implements OnInit  {
+export class ManageReservationComponent implements OnInit {
 
   reservationData: Array<ITicket> = [];
   isDataLoaded = false;
+  isTabAutoOpened = false;
   @ViewChild('reservationComp') reservationComp!: ReservationComponent;
 
   constructor(
@@ -20,27 +21,34 @@ export class ManageReservationComponent implements OnInit  {
     private fireStoreService: FireStoreService,
     @Inject(MAT_DIALOG_DATA) public data: IPrimaryDataSourceVm
   ) {}
-
+  
   ngOnInit(): void {
-    if (this.data && this.data.id) {
-      this.fireStoreService.getPrimaryWithRelatedParticipants(this.data.id).subscribe(res => {
-        this.reservationData = res;
-        this.isDataLoaded = true;
-        timer(100).subscribe(() => { 
-          if (this.reservationComp && this.data && this.reservationData) {
-            const primary = this.reservationData.find(r => r.isMain);
-            if (primary) {
-              this.reservationComp.setGroupTabBasedOnRoomType(primary.roomType);
-            }
-          }
-        });
-      });
-    } else {
-      this.isDataLoaded = true;
-    }
+    this.getReservationData();
   }
 
   close(fireRefresh = false): void {
     this.dialogRef.close({fireRefresh});
+  }
+
+  private getReservationData(): void {
+    if (this.data && this.data.id) {
+      this.fireStoreService.getPrimaryWithRelatedParticipants(this.data.id).subscribe(res => {
+        this.reservationData = res;
+        this.isDataLoaded = true;
+        this.isTabAutoOpened = true;
+        if (!this.isTabAutoOpened) {
+          timer(100).subscribe(() => {
+            if (this.reservationComp && this.data && this.reservationData) {
+              const primary = this.reservationData.find(r => r.isMain);
+              if (primary) {
+                this.reservationComp.setGroupTabBasedOnRoomType(primary.roomType);
+              }
+            }
+          });
+        }
+      });
+    } else {
+      this.isDataLoaded = true;
+    }
   }
 }

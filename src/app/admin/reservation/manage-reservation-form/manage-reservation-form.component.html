@@ -1,6 +1,6 @@
 <form [formGroup]="model.form" novalidate class="row mx-0" (ngSubmit)="save()">
   
-  <div *ngIf="model.showEditMessage" class="alert alert-danger m-3">
+  <div *ngIf="model.showEditMessage" class="alert alert-danger m-3" id="editMessage">
     {{'common.editMessage' | translate}}
   </div>
 
@@ -233,10 +233,20 @@
     </ng-container>
   </ng-container>
   <ng-container>
-    <div *ngIf="model.form.value.bookingType === model.bookingType.group" class="col-12 px-2">
-      <button type="button" mat-stroked-button color="primary" (click)="addChild()"
-        class="child-btn">{{'common.addFreeChild' | translate}}
-      </button>
+    <div class="col-12 px-2">
+      <div class="d-flex flex-lg-row flex-column">
+        <div *ngIf="isAdmin && isEditMode && model.form.value.bookingType === model.bookingType.group && model.form.value.roomType !== model.roomType.single"
+          class="mb-lg-0 mb-2">
+          <button type="button" mat-stroked-button color="primary" (click)="addAdult()"
+            class="child-btn">{{'common.AddAdult' | translate}}
+          </button>
+        </div>
+        <div *ngIf="model.form.value.bookingType === model.bookingType.group">
+          <button type="button" mat-stroked-button color="primary" (click)="addChild()"
+            class="child-btn">{{'common.addFreeChild' | translate}}
+          </button>
+        </div>
+      </div>
     </div>
     <div *ngIf="isAdmin && isEditMode" class="bg-white border rounded w-100 m-3">
       <div class="row mx-0 p-3">

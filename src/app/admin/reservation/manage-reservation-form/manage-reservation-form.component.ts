@@ -8,6 +8,7 @@ import { ManageReservationFormModel } from './manage-reservation-form.models';
 import { Gender, SocialStatus, BookingStatus, BookingType, IAddress, IBus, ITicket } from '@app/models';
 import { DialogService, FireStoreService, NotifyService, StorageService, TranslationService } from '@app/services';
 import { RoomType } from 'app/shared/models/ticket';
+import { timer } from 'rxjs';
 
 @Component({
   selector: 'app-manage-reservation-form',
@@ -164,6 +165,12 @@ export class ManageReservationFormComponent implements OnInit {
 
   private update(): void {
     const formValue = this.model.form.value;
+    const maximum = this.model.form.value.roomType - 1;
+    const adults = this.model.form.value.participants.length;
+    this.model.showEditMessage = adults !== maximum;
+    if (this.model.showEditMessage) {
+      timer(100).subscribe(() => this.scrollToElement('editMessage'));
+    }
     if (this.isEditMode && this.isAdmin && this.canUpdate()) {
       this.model.isLoading = true;
       this.fireStoreService.updateTicket(formValue, this.model.idsNeedToRemoved).subscribe(() => {
@@ -319,6 +326,13 @@ export class ManageReservationFormComponent implements OnInit {
         return adults === 3;
       default:
         return adults === 0 && children === 0;
+    }
+  }
+
+  private scrollToElement(elementId: string) {
+    const element = document.getElementById(elementId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
     }
   }
 }

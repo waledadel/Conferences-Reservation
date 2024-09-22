@@ -84,10 +84,7 @@ export class FireStoreService {
     batch.set(primaryRef, primary);
     if (isParticipantsExists) {
       item.participants.filter(t => t.id != '' && t.id != null).forEach(p => {
-        const participant: Partial<ITicket> = {
-          ...p,
-          isMain: false
-        };
+        const participant: Partial<ITicket> = { ...p, isMain: false };
         const participantRef = this.angularFirestore.doc(`/${Constants.RealtimeDatabase.tickets}/${participant.id}`).ref;
         batch.update(participantRef, { ...participant });
       });
@@ -244,7 +241,7 @@ export class FireStoreService {
       .collection<ITicket>(Constants.RealtimeDatabase.tickets, ref =>
         ref.where('primaryId', '==', primaryId)
       )
-      .valueChanges({ idField: 'id' });
+      .valueChanges({ idField: 'id' }).pipe(first());
   }
 
   getAllMembers(): Observable<Array<IAllSubscriptionDataSourceVm>> {
