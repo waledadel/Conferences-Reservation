@@ -12,7 +12,7 @@ import { AllSubscriptionModel } from './all-subscription.models';
 import { AdvancedSearchComponent } from '../advanced-search/advanced-search.component';
 import { AddRoomToMemberComponent } from './add-room-to-member/add-room-to-member.component';
 import { ExportPages, IExportMembers } from '../export-members/export-members.model';
-import { RoomType } from 'app/shared/models/ticket';
+import { ReservationUtilityService } from 'app/utils/reservation-utility.service';
 
 @Component({
   templateUrl: './all-subscription.component.html'
@@ -32,7 +32,8 @@ export class AllSubscriptionComponent implements OnInit {
   constructor(
     private fireStoreService: FireStoreService,
     private adminService: AdminService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private reservationUtilityService: ReservationUtilityService
   ) {
     this.model = new AllSubscriptionModel();
   }
@@ -348,7 +349,7 @@ export class AllSubscriptionComponent implements OnInit {
       if (ticket && list && list.length > 0) {
         let adultCost = 0;
         let primaryCost = 0;
-        const price = this.getReservationPrice(ticket);
+        const price = this.reservationUtilityService.getReservationPrice(ticket.roomType);
         const primaryMember = list.find(m => m.id === ticket.primaryId && m.isMain);
         if (primaryMember) {
           primaryCost = this.getTransportPrice(primaryMember.transportationId);
@@ -376,19 +377,5 @@ export class AllSubscriptionComponent implements OnInit {
       return 0;
     }
     return 0;
-  }
-
-  private getReservationPrice(ticket: IAllSubscriptionDataSourceVm): number {
-    const roomType = ticket.roomType;
-    switch (roomType) {
-      case RoomType.double:
-        return 1050;
-      case RoomType.triple:
-        return 950;
-      case RoomType.quad:
-        return 800;
-      default:
-        return 800;
-    }
   }
 }

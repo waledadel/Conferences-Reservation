@@ -86,7 +86,7 @@ export class SettingsComponent implements OnInit {
     return this.formBuilder.group({
       title: ['', Validators.required],
       imageUrl: ['', Validators.required],
-      imageName: ['', Validators.required],
+      imageName: [''],
       generalAlerts: ['', Validators.required],
       priceDetails: ['', Validators.required],
       importantDates: ['', Validators.required],
@@ -127,11 +127,8 @@ export class SettingsComponent implements OnInit {
       finalize(() => {
         storageRef.getDownloadURL().subscribe(url => {
           if (url) {
-            this.model.form.patchValue({
-              imageUrl: url,
-              imageName: file.name
-            });
             this.model.selectedImage = url;
+            this.model.form.patchValue({ imageUrl: url, imageName: file.name });
           }
         });
       }),
@@ -140,7 +137,7 @@ export class SettingsComponent implements OnInit {
 
   private getSavedSettings(): void {
     this.fireStoreService.getAll<ISettings>(Constants.RealtimeDatabase.settings).subscribe(data => {
-      if (data && data.length === 1) {
+      if (data && data.length > 0) {
         this.patchFormValue(data[0]);
         this.model.savedSettings = data[0];
       }

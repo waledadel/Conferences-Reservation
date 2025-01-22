@@ -9,6 +9,7 @@ import { Gender, SocialStatus, BookingStatus, BookingType, IAddress, IBus, ITick
 import { DialogService, FireStoreService, NotifyService, StorageService, TranslationService } from '@app/services';
 import { RoomType } from 'app/shared/models/ticket';
 import { timer } from 'rxjs';
+import { ReservationUtilityService } from 'app/utils/reservation-utility.service';
 
 @Component({
   selector: 'app-manage-reservation-form',
@@ -32,7 +33,7 @@ export class ManageReservationFormComponent implements OnInit {
     const canUpdate = this.isEditMode && this.isAdmin && this.reservationData.length > 0;
     let max = maximum;
     if (canUpdate) {
-      const adults = this.reservationData.filter(c => new Date().getFullYear() - c.birthDate.toDate().getFullYear() > 4 );
+      const adults = this.reservationData.filter(c => new Date().getFullYear() - c.birthDate.toDate().getFullYear() >= 8 );
       max = adults.length - 1;
     }
     this.model.showEditMessage = max !== maximum;
@@ -58,7 +59,8 @@ export class ManageReservationFormComponent implements OnInit {
     private notifyService: NotifyService,
     private storageService: StorageService,
     private translationService: TranslationService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private reservationUtilityService: ReservationUtilityService
   ) {
     this.model = new ManageReservationFormModel();
 
@@ -222,7 +224,7 @@ export class ManageReservationFormComponent implements OnInit {
   private patchFormValue(): void {
     if (this.reservationData && this.reservationData.length > 0) {
       const primary = this.reservationData.find(m => m.isMain);
-      const allParticipants = this.reservationData.filter(p => !p.isMain && new Date().getFullYear() - p.birthDate.toDate().getFullYear() > 4);
+      const allParticipants = this.reservationData.filter(p => !p.isMain && new Date().getFullYear() - p.birthDate.toDate().getFullYear() >= 8);
       const allChildren = this.reservationData.filter(p => !p.isMain && new Date().getFullYear() - p.birthDate.toDate().getFullYear() <= 4);
       if (primary && primary != null) {
         const totalCost = this.getTotalCost();
@@ -268,38 +270,29 @@ export class ManageReservationFormComponent implements OnInit {
     if (this.reservationData.length > 0) {
       let adultTransportCost = 0;
       let primaryTransportCost = 0;
-      const price = this.getReservationPrice();
+      let childrenTransportCost = 0;
       const primary = this.reservationData.find(m => m.isMain);
+      const price = primary ? this.reservationUtilityService.getReservationPrice(primary.roomType) : 0;
       if (primary) {
         primaryTransportCost = this.getTransportPrice(primary.transportationId);
-        const adults = this.reservationData.filter(c => !c.isMain && new Date().getFullYear() - c.birthDate.toDate().getFullYear() > 4 );
+        const adults = this.reservationData.filter(c => !c.isMain && new Date().getFullYear() - c.birthDate.toDate().getFullYear() >= 8 );
+        const childrenMoreThenFour = this.reservationData.filter(c => !c.isMain && new Date().getFullYear() - c.birthDate.toDate().getFullYear() >= 4 &&  
+          new Date().getFullYear() - c.birthDate.toDate().getFullYear() < 8);
         if (primary.adultsCount > 0 && adults && adults.length > 0) {
           adults.forEach(adult => {
             const transportPrice = this.getTransportPrice(adult.transportationId);
             adultTransportCost += transportPrice;
           });
         }
-        return (price * (primary.adultsCount + 1)) + primaryTransportCost + adultTransportCost;
+        if (childrenMoreThenFour && childrenMoreThenFour.length > 0) { 
+          childrenMoreThenFour.forEach(child => {
+            const transportPrice = this.getTransportPrice(primary.transportationId);
+            childrenTransportCost += transportPrice;
+          });
+        }
+        return (price * (primary.adultsCount + 1)) + primaryTransportCost + adultTransportCost + childrenTransportCost;
       }
       return 0;
-    }
-    return 0;
-  }
-
-  private getReservationPrice(): number {
-    const primary = this.reservationData.find(p => p.isMain);
-    if (primary) {
-      const roomType = primary.roomType;
-      switch (roomType) {
-        case RoomType.double:
-          return 1050;
-        case RoomType.triple:
-          return 950;
-        case RoomType.quad:
-          return 800;
-        default:
-          return 800;
-      }
     }
     return 0;
   }

@@ -13,7 +13,7 @@ import { PrimaryModel } from './primary.models';
 import { ExportMembersComponent } from '../export-members/export-members.component';
 import { AdvancedSearchComponent } from '../advanced-search/advanced-search.component';
 import { ExportPages, IExportMembers } from '../export-members/export-members.model';
-import { RoomType } from 'app/shared/models/ticket';
+import { ReservationUtilityService } from 'app/utils/reservation-utility.service';
 
 @Component({
   templateUrl: './primary.component.html'
@@ -35,7 +35,8 @@ export class PrimaryComponent implements OnInit {
     private dialogService: DialogService,
     private notifyService: NotifyService,
     private translationService: TranslationService,
-    private adminService: AdminService
+    private adminService: AdminService,
+    private reservationUtilityService: ReservationUtilityService
   ) {
     this.model = new PrimaryModel();
   }
@@ -142,7 +143,7 @@ export class PrimaryComponent implements OnInit {
 
   viewCostDetails(item: IPrimaryDataSourceVm): void {
     const list: Array<ICostDetailsDataSourceVm> = [];
-    const price = this.getReservationPrice(item);
+    const price = this.reservationUtilityService.getReservationPrice(item.roomType);
     // Primary
     list.push({
       isChild: false,
@@ -339,7 +340,7 @@ export class PrimaryComponent implements OnInit {
     if (ticket) {
       let adultTransportCost = 0;
       let primaryTransportCost = 0;
-      const price = this.getReservationPrice(ticket);
+      const price = this.reservationUtilityService.getReservationPrice(ticket.roomType);
       primaryTransportCost = this.getTransportPrice(ticket.transportationId);
       if (list.length > 0) {
         if (ticket.adultsCount > 0) {
@@ -355,20 +356,6 @@ export class PrimaryComponent implements OnInit {
       return (price * (ticket.adultsCount + 1)) + primaryTransportCost + adultTransportCost;
     }
     return 0;
-  }
-
-  private getReservationPrice(ticket: IPrimaryDataSourceVm): number {
-    const roomType = ticket.roomType;
-    switch (roomType) {
-      case RoomType.double:
-        return 1050;
-      case RoomType.triple:
-        return 950;
-      case RoomType.quad:
-        return 800;
-      default:
-        return 800;
-    }
   }
 
   private getBuses(): void {

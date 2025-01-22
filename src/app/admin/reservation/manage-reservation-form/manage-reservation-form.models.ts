@@ -15,6 +15,7 @@ export class ManageReservationFormModel {
   isArabic = true;
   maxDate: Date;
   adultMinDate: Date;
+  adultMaxDate: Date;
   childMinDate: Date;
   isLoading = false;
   remaining = 0;
@@ -39,7 +40,8 @@ export class ManageReservationFormModel {
     this.form = {} as FormGroup;
     const now = new Date();
     this.maxDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-    this.adultMinDate = new Date(now.getFullYear() - 90, now.getMonth(), now.getDate());
-    this.childMinDate = new Date(now.getFullYear() - 4, now.getMonth(), now.getDate());
+    this.adultMinDate = new Date(now.getFullYear() - 98, now.getMonth(), now.getDate());
+    this.adultMaxDate = new Date(now.getFullYear() - 8, now.getMonth(), now.getDate());
+    this.childMinDate = new Date(now.getFullYear() - 8, now.getMonth(), now.getDate());
   }
 }

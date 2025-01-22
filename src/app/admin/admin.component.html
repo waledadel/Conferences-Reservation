@@ -2,7 +2,7 @@
     <button mat-icon-button (click)="drawer.toggle()">
         <mat-icon>menu</mat-icon>
     </button>
-    <span *ngIf="model.pageTitle != ''">{{model.pageTitle}}</span>
+    <span *ngIf="model.pageTitle">{{model.pageTitle}}</span>
 </mat-toolbar>
 
 <mat-drawer-container class="app-container">

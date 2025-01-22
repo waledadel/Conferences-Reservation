@@ -29,14 +29,16 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.settings = this.fireStoreService.getAll(Constants.RealtimeDatabase.settings);
     this.settings.subscribe(res => {
-      this.enableWaitingList = res[0].enableWaitingList;
-      const startReservationDate = this.stripTime(res[0].startReservationDate.toDate());
-      const endReservationDate = this.stripTime(res[0].endReservationDate.toDate());
-      const currentDate = this.stripTime(this.currentDate);
-      this.isReservationAllowed = currentDate >= startReservationDate && currentDate <= endReservationDate;
-      this.isReservationStart = currentDate >= startReservationDate;
-      this.isExpired = currentDate > endReservationDate;
-      this.isReservationCompleted = res[0].availableTicketsCount === 0;
+      if (res?.length > 0) {
+        this.enableWaitingList = res[0].enableWaitingList;
+        const startReservationDate = this.stripTime(res[0].startReservationDate.toDate());
+        const endReservationDate = this.stripTime(res[0].endReservationDate.toDate());
+        const currentDate = this.stripTime(this.currentDate);
+        this.isReservationAllowed = currentDate >= startReservationDate && currentDate <= endReservationDate;
+        this.isReservationStart = currentDate >= startReservationDate;
+        this.isExpired = currentDate > endReservationDate;
+        this.isReservationCompleted = res[0].availableTicketsCount === 0;
+      }
     });
   }
 

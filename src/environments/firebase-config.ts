@@ -11,6 +11,7 @@ export const firebaseProductionConfig = {
 export const firebaseDevConfig = {
     apiKey: 'AIzaSyAUbh5S6iFkdRIMhqIUYrmgewn_tlOzsdI',
     authDomain: 'conference-reservation-dev.firebaseapp.com',
+    databaseURL: 'https://conference-reservation-dev-default-rtdb.firebaseio.com',
     projectId: 'conference-reservation-dev',
     storageBucket: 'conference-reservation-dev.appspot.com',
     messagingSenderId: '1007042863705',
