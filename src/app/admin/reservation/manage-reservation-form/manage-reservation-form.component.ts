@@ -271,6 +271,7 @@ export class ManageReservationFormComponent implements OnInit {
       let adultTransportCost = 0;
       let primaryTransportCost = 0;
       let childrenTransportCost = 0;
+      let childrenBetweenFourandEightCost = 0;
       const primary = this.reservationData.find(m => m.isMain);
       const price = primary ? this.reservationUtilityService.getReservationPrice(primary.roomType) : 0;
       if (primary) {
@@ -285,12 +286,13 @@ export class ManageReservationFormComponent implements OnInit {
           });
         }
         if (childrenMoreThenFour && childrenMoreThenFour.length > 0) { 
-          childrenMoreThenFour.forEach(child => {
+          childrenMoreThenFour.forEach(() => {
             const transportPrice = this.getTransportPrice(primary.transportationId);
             childrenTransportCost += transportPrice;
+            childrenBetweenFourandEightCost += 0.5 * price;
           });
         }
-        return (price * (primary.adultsCount + 1)) + primaryTransportCost + adultTransportCost + childrenTransportCost;
+        return (price * (primary.adultsCount + 1)) + primaryTransportCost + adultTransportCost + childrenTransportCost + childrenBetweenFourandEightCost;
       }
       return 0;
     }

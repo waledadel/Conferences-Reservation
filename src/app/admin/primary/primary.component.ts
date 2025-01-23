@@ -156,14 +156,28 @@ export class PrimaryComponent implements OnInit {
     // other members
     const allRelatedMembers = this.model.notPrimaryMembers.filter(m => m.primaryId === item.primaryId);
     if (allRelatedMembers.length > 0) {
-      const adults = allRelatedMembers.filter(m => new Date().getFullYear() - m.birthDate.toDate().getFullYear() > 4);
-      const children = allRelatedMembers.filter(m => new Date().getFullYear() - m.birthDate.toDate().getFullYear() <= 4);
-      if (children && children.length > 0) {
-        children.forEach(item => {
+      const adults = allRelatedMembers.filter(m => new Date().getFullYear() - m.birthDate.toDate().getFullYear() >= 8);
+      const childrenBetweenFourAndEight = allRelatedMembers.filter(m => new Date().getFullYear() - m.birthDate.toDate().getFullYear() >= 4 && 
+        new Date().getFullYear() - m.birthDate.toDate().getFullYear() < 8);
+      const childrenLessFour = allRelatedMembers.filter(m => new Date().getFullYear() - m.birthDate.toDate().getFullYear() < 4);
+      if (childrenBetweenFourAndEight && childrenBetweenFourAndEight.length > 0) {
+        childrenBetweenFourAndEight.forEach(child => {
           list.push({
             isChild: true,
             isMain: false,
-            name: item.name,
+            name: child.name,
+            privateTransport: this.isPrivateTransport(item.transportationId),
+            reservationPrice: 0.5 * price,
+            transportPrice: this.getTransportPrice(item.transportationId)
+          });
+        });
+      }
+      if (childrenLessFour && childrenLessFour.length > 0) {
+        childrenLessFour.forEach(ch => {
+          list.push({
+            isChild: true,
+            isMain: false,
+            name: ch.name,
             privateTransport: this.isPrivateTransport(item.transportationId),
             reservationPrice: 0,
             transportPrice: 0
@@ -171,14 +185,14 @@ export class PrimaryComponent implements OnInit {
         });
       }
       if (adults && adults.length > 0) {
-        adults.forEach(item => {
+        adults.forEach(adult => {
           list.push({
             isChild: false,
             isMain: false,
-            name: item.name,
-            privateTransport: this.isPrivateTransport(item.transportationId),
+            name: adult.name,
+            privateTransport: adult.transportationId ? this.isPrivateTransport(adult.transportationId) : this.isPrivateTransport(item.transportationId),
             reservationPrice: price,
-            transportPrice: this.getTransportPrice(item.transportationId)
+            transportPrice: adult.transportationId ? this.getTransportPrice(adult.transportationId) : this.getTransportPrice(item.transportationId)
           });
         });
       }
@@ -340,11 +354,13 @@ export class PrimaryComponent implements OnInit {
     if (ticket) {
       let adultTransportCost = 0;
       let primaryTransportCost = 0;
+      let childrenTransportCost = 0;
+      let childrenBetweenFourAndEightCost = 0;
       const price = this.reservationUtilityService.getReservationPrice(ticket.roomType);
       primaryTransportCost = this.getTransportPrice(ticket.transportationId);
       if (list.length > 0) {
         if (ticket.adultsCount > 0) {
-          const adults = list.filter(c => c.primaryId === ticket.id && new Date().getFullYear() - c.birthDate.toDate().getFullYear() > 4);
+          const adults = list.filter(c => c.primaryId === ticket.id && new Date().getFullYear() - c.birthDate.toDate().getFullYear() >= 8);
           if (adults && adults.length > 0) {
             adults.forEach(adult => {
               const transportPrice = this.getTransportPrice(adult.transportationId);
@@ -352,8 +368,18 @@ export class PrimaryComponent implements OnInit {
             });
           }
         }
+        if (ticket.childrenCount > 0) {
+          const childrenBetweenFourAndEight = list.filter(c => c.primaryId === ticket.id && 
+            new Date().getFullYear() - c.birthDate.toDate().getFullYear() >= 4 && new Date().getFullYear() - c.birthDate.toDate().getFullYear() < 8);
+          if (childrenBetweenFourAndEight && childrenBetweenFourAndEight.length > 0) {
+            childrenBetweenFourAndEight.forEach(() => {
+              childrenTransportCost += primaryTransportCost;
+              childrenBetweenFourAndEightCost += 0.5 * price;
+            });
+          }
+        }
       }
-      return (price * (ticket.adultsCount + 1)) + primaryTransportCost + adultTransportCost;
+      return (price * (ticket.adultsCount + 1)) + primaryTransportCost + adultTransportCost + childrenTransportCost + childrenBetweenFourAndEightCost;
     }
     return 0;
   }
