@@ -157,9 +157,9 @@ export class PrimaryComponent implements OnInit {
     const allRelatedMembers = this.model.notPrimaryMembers.filter(m => m.primaryId === item.primaryId);
     if (allRelatedMembers.length > 0) {
       const adults = allRelatedMembers.filter(m => new Date().getFullYear() - m.birthDate.toDate().getFullYear() >= 8);
-      const childrenBetweenFourAndEight = allRelatedMembers.filter(m => new Date().getFullYear() - m.birthDate.toDate().getFullYear() >= 4 && 
+      const childrenBetweenFourAndEight = allRelatedMembers.filter(m => new Date().getFullYear() - m.birthDate.toDate().getFullYear() > 4 && 
         new Date().getFullYear() - m.birthDate.toDate().getFullYear() < 8);
-      const childrenLessFour = allRelatedMembers.filter(m => new Date().getFullYear() - m.birthDate.toDate().getFullYear() < 4);
+      const childrenLessFour = allRelatedMembers.filter(m => new Date().getFullYear() - m.birthDate.toDate().getFullYear() <= 4);
       if (childrenBetweenFourAndEight && childrenBetweenFourAndEight.length > 0) {
         childrenBetweenFourAndEight.forEach(child => {
           list.push({
@@ -274,7 +274,13 @@ export class PrimaryComponent implements OnInit {
         const transportationName = this.getBusNameById(item.transportationId);
         const lastUpdatedBy = this.getUserById(item.lastUpdateUserId);
         const addressName = this.getAddressNameById(item.addressId);
-        return {...item, totalCost, transportationName, lastUpdatedBy, addressName};
+        const adults = this.model.notPrimaryMembers.filter(m => m.primaryId === item.primaryId && 
+          new Date().getFullYear() - m.birthDate.toDate().getFullYear() >= 8);
+        const children = this.model.notPrimaryMembers.filter(m => m.primaryId === item.primaryId &&
+          new Date().getFullYear() - m.birthDate.toDate().getFullYear() < 8);
+        const childrenCount = children ? children.length : 0;
+        const adultsCount = adults ? adults.length : 0;
+        return {...item, totalCost, transportationName, lastUpdatedBy, addressName, adultsCount, childrenCount};
       });
       this.model.dataSource = new MatTableDataSource(data);
       this.model.total = data.length;
@@ -352,34 +358,30 @@ export class PrimaryComponent implements OnInit {
 
   private getTotalCost(ticket: IPrimaryDataSourceVm, list: Array<IRelatedMemberViewModel>): number {
     if (ticket) {
-      let adultTransportCost = 0;
-      let primaryTransportCost = 0;
-      let childrenTransportCost = 0;
-      let childrenBetweenFourAndEightCost = 0;
+      let adultCost = 0;
+      let primaryCost = 0;
+      let childrenCost = 0;
       const price = this.reservationUtilityService.getReservationPrice(ticket.roomType);
-      primaryTransportCost = this.getTransportPrice(ticket.transportationId);
+      primaryCost = this.getTransportPrice(ticket.transportationId) + price;
+      const members = list.filter(c => c.primaryId === ticket.id);
       if (list.length > 0) {
-        if (ticket.adultsCount > 0) {
-          const adults = list.filter(c => c.primaryId === ticket.id && new Date().getFullYear() - c.birthDate.toDate().getFullYear() >= 8);
-          if (adults && adults.length > 0) {
-            adults.forEach(adult => {
-              const transportPrice = this.getTransportPrice(adult.transportationId);
-              adultTransportCost += transportPrice;
-            });
-          }
+        const adults = members.filter(c => new Date().getFullYear() - c.birthDate.toDate().getFullYear() >= 8);
+        if (adults && adults.length > 0) {
+          adults.forEach(adult => {
+            const transportPrice = this.getTransportPrice(adult.transportationId);
+            adultCost += (transportPrice + price);
+          });
         }
-        if (ticket.childrenCount > 0) {
-          const childrenBetweenFourAndEight = list.filter(c => c.primaryId === ticket.id && 
-            new Date().getFullYear() - c.birthDate.toDate().getFullYear() >= 4 && new Date().getFullYear() - c.birthDate.toDate().getFullYear() < 8);
-          if (childrenBetweenFourAndEight && childrenBetweenFourAndEight.length > 0) {
-            childrenBetweenFourAndEight.forEach(() => {
-              childrenTransportCost += primaryTransportCost;
-              childrenBetweenFourAndEightCost += 0.5 * price;
-            });
-          }
+        const childrenBetweenFourAndEight = members.filter(c => new Date().getFullYear() - c.birthDate.toDate().getFullYear() >= 4 
+          && new Date().getFullYear() - c.birthDate.toDate().getFullYear() < 8);
+        if (childrenBetweenFourAndEight && childrenBetweenFourAndEight.length > 0) {
+          childrenBetweenFourAndEight.forEach((adult) => {
+            const transportPrice = this.getTransportPrice(adult.transportationId);
+            childrenCost += ((0.5 * price) + transportPrice);
+          });
         }
       }
-      return (price * (ticket.adultsCount + 1)) + primaryTransportCost + adultTransportCost + childrenTransportCost + childrenBetweenFourAndEightCost;
+      return primaryCost + adultCost + childrenCost;
     }
     return 0;
   }

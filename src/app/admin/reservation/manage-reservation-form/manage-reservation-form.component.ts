@@ -268,31 +268,29 @@ export class ManageReservationFormComponent implements OnInit {
 
   private getTotalCost(): number {
     if (this.reservationData.length > 0) {
-      let adultTransportCost = 0;
-      let primaryTransportCost = 0;
-      let childrenTransportCost = 0;
-      let childrenBetweenFourandEightCost = 0;
+      let adultCost = 0;
+      let primaryCost = 0;
+      let childrenCost = 0;
       const primary = this.reservationData.find(m => m.isMain);
       const price = primary ? this.reservationUtilityService.getReservationPrice(primary.roomType) : 0;
       if (primary) {
-        primaryTransportCost = this.getTransportPrice(primary.transportationId);
-        const adults = this.reservationData.filter(c => !c.isMain && new Date().getFullYear() - c.birthDate.toDate().getFullYear() >= 8 );
-        const childrenMoreThenFour = this.reservationData.filter(c => !c.isMain && new Date().getFullYear() - c.birthDate.toDate().getFullYear() >= 4 &&  
+        primaryCost = this.getTransportPrice(primary.transportationId) + price;
+        const adults = this.reservationData.filter(c => !c.isMain && new Date().getFullYear() - c.birthDate.toDate().getFullYear() >= 8);
+        const childrenMoreThenFour = this.reservationData.filter(c => !c.isMain && new Date().getFullYear() - c.birthDate.toDate().getFullYear() > 4 &&  
           new Date().getFullYear() - c.birthDate.toDate().getFullYear() < 8);
-        if (primary.adultsCount > 0 && adults && adults.length > 0) {
+        if (adults && adults.length > 0) {
           adults.forEach(adult => {
             const transportPrice = this.getTransportPrice(adult.transportationId);
-            adultTransportCost += transportPrice;
+            adultCost += (transportPrice + price);
           });
         }
         if (childrenMoreThenFour && childrenMoreThenFour.length > 0) { 
           childrenMoreThenFour.forEach(() => {
             const transportPrice = this.getTransportPrice(primary.transportationId);
-            childrenTransportCost += transportPrice;
-            childrenBetweenFourandEightCost += 0.5 * price;
+            childrenCost += (transportPrice + (0.5 * price));
           });
         }
-        return (price * (primary.adultsCount + 1)) + primaryTransportCost + adultTransportCost + childrenTransportCost + childrenBetweenFourandEightCost;
+        return primaryCost + adultCost + childrenCost;
       }
       return 0;
     }

@@ -41,7 +41,7 @@ export class ManageReservationFormModel {
     const now = new Date();
     this.maxDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
     this.adultMinDate = new Date(now.getFullYear() - 98, now.getMonth(), now.getDate());
-    this.adultMaxDate = new Date(now.getFullYear() - 8, now.getMonth(), now.getDate());
-    this.childMinDate = new Date(now.getFullYear() - 8, now.getMonth(), now.getDate());
+    this.adultMaxDate = new Date(now.getFullYear() - 4, now.getMonth(), now.getDate());
+    this.childMinDate = new Date(now.getFullYear() - 4, now.getMonth(), now.getDate());
   }
 }
