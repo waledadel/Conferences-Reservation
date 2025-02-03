@@ -355,7 +355,7 @@ export class AllSubscriptionComponent implements OnInit {
         if (primaryMember) {
           primaryCost = this.getTransportPrice(primaryMember.transportationId) + price;
           const adults = list.filter(m => m.primaryId === primaryMember.id && (new Date().getFullYear() - m.birthDate.toDate().getFullYear() >= 8) && !m.isMain);
-          const childrenMoreThenFour = list.filter(c => !c.isMain && new Date().getFullYear() - c.birthDate.toDate().getFullYear() > 4 &&  
+          const childrenMoreThenFour = list.filter(c => !c.isMain && c.primaryId === primaryMember.id && new Date().getFullYear() - c.birthDate.toDate().getFullYear() > 4 &&  
             new Date().getFullYear() - c.birthDate.toDate().getFullYear() < 8);
           if (adults && adults.length > 0) {
             adults.forEach(ad => {
