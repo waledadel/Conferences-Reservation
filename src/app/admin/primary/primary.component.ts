@@ -372,7 +372,7 @@ export class PrimaryComponent implements OnInit {
             adultCost += (transportPrice + price);
           });
         }
-        const childrenBetweenFourAndEight = members.filter(c => new Date().getFullYear() - c.birthDate.toDate().getFullYear() >= 4 
+        const childrenBetweenFourAndEight = members.filter(c => new Date().getFullYear() - c.birthDate.toDate().getFullYear() > 4 
           && new Date().getFullYear() - c.birthDate.toDate().getFullYear() < 8);
         if (childrenBetweenFourAndEight && childrenBetweenFourAndEight.length > 0) {
           childrenBetweenFourAndEight.forEach((adult) => {

@@ -1,1 +1,29 @@
-<p>statistics works!</p>
+<div class="container-fluid p-5">
+    <div class="row">
+        <ng-container *ngFor="let item of model.items; let last = last">
+            <mat-accordion class="col-12" [class.mb-2]="!last">
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            <div class="d-flex">
+                                {{item.key | translate}}:
+                                <div class="fontweight-bold px-2">{{item.count}}</div>
+                            </div>
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <ol *ngIf="item.count > 0; else noData">
+                        <ng-container *ngFor="let name of item.members">
+                            <li>{{name}}</li>
+                        </ng-container>
+                    </ol>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </ng-container>
+    </div>
+</div>
+
+<ng-template #noData>
+    <div class="d-flex justify-content-center text-muted pb-3">
+        {{'common.emptyData' | translate}}
+    </div>
+</ng-template>
