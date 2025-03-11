@@ -141,7 +141,7 @@ button:focus {
 @media (min-width: 769px) {
   .table-container {
     .mat-elevation-z8 {
-      max-height: 630px;
+      max-height: calc(100% - 25px);
       width: 100%;
     }
   }

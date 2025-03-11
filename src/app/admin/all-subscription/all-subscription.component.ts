@@ -348,19 +348,28 @@ export class AllSubscriptionComponent implements OnInit {
     if (ticket.isMain) {
       if (ticket && list && list.length > 0) {
         let adultCost = 0;
+        let childrenCost = 0;
         let primaryCost = 0;
         const price = this.reservationUtilityService.getReservationPrice(ticket.roomType);
         const primaryMember = list.find(m => m.id === ticket.primaryId && m.isMain);
         if (primaryMember) {
-          primaryCost = this.getTransportPrice(primaryMember.transportationId);
-          const adults = list.filter(m => m.primaryId === primaryMember.id && (new Date().getFullYear() - m.birthDate.toDate().getFullYear() > 4) && !m.isMain);
+          primaryCost = this.getTransportPrice(primaryMember.transportationId) + price;
+          const adults = list.filter(m => m.primaryId === primaryMember.id && (new Date().getFullYear() - m.birthDate.toDate().getFullYear() >= 8) && !m.isMain);
+          const childrenMoreThenFour = list.filter(c => !c.isMain && c.primaryId === primaryMember.id && new Date().getFullYear() - c.birthDate.toDate().getFullYear() > 4 &&  
+            new Date().getFullYear() - c.birthDate.toDate().getFullYear() < 8);
           if (adults && adults.length > 0) {
-            adults.forEach(adult => {
-              const transportPrice = this.getTransportPrice(adult.transportationId);
-              adultCost += transportPrice;
+            adults.forEach(ad => {
+              const transportPrice = this.getTransportPrice(ad.transportationId);
+              adultCost += (transportPrice + price);
             });
           }
-          return (price * (adults.length + 1)) + primaryCost + adultCost;
+          if (childrenMoreThenFour && childrenMoreThenFour.length > 0) {
+            adults.forEach(ch => {
+              const transportPrice = this.getTransportPrice(ch.transportationId);
+              childrenCost += (transportPrice + (0.5 * price));
+            });
+          }
+          return primaryCost + adultCost + childrenCost;
         }
       }
       return 0;

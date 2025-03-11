@@ -94,7 +94,8 @@
     "reservationType": "نوع الحجز",
     "lastUpdate": "أخر تحديث",
     "booking": "حجز",
-    "editMessage": "برجاء مراعاة أن عدد المشتركين يعتمد على نوع الحجز. قد تحتاج إلى إضافة أو حذف البعض منهم بناءً على اختيارك"
+    "editMessage": "برجاء مراعاة أن عدد المشتركين يعتمد على نوع الحجز. قد تحتاج إلى إضافة أو حذف البعض منهم بناءً على اختيارك",
+    "emptyData": "لا توجد بيانات"
   },
   "languages": {
     "arabic": "العربية",
@@ -191,5 +192,23 @@
     "adultsCount": "البالغين",
     "childrenCount": "الأطفال",
     "counts": "العدد"
+  },
+  "statistics": {
+    "shoubraBusCount": "عدد المشتركين في باص شبرا",
+    "misrBusCount": "عدد المشتركين في باص مصر الجديدة",
+    "childrenBoysCountFromFourToEight": "عدد الأطفال الاولاد من ٤ ل ٨ سنين",
+    "childrenGirlsCountFromFourToEight": "عدد الأطفال البنات من ٤ ل ٨ سنين",
+    "childrenBoysCountFromEightToTen": "عدد الأطفال الاولاد من ٨ ل ١٠ سنين",
+    "childrenGirlsCountFromEightToTen": "عدد الأطفال البنات من ٨ ل ١٠ سنين",
+    "childrenBoysCountFromTenToTwelve": "عدد الأطفال الاولاد من ١٠ ل ١٢ سنة",
+    "childrenGirlsCountFromTenToTwelve": "عدد الأطفال البنات من ١٠ ل ١٢ سنة",
+    "youthBoysCountFromTewlveToEighteen": "عدد الشباب الاولاد من ١٢ ل ١٨ سنة",
+    "youthGirlsCountFromTewlveToEighteen": "عدد الشباب البنات من ١٢ ل ١٨ سنة",
+    "totalAdultCounts": "عدد المشتركين البالغين الكلي",
+    "totalMembersAdultAndChildren": "عدد المشتركين الكلي (بالغين وأطفال)",
+    "totalMenCount": "عدد المشتركين البالغين رجال",
+    "totalWomenCount": "عدد المشتركين البالغين سيدات",
+    "totalMenAboveFifty": "عدد المشتركين الرجال فوق ال ٥٠ سنة",
+    "totalWomenAboveFifty": "عدد المشتدكين السيدات فوق ال ٥٠ سنة"
   }
 }
