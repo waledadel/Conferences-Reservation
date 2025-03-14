@@ -5,7 +5,7 @@ import { FireStoreService } from '@app/services';
 import { Gender, IBus } from '@app/models';
 import { Constants } from '@app/constants';
 import { StatisticsModel } from './statistics.models';
-import { RoomType } from 'app/shared/models/ticket';
+import { IAllSubscriptionDataSourceVm, RoomType } from 'app/shared/models/ticket';
 
 @Component({
   templateUrl: './statistics.component.html'
@@ -43,7 +43,7 @@ export class StatisticsComponent implements OnInit {
         const bus = this.model.buses.find(m => m.name.includes(busName));
         if (bus) {
           const members = res.filter(m => m.transportationId === bus.id);
-          this.addStatistics(key, members);
+          this.addStatistics(key, this.sortedAllMembers(members));
         }
       });
       const ageGenderStatistics = [
@@ -58,15 +58,15 @@ export class StatisticsComponent implements OnInit {
       ];
       ageGenderStatistics.forEach(({ key, minAge, maxAge, gender }) => {
         const members = res.filter(m => m.age >= minAge && m.age < maxAge && m.gender === gender);
-        this.addStatistics(key, members);
+        this.addStatistics(key, this.sortedAllMembers(members));
       });
       const specialStatistics = [
-        { key: 'statistics.totalAdultCounts', minAge: 18 },
-        { key: 'statistics.totalMembersAdultAndChildren', minAge: 0 }
+        { key: 'statistics.totalAdultCounts', minAge: 17 },
+        { key: 'statistics.totalMembersAdultAndChildren', minAge: 4 }
       ];
       specialStatistics.forEach(({ key, minAge }) => {
-        const members = res.filter(m => m.age >= minAge);
-        this.addStatistics(key, members);
+        const members = res.filter(m => m.age > minAge);
+        this.addStatistics(key, this.sortedAllMembers(members));
       });
       const totalStatistics = [
         { key: 'statistics.totalMenCount', minAge: 18, gender: Gender.male },
@@ -76,7 +76,15 @@ export class StatisticsComponent implements OnInit {
       ];
       totalStatistics.forEach(({ key, minAge, gender }) => {
         const members = res.filter(m => m.age >= minAge && m.gender === gender);
-        this.addStatistics(key, members);
+        this.addStatistics(key, this.sortedAllMembers(members));
+      });
+      const singleRoomTypeStatistics = [
+        { key: 'room.singleMale', roomType: RoomType.single, gender: Gender.male },
+        { key: 'room.singleFemale', roomType: RoomType.single, gender: Gender.female },
+      ];
+      singleRoomTypeStatistics.forEach(({ key, roomType, gender }) => {
+        const members = res.filter(m => m.roomType === roomType && m.isMain && m.gender === gender);
+        this.addStatistics(key, this.sortedAllMembers(members), members.length, roomType);
       });
       const roomTypeStatistics = [
         { key: 'room.single', roomType: RoomType.single },
@@ -85,12 +93,12 @@ export class StatisticsComponent implements OnInit {
         { key: 'common.quad', roomType: RoomType.quad }
       ];
       roomTypeStatistics.forEach(({ key, roomType }) => {
-        const primaryMembers = res.filter(m => m.roomType === roomType && m.isMain);
-        const allMembers = res.filter(m =>
+        const primaryMembers = res.filter(m => m.roomType === roomType && m.isMain && m.age > 4);
+        const members = res.filter(m =>
           (m.roomType === roomType && m.isMain) ||
-          (m.primaryId && primaryMembers.some(pm => pm.id === m.primaryId))
+          (m.primaryId && m.age > 4 && primaryMembers.some(pm => pm.id === m.primaryId))
         );
-        this.addStatistics(key, allMembers, primaryMembers.length, roomType);
+        this.addStatistics(key, this.sortedAllMembers(members), primaryMembers.length, roomType);
       });
     });
   }
@@ -104,4 +112,8 @@ export class StatisticsComponent implements OnInit {
       roomType
     });
   };
+
+  private sortedAllMembers(allMembers: IAllSubscriptionDataSourceVm[]): IAllSubscriptionDataSourceVm[] {
+    return allMembers.sort((a, b) => a.name.localeCompare(b.name, 'ar'));
+  }
 }

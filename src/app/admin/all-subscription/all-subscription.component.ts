@@ -310,7 +310,7 @@ export class AllSubscriptionComponent implements OnInit {
       const columnHasRoom = row.roomId;
       // verify fetching data by our searching values
       const customFilterName = columnName.toLowerCase().includes(name);
-      const customFilterMobile = columnMobile.toLowerCase().includes(mobile);
+      const customFilterMobile = columnMobile?.toLowerCase().includes(mobile);
       // We minus 1 for primary count
       const customFilterFromAge = fromAge != 'null' ? +columnAge >= +fromAge : true;
       const customFilterToAge = toAge != 'null' ? +columnAge <= +toAge : true;
