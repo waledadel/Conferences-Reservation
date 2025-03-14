@@ -92,7 +92,7 @@ export interface IPrimaryDataSourceVm {
   age: number;
   birthDateMonth: number;
   adminNotes: string;
-  lastUpdateDate?: Timestamp;
+  lastUpdateDate: Timestamp;
   lastUpdateUserId: string;
   lastUpdatedBy: string;
   roomType: RoomType;

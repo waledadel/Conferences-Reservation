@@ -245,6 +245,16 @@
                         <td mat-footer-cell *matFooterCellDef></td>
                     </ng-container>
 
+                    <ng-container matColumnDef="lastUpdateDate">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.lastUpdateDate' | translate}}</th>
+                        <td mat-cell *matCellDef="let element" class="width-135">
+                            <ng-container *ngIf="element.lastUpdateDate; else empty">
+                                {{element.lastUpdateDate.toMillis() | date:'medium'}}
+                            </ng-container>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
                     <ng-container matColumnDef="gender">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.gender' | translate}}</th>
                         <td mat-cell *matCellDef="let element">

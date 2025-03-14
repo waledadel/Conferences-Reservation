@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import { timer } from 'rxjs';
 import { Timestamp } from 'firebase/firestore';
 
 import { Constants } from '@app/constants';
@@ -8,7 +9,6 @@ import { ManageReservationFormModel } from './manage-reservation-form.models';
 import { Gender, SocialStatus, BookingStatus, BookingType, IAddress, IBus, ITicket } from '@app/models';
 import { DialogService, FireStoreService, NotifyService, StorageService, TranslationService } from '@app/services';
 import { RoomType } from 'app/shared/models/ticket';
-import { timer } from 'rxjs';
 import { ReservationUtilityService } from 'app/utils/reservation-utility.service';
 
 @Component({

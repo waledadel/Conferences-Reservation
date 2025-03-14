@@ -5,6 +5,7 @@ import { FireStoreService } from '@app/services';
 import { Gender, IBus } from '@app/models';
 import { Constants } from '@app/constants';
 import { StatisticsModel } from './statistics.models';
+import { RoomType } from 'app/shared/models/ticket';
 
 @Component({
   templateUrl: './statistics.component.html'
@@ -75,6 +76,16 @@ export class StatisticsComponent implements OnInit {
       ];
       totalStatistics.forEach(({ key, minAge, gender }) => {
         const members = res.filter(m => m.age >= minAge && m.gender === gender);
+        this.addStatistics(key, members);
+      });
+      const roomTypeStatistics = [
+        { key: 'room.single', roomType: RoomType.single },
+        { key: 'common.double', roomType: RoomType.double },
+        { key: 'common.triple', roomType: RoomType.triple },
+        { key: 'common.quad', roomType: RoomType.quad }
+      ];
+      roomTypeStatistics.forEach(({ key, roomType }) => {
+        const members = res.filter(m => m.roomType === roomType && m.isMain);
         this.addStatistics(key, members);
       });
     });

@@ -6,7 +6,7 @@ import { RoomType } from 'app/shared/models/ticket';
 
 export class PrimaryModel {
   readonly desktopColumn = ['name', 'counts', 'roomId', 'transportation', 'addressName',
-  'bookingType', 'birthDate', 'age', 'bookingDate', 'gender', 'price', 'notes',
+  'bookingType', 'birthDate', 'age', 'bookingDate', 'lastUpdateDate', 'gender', 'price', 'notes',
   'lastUpdate', 'bookingStatus', 'actions'];
   displayedColumns: string[] = [];
   dataSource = new MatTableDataSource<IPrimaryDataSourceVm>([]);
