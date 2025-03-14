@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, CanActivateChild, Router, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs';
 import { filter, map, take } from 'rxjs/operators';
 
@@ -9,7 +9,7 @@ import { Constants } from '@app/constants';
 @Injectable({
   providedIn: 'root'
 })
-export class AutoLoginGuard implements CanActivate, CanActivateChild {
+export class AutoLoginGuard  {
 
   constructor(private authService: AuthService, private router: Router) { }
 
