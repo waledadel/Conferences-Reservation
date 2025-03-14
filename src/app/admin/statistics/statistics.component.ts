@@ -43,7 +43,7 @@ export class StatisticsComponent implements OnInit {
         const bus = this.model.buses.find(m => m.name.includes(busName));
         if (bus) {
           const members = res.filter(m => m.transportationId === bus.id);
-          this.addStatistics(key, members, 0);
+          this.addStatistics(key, members);
         }
       });
       const ageGenderStatistics = [
@@ -58,7 +58,7 @@ export class StatisticsComponent implements OnInit {
       ];
       ageGenderStatistics.forEach(({ key, minAge, maxAge, gender }) => {
         const members = res.filter(m => m.age >= minAge && m.age < maxAge && m.gender === gender);
-        this.addStatistics(key, members, 0);
+        this.addStatistics(key, members);
       });
       const specialStatistics = [
         { key: 'statistics.totalAdultCounts', minAge: 18 },
@@ -66,7 +66,7 @@ export class StatisticsComponent implements OnInit {
       ];
       specialStatistics.forEach(({ key, minAge }) => {
         const members = res.filter(m => m.age >= minAge);
-        this.addStatistics(key, members, 0);
+        this.addStatistics(key, members);
       });
       const totalStatistics = [
         { key: 'statistics.totalMenCount', minAge: 18, gender: Gender.male },
@@ -76,7 +76,7 @@ export class StatisticsComponent implements OnInit {
       ];
       totalStatistics.forEach(({ key, minAge, gender }) => {
         const members = res.filter(m => m.age >= minAge && m.gender === gender);
-        this.addStatistics(key, members, 0);
+        this.addStatistics(key, members);
       });
       const roomTypeStatistics = [
         { key: 'room.single', roomType: RoomType.single },
@@ -90,17 +90,18 @@ export class StatisticsComponent implements OnInit {
           (m.roomType === roomType && m.isMain) ||
           (m.primaryId && primaryMembers.some(pm => pm.id === m.primaryId))
         );
-        this.addStatistics(key, allMembers, primaryMembers.length);
+        this.addStatistics(key, allMembers, primaryMembers.length, roomType);
       });
     });
   }
 
-  private addStatistics (key: string, members: any[], roomCount: number): void {
+  private addStatistics (key: string, members: any[], roomCount?: number, roomType?: RoomType): void {
     this.model.items.push({
       key,
       count: members.length,
       members: members.map(m => m.name),
-      room: roomCount
+      room: roomCount,
+      roomType
     });
   };
 }

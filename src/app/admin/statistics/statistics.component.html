@@ -9,7 +9,9 @@
                                 {{item.key | translate}}:
                                 <div class="fontweight-bold px-2">
                                     {{item.count}} فرد
-                                    <span *ngIf="item.room">- {{item.room}} غرفة</span>
+                                    <span *ngIf="item.room">
+                                        <span *ngIf="item.roomType !== model.roomType.single">- {{item.room}} غرفة</span>
+                                    </span>
                                 </div>
                             </div>
                         </mat-panel-title>
