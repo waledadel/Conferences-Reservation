@@ -43,7 +43,7 @@ export class StatisticsComponent implements OnInit {
         const bus = this.model.buses.find(m => m.name.includes(busName));
         if (bus) {
           const members = res.filter(m => m.transportationId === bus.id);
-          this.addStatistics(key, members);
+          this.addStatistics(key, members, 0);
         }
       });
       const ageGenderStatistics = [
@@ -58,15 +58,15 @@ export class StatisticsComponent implements OnInit {
       ];
       ageGenderStatistics.forEach(({ key, minAge, maxAge, gender }) => {
         const members = res.filter(m => m.age >= minAge && m.age < maxAge && m.gender === gender);
-        this.addStatistics(key, members);
+        this.addStatistics(key, members, 0);
       });
       const specialStatistics = [
         { key: 'statistics.totalAdultCounts', minAge: 18 },
-        { key: 'statistics.totalMembersAdultAndChildren', minAge: 4 }
+        { key: 'statistics.totalMembersAdultAndChildren', minAge: 0 }
       ];
       specialStatistics.forEach(({ key, minAge }) => {
         const members = res.filter(m => m.age >= minAge);
-        this.addStatistics(key, members);
+        this.addStatistics(key, members, 0);
       });
       const totalStatistics = [
         { key: 'statistics.totalMenCount', minAge: 18, gender: Gender.male },
@@ -76,7 +76,7 @@ export class StatisticsComponent implements OnInit {
       ];
       totalStatistics.forEach(({ key, minAge, gender }) => {
         const members = res.filter(m => m.age >= minAge && m.gender === gender);
-        this.addStatistics(key, members);
+        this.addStatistics(key, members, 0);
       });
       const roomTypeStatistics = [
         { key: 'room.single', roomType: RoomType.single },
@@ -85,17 +85,22 @@ export class StatisticsComponent implements OnInit {
         { key: 'common.quad', roomType: RoomType.quad }
       ];
       roomTypeStatistics.forEach(({ key, roomType }) => {
-        const members = res.filter(m => m.roomType === roomType && m.isMain);
-        this.addStatistics(key, members);
+        const primaryMembers = res.filter(m => m.roomType === roomType && m.isMain);
+        const allMembers = res.filter(m =>
+          (m.roomType === roomType && m.isMain) ||
+          (m.primaryId && primaryMembers.some(pm => pm.id === m.primaryId))
+        );
+        this.addStatistics(key, allMembers, primaryMembers.length);
       });
     });
   }
 
-  private addStatistics (key: string, members: any[]): void {
+  private addStatistics (key: string, members: any[], roomCount: number): void {
     this.model.items.push({
       key,
       count: members.length,
-      members: members.map(m => m.name)
+      members: members.map(m => m.name),
+      room: roomCount
     });
   };
 }

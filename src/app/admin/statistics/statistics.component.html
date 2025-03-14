@@ -7,7 +7,10 @@
                         <mat-panel-title>
                             <div class="d-flex">
                                 {{item.key | translate}}:
-                                <div class="fontweight-bold px-2">{{item.count}}</div>
+                                <div class="fontweight-bold px-2">
+                                    {{item.count}} فرد
+                                    <span *ngIf="item.room">- {{item.room}} غرفة</span>
+                                </div>
                             </div>
                         </mat-panel-title>
                     </mat-expansion-panel-header>

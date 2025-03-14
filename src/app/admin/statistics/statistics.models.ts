@@ -8,5 +8,6 @@ export class StatisticsModel {
 export interface Itatistics {
     key: string;
     count: number;
+    room: number;
     members: string[];
 }
