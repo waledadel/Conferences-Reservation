@@ -7,7 +7,9 @@
 <div mat-dialog-content>
     <div class="px-0 py-3">
         <i class="fa-solid fa-circle-check check-icon"></i>
-        <div class="pt-3 text-success">{{'notifications.bookedSuccessfully' | translate}}</div>
+        <div class="pt-3 text-success">
+            {{ (isWaitingEnabled ? 'notifications.bookedWaitingSuccessfully' : 'notifications.bookedSuccessfully') | translate}}
+        </div>
     </div>
 </div>
 

@@ -25,7 +25,7 @@ import { ReservationUtilityService } from 'app/utils/reservation-utility.service
 export class ManageReservationFormComponent implements OnInit {
 
   @Input() isAdmin = false;
-  @Input() enableWaitingList = false;
+  @Input() isWaitingEnabled = false;
   @Input() isEditMode = false;
   @Input() set roomType(val: RoomType) {
     this.model.form.patchValue({ roomType: val });
@@ -151,7 +151,7 @@ export class ManageReservationFormComponent implements OnInit {
   }
 
   private add(): void {
-    if (this.enableWaitingList) {
+    if (this.isWaitingEnabled) {
       this.model.form.patchValue({
         bookingStatus: BookingStatus.waiting
       });
@@ -159,7 +159,7 @@ export class ManageReservationFormComponent implements OnInit {
     const formValue = this.model.form.value;
     this.fireStoreService.addTicket(formValue).subscribe(() => {
       this.bookingDone.emit();
-      this.dialogService.openSuccessfullyBookingDialog();
+      this.dialogService.openSuccessfullyBookingDialog(this.isWaitingEnabled);
       this.model.form.reset();
       this.model.isLoading = false;
     });

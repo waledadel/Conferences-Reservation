@@ -357,7 +357,7 @@ export class PrimaryComponent implements OnInit {
   }
 
   private getTotalCost(ticket: IPrimaryDataSourceVm, list: Array<IRelatedMemberViewModel>): number {
-    if (ticket) {
+    if (ticket && (ticket.bookingStatus === BookingStatus.new || ticket.bookingStatus === BookingStatus.confirmed)) {
       let adultCost = 0;
       let primaryCost = 0;
       let childrenCost = 0;

@@ -12,7 +12,7 @@ export class ReservationUtilityService {
       case RoomType.double:
         return 950;
       case RoomType.triple:
-        return 800;
+        return 850;
       case RoomType.quad:
         return 700;
       default:

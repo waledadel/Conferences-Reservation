@@ -14,6 +14,7 @@ export class ReservationComponent {
 
   @Input() isAdmin = false;
   @Input() isEditMode = false;
+  @Input() isWaitingEnabled = false;
   @Input() reservationData: Array<ITicket> = [];
   @Output() bookingDone = new EventEmitter<void>();
   @Output() closeModal = new EventEmitter<void>();

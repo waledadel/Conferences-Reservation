@@ -80,10 +80,28 @@
         </mat-form-field>
         <mat-form-field class="col-md-2 col-12 px-md-3 px-0">
           <mat-label>قائمة الإنتظار</mat-label>
-          <mat-select formControlName="enableWaitingList">
+          <mat-select formControlName="enableWaitingList" (selectionChange)="onWaitingListChange($event)">
               <mat-option [value]="true">تفعيل</mat-option>
               <mat-option [value]="false">الغاء التفعيل</mat-option>
           </mat-select>
+        </mat-form-field>
+        <mat-form-field class="col-md-3 col-12 px-md-3 px-0">
+            <mat-label>{{'settings.startWaitingDate' | translate}}</mat-label>
+            <input matInput [matDatepicker]="startWaitingDatePicker" formControlName="startWaitingDate">
+            <mat-datepicker-toggle matIconSuffix [for]="startWaitingDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #startWaitingDatePicker></mat-datepicker>
+            <mat-error *ngIf="model.form.get('startWaitingDate')!.hasError('required')">
+                {{'validations.requiredField' | translate}}
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field class="col-md-3 col-12 px-md-3 px-0">
+            <mat-label>{{'settings.endWaitingDate' | translate}}</mat-label>
+            <input matInput [matDatepicker]="endWaitingDatePicker" formControlName="endWaitingDate">
+            <mat-datepicker-toggle matIconSuffix [for]="endWaitingDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #endWaitingDatePicker></mat-datepicker>
+            <mat-error *ngIf="model.form.get('endWaitingDate')!.hasError('required')">
+                {{'validations.requiredField' | translate}}
+            </mat-error>
         </mat-form-field>
         <!-- <mat-form-field class="col-md-3 col-12 px-md-3 px-0">
             <mat-label>{{'settings.childBedPrice' | translate}}</mat-label>

@@ -138,6 +138,7 @@
     "updatedSuccessfully": "تم التحديث بنجاح",
     "removedSuccessfully": "تم الحذف بنجاح",
     "bookedSuccessfully": "تم الحجز بنجاح",
+    "bookedWaitingSuccessfully": "تم الحجز بنجاح وتم وضعك في قائمة الانتظار",
     "bookedUpdatedSuccessfully": "تم تعديل الحجز بنجاح",
     "settingsSavedSuccessfully": "تم حفظ التغييرات بنجاح"
   },
@@ -171,7 +172,9 @@
     "welcomeMessage": "رسالة ترحيبية قبل بدء الحجز أو عدم وجود المؤتمرات",
     "childReservationPriceMoreThanEight": "سعر الحجز للطفل أكبر من 8 سنوات واصغر من 12",
     "childReservationPriceLessThanEight": "سعر الحجز للطفل أكبر من 4 سنوات واصغر من 8",
-    "childBedPrice": "سعر السرير للطفل"
+    "childBedPrice": "سعر السرير للطفل",
+    "startWaitingDate": "بدء تاريخ قائمة الانتظار",
+    "endWaitingDate": "اخر تاريخ لقائمة الانتظار"
   },
   "bookingStatus": {
     "new": "جديد",
@@ -211,6 +214,7 @@
     "totalMenCount": "عدد المشتركين البالغين رجال",
     "totalWomenCount": "عدد المشتركين البالغين سيدات",
     "totalMenAboveFifty": "عدد المشتركين الرجال فوق ال ٥٠ سنة",
-    "totalWomenAboveFifty": "عدد المشتدكين السيدات فوق ال ٥٠ سنة"
+    "totalWomenAboveFifty": "عدد المشتدكين السيدات فوق ال ٥٠ سنة",
+    "cancelledMembers": "المشتركين الملغيين"
   }
 }

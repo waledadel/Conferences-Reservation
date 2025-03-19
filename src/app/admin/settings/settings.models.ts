@@ -17,7 +17,6 @@ export class SettingsModel {
   isLoading = false;
 
   constructor() {
-    this.form = {} as FormGroup;
     this.minDate = new Date();
     this.generalAlertsEditor = new Editor();
     this.priceDetailsEditor = new Editor();

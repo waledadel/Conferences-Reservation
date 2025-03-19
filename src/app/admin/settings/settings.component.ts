@@ -8,6 +8,7 @@ import { Constants } from '@app/constants';
 import { FireStoreService, NotifyService, StorageService, TranslationService } from '@app/services';
 import { SettingsModel } from './settings.models';
 import { AdminService } from '../admin.service';
+import { MatSelectChange } from '@angular/material/select';
 
 @Component({
   templateUrl: './settings.component.html',
@@ -27,10 +28,10 @@ export class SettingsComponent implements OnInit {
     private adminService: AdminService
   ) {
     this.model = new SettingsModel();
-    this.model.form = this.initFormModels();
   }
 
   ngOnInit(): void {
+    this.initFormModel();
     this.model.isArabic = this.storageService.getItem(Constants.Languages.languageKey) === Constants.Languages.ar;
     this.setEditorOptions();
     this.getSavedSettings();
@@ -66,6 +67,20 @@ export class SettingsComponent implements OnInit {
     });
   }
 
+  onWaitingListChange(event: MatSelectChange): void {
+    const startWaitingDateControl = this.model.form.get('startWaitingDate');
+    const endWaitingDateControl = this.model.form.get('endWaitingDate');
+    if (event.value) {
+      startWaitingDateControl?.setValidators([Validators.required]);
+      endWaitingDateControl?.setValidators([Validators.required]);
+    } else {
+      startWaitingDateControl?.clearValidators();
+      endWaitingDateControl?.clearValidators();
+    }
+    startWaitingDateControl?.updateValueAndValidity();
+    endWaitingDateControl?.updateValueAndValidity();
+  }
+
   private add(): void {
     const formValue = this.getFormValueWithNumeric();
     this.fireStoreService.addDoc<ISettings>(Constants.RealtimeDatabase.settings, formValue).subscribe(() => {
@@ -82,8 +97,8 @@ export class SettingsComponent implements OnInit {
     });
   }
 
-  private initFormModels() {
-    return this.formBuilder.group({
+  private initFormModel(): void {
+    this.model.form = this.formBuilder.group({
       title: ['', Validators.required],
       imageUrl: ['', Validators.required],
       imageName: [''],
@@ -92,10 +107,8 @@ export class SettingsComponent implements OnInit {
       importantDates: ['', Validators.required],
       startReservationDate: [null, Validators.required],
       endReservationDate: [null, Validators.required],
-      // reservationPrice: [null, [Validators.required, Validators.min(1)]],
-      // childReservationPriceMoreThanEight: [null, [Validators.required, Validators.min(1)]],
-      // childReservationPriceLessThanEight: [null, [Validators.required, Validators.min(1)]],
-      // childBedPrice: [null, [Validators.required, Validators.min(0)]],
+      startWaitingDate: [null],
+      endWaitingDate: [null],
       waitingListCount: [null, [Validators.required, Validators.min(1)]],
       availableTicketsCount: [null, [Validators.required, Validators.min(1)]],
       waitingListMessage: ['', Validators.required],

@@ -33,6 +33,12 @@
     </div>
   </div>
 
+  <div *ngIf="isWaitingEnabled">
+    <div class="alet alert-warning text-center p-3 font-weight-bold">
+      {{setting[0].waitingListMessage}}
+    </div>
+  </div>
+
   <div *ngIf="isReservationAllowed && showInfo"
     class="container my-md-4 p-md-3 p-0 container-border overflow-auto info-section">
     <app-info [settings]="setting" (showForm)="showTicketForm($event)"></app-info>
@@ -42,8 +48,8 @@
 
 <div *ngIf="isReservationAllowed && showForm" class="container h-100 mt-lg-3 mt-0 px-0">
   <div class="d-flex justify-content-center">
-    <div class="col-md-9 col-12 px-0 container-border main-tabs">
-      <app-reservation (bookingDone)="bookingSuccessfully()"></app-reservation>
+    <div class="col-12 px-0 container-border main-tabs">
+      <app-reservation (bookingDone)="bookingSuccessfully()" [isWaitingEnabled]="isWaitingEnabled"></app-reservation>
     </div>
   </div>
 </div>

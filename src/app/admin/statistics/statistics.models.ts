@@ -5,6 +5,7 @@ export class StatisticsModel {
     buses: IBus[] = [];
     items: Itatistics[] = [];
     readonly roomType = RoomType;
+    costList: ICost[] = [];
 }
 
 export interface Itatistics {
@@ -13,4 +14,10 @@ export interface Itatistics {
     room?: number;
     members: string[];
     roomType?: RoomType;
+}
+
+export interface ICost {
+    key: string;
+    amount: number;
+    members: string[];
 }

@@ -1,7 +1,7 @@
 <div class="container-fluid py-3 px-0">
     <div class="row mx-0">
         <ng-container *ngFor="let item of model.items; let last = last">
-            <mat-accordion class="col-md-6 col-12 px-md-3 px-1" [class.mb-2]="!last">
+            <mat-accordion class="col-lg-3 col-md-6 col-12 px-md-3 px-1 mb-2">
                 <mat-expansion-panel>
                     <mat-expansion-panel-header>
                         <mat-panel-title>
@@ -19,6 +19,27 @@
                     <ol *ngIf="item.count > 0; else noData">
                         <ng-container *ngFor="let name of item.members">
                             <li>{{name}}</li>
+                        </ng-container>
+                    </ol>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </ng-container>
+        <ng-container *ngFor="let costItem of model.costList; let last = last">
+            <mat-accordion class="col-lg-3 col-md-6 col-12 px-md-3 px-1" [class.mb-2]="!last">
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            <div class="d-flex">
+                                {{costItem.key | translate}}:
+                                <div class="fontweight-bold px-2">
+                                    {{costItem.amount}} جنيه
+                                </div>
+                            </div>
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <ol *ngIf="costItem.members.length > 0; else noData">
+                        <ng-container *ngFor="let text of costItem.members">
+                            <li>{{text}}</li>
                         </ng-container>
                     </ol>
                 </mat-expansion-panel>

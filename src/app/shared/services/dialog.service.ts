@@ -33,10 +33,11 @@ export class DialogService {
     });
   }
 
-  openSuccessfullyBookingDialog(): MatDialogRef<unknown, any> {
+  openSuccessfullyBookingDialog(isWaitingEnabled: boolean): MatDialogRef<unknown, any> {
     return this.dialog.open(BookingSuccessfullyComponent, {
       panelClass: 'customDialogPanelClass-md',
-      disableClose: true
+      disableClose: true,
+      data: isWaitingEnabled
     });
   }
 
