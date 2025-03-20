@@ -4,9 +4,8 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { SharedModule } from 'app/shared/shared.module';
 
 @Component({
-  templateUrl: './logout.component.html',
-  standalone: true,
-  imports: [SharedModule]
+    templateUrl: './logout.component.html',
+    imports: [SharedModule]
 })
 export class LogoutComponent {
 

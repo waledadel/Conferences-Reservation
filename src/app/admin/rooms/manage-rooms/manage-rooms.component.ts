@@ -7,7 +7,8 @@ import { IRoom } from '@app/models';
 import { NotifyService, TranslationService, FireStoreService } from '@app/services';
 
 @Component({
-  templateUrl: './manage-rooms.component.html'
+    templateUrl: './manage-rooms.component.html',
+    standalone: false
 })
 export class ManageRoomsComponent implements OnInit {
   form: FormGroup;

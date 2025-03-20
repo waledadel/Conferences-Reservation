@@ -7,7 +7,8 @@ import { IAddress, IBus } from '@app/models';
 import { NotifyService, TranslationService, FireStoreService } from '@app/services';
 
 @Component({
-  templateUrl: './manage-address.component.html'
+    templateUrl: './manage-address.component.html',
+    standalone: false
 })
 export class ManageAddressComponent implements OnInit {
 

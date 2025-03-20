@@ -7,8 +7,9 @@ import { IRoomType } from '@app/models';
 import { NotifyService, TranslationService, FireStoreService } from '@app/services';
 
 @Component({
-  selector: 'app-manage-room-type',
-  templateUrl: './manage-room-type.component.html'
+    selector: 'app-manage-room-type',
+    templateUrl: './manage-room-type.component.html',
+    standalone: false
 })
 export class ManageRoomTypeComponent implements OnInit {
 

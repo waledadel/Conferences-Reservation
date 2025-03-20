@@ -9,10 +9,9 @@ import { InfoComponent } from './info/info.component';
 import { ReservationComponent } from 'app/admin/reservation/reservation.component';
 
 @Component({
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
-  standalone: true,
-  imports: [SharedModule, InfoComponent, ReservationComponent]
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.scss'],
+    imports: [SharedModule, InfoComponent, ReservationComponent]
 })
 export class HomeComponent implements OnInit {
 

@@ -7,9 +7,8 @@ import { ICostDetailsDataSourceVm } from '@app/models';
 import { SharedModule } from 'app/shared/shared.module';
 
 @Component({
-  templateUrl: './cost-details.component.html',
-  standalone: true,
-  imports: [SharedModule]
+    templateUrl: './cost-details.component.html',
+    imports: [SharedModule]
 })
 export class CostDetailsComponent implements OnInit {
 

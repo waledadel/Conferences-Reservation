@@ -11,8 +11,9 @@ import { AdminService } from '../admin.service';
 import { MatSelectChange } from '@angular/material/select';
 
 @Component({
-  templateUrl: './settings.component.html',
-  styleUrls: ['./settings.component.scss']
+    templateUrl: './settings.component.html',
+    styleUrls: ['./settings.component.scss'],
+    standalone: false
 })
 export class SettingsComponent implements OnInit {
 

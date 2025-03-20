@@ -6,8 +6,9 @@ import { Constants } from '@app/constants';
 import { AuthService } from '@app/services';
 
 @Component({
-  templateUrl: './reset-password.component.html',
-  styleUrls: ['../login/login.component.scss']
+    templateUrl: './reset-password.component.html',
+    styleUrls: ['../login/login.component.scss'],
+    standalone: false
 })
 export class ResetPasswordComponent {
   form: FormGroup;

@@ -19,13 +19,12 @@ import { AdvancedSearchModule } from '../advanced-search/advanced-search.module'
 import { ExportMembersModule } from '../export-members/export-members.module';
 
 @Component({
-  templateUrl: './primary.component.html',
-  standalone: true,
-  imports: [
-    SharedModule,
-    AdvancedSearchModule,
-    ExportMembersModule
-  ]
+    templateUrl: './primary.component.html',
+    imports: [
+        SharedModule,
+        AdvancedSearchModule,
+        ExportMembersModule
+    ]
 })
 export class PrimaryComponent implements OnInit {
 

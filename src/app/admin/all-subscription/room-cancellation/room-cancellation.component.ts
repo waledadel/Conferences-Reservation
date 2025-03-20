@@ -4,9 +4,8 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { SharedModule } from 'app/shared/shared.module';
 
 @Component({
-  templateUrl: './room-cancellation.component.html',
-  standalone: true,
-  imports: [SharedModule]
+    templateUrl: './room-cancellation.component.html',
+    imports: [SharedModule]
 })
 export class RoomCancellationComponent {
 

@@ -9,10 +9,9 @@ import { ManageReservationFormComponent } from './manage-reservation-form';
 
 
 @Component({
-  selector: 'app-reservation',
-  templateUrl: './reservation.component.html',
-  standalone: true,
-  imports: [SharedModule, ManageReservationFormComponent]
+    selector: 'app-reservation',
+    templateUrl: './reservation.component.html',
+    imports: [SharedModule, ManageReservationFormComponent]
 })
 export class ReservationComponent {
 

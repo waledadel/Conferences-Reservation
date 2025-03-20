@@ -8,7 +8,8 @@ import { ManageBusComponent } from './manage-bus/manage-bus.component';
 import { AdminService } from '../admin.service';
 
 @Component({
-  templateUrl: './buses.component.html'
+    templateUrl: './buses.component.html',
+    standalone: false
 })
 export class BusesComponent implements OnInit {
 

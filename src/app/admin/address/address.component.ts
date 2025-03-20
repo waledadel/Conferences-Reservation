@@ -8,7 +8,8 @@ import { ManageAddressComponent } from './manage-address/manage-address.componen
 import { AdminService } from '../admin.service';
 
 @Component({
-  templateUrl: './address.component.html'
+    templateUrl: './address.component.html',
+    standalone: false
 })
 export class AddressComponent implements OnInit {
 

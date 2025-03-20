@@ -8,8 +8,9 @@ import { IAddRoomToMemberDialogConfig, IMemberRoomViewModel, IRoom, RoomErrorsMo
 import { NotifyService, FireStoreService, DialogService } from '@app/services';
 
 @Component({
-  templateUrl: './add-room-to-member.component.html',
-  styleUrls: ['./add-room-to-member.component.scss']
+    templateUrl: './add-room-to-member.component.html',
+    styleUrls: ['./add-room-to-member.component.scss'],
+    standalone: false
 })
 export class AddRoomToMemberComponent implements OnInit {
   form: FormGroup;

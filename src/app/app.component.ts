@@ -6,29 +6,28 @@ import { RouterOutlet } from '@angular/router';
 import { LanguageService } from '@app/services';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  standalone: true,
-  imports: [
-    RouterOutlet,
-    // MatDialogModule
-    // BrowserModule,
-    // BrowserAnimationsModule,
-    // HttpClientModule,
-    // TranslationModule.forRoot(),
-    // FirebaseModule,
-    // MatDialogModule,
-    // MatSnackBarModule,
-    // MatSelectModule,
-    // MatNativeDateModule,
-    // MatDatepickerModule,
-    // ServiceWorkerModule.register('ngsw-worker.js', {
-    //   enabled: !isDevMode(),
-    //   // Register the ServiceWorker as soon as the application is stable
-    //   // or after 30 seconds (whichever comes first).
-    //   registrationStrategy: 'registerWhenStable:30000'
-    // })
-  ]
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    imports: [
+        RouterOutlet,
+        // MatDialogModule
+        // BrowserModule,
+        // BrowserAnimationsModule,
+        // HttpClientModule,
+        // TranslationModule.forRoot(),
+        // FirebaseModule,
+        // MatDialogModule,
+        // MatSnackBarModule,
+        // MatSelectModule,
+        // MatNativeDateModule,
+        // MatDatepickerModule,
+        // ServiceWorkerModule.register('ngsw-worker.js', {
+        //   enabled: !isDevMode(),
+        //   // Register the ServiceWorker as soon as the application is stable
+        //   // or after 30 seconds (whichever comes first).
+        //   registrationStrategy: 'registerWhenStable:30000'
+        // })
+    ]
 })
 export class AppComponent implements OnInit {
 

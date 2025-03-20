@@ -11,8 +11,9 @@ import { AdminService } from '../admin.service';
 import { RoomsModel } from './rooms.model';
 
 @Component({
-  templateUrl: './rooms.component.html',
-  styleUrls: ['./rooms.component.scss']
+    templateUrl: './rooms.component.html',
+    styleUrls: ['./rooms.component.scss'],
+    standalone: false
 })
 export class RoomsComponent implements OnInit {
 

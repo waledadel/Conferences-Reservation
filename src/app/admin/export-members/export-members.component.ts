@@ -4,8 +4,9 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ExportPages, IExportMembers, allOptions } from './export-members.model';
 
 @Component({
-  templateUrl: './export-members.component.html',
-  styleUrls: ['./export-members.component.scss']
+    templateUrl: './export-members.component.html',
+    styleUrls: ['./export-members.component.scss'],
+    standalone: false
 })
 export class ExportMembersComponent implements OnInit {
 

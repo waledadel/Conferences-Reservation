@@ -9,7 +9,8 @@ import { AdminService } from '../admin.service';
 import { DeletedMembersModel } from './deleted-members.models';
 
 @Component({
-  templateUrl: './deleted-members.component.html'
+    templateUrl: './deleted-members.component.html',
+    standalone: false
 })
 export class DeletedMembersComponent implements OnInit {
 

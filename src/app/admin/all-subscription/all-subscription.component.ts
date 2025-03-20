@@ -15,7 +15,8 @@ import { ExportPages, IExportMembers } from '../export-members/export-members.mo
 import { ReservationUtilityService } from 'app/utils/reservation-utility.service';
 
 @Component({
-  templateUrl: './all-subscription.component.html'
+    templateUrl: './all-subscription.component.html',
+    standalone: false
 })
 export class AllSubscriptionComponent implements OnInit {
 

@@ -4,9 +4,8 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SharedModule } from 'app/shared/shared.module';
 
 @Component({
-  templateUrl: './confirm-booking.component.html',
-  standalone: true,
-  imports: [SharedModule]
+    templateUrl: './confirm-booking.component.html',
+    imports: [SharedModule]
 })
 export class ConfirmBookingComponent {
   constructor(

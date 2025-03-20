@@ -5,9 +5,10 @@ import { timer } from 'rxjs';
 import { LoadingService } from './loading.service';
 
 @Component({
-  selector: 'w-loading',
-  templateUrl: './loading.component.html',
-  styleUrls: ['./loading.component.scss'],
+    selector: 'w-loading',
+    templateUrl: './loading.component.html',
+    styleUrls: ['./loading.component.scss'],
+    standalone: false
 })
 export class LoadingComponent implements OnInit {
 

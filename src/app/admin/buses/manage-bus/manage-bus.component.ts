@@ -7,7 +7,8 @@ import { IBus } from '@app/models';
 import { NotifyService, TranslationService, FireStoreService } from '@app/services';
 
 @Component({
-  templateUrl: './manage-bus.component.html'
+    templateUrl: './manage-bus.component.html',
+    standalone: false
 })
 export class ManageBusComponent implements OnInit {
   form: FormGroup;

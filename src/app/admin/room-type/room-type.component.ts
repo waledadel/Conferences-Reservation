@@ -8,8 +8,9 @@ import { AdminService } from '../admin.service';
 import { ManageRoomTypeComponent } from './manage-room-type/manage-room-type.component';
 
 @Component({
-  selector: 'app-room-type',
-  templateUrl: './room-type.component.html'
+    selector: 'app-room-type',
+    templateUrl: './room-type.component.html',
+    standalone: false
 })
 export class RoomTypeComponent implements OnInit {
 

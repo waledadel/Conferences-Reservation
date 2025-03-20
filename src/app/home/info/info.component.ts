@@ -4,11 +4,10 @@ import { ISettings } from '@app/models';
 import { SharedModule } from 'app/shared/shared.module';
 
 @Component({
-  selector: 'app-info',
-  templateUrl: './info.component.html',
-  styleUrls: ['./info.component.scss'],
-  standalone: true,
-  imports: [SharedModule]
+    selector: 'app-info',
+    templateUrl: './info.component.html',
+    styleUrls: ['./info.component.scss'],
+    imports: [SharedModule]
 })
 export class InfoComponent {
 

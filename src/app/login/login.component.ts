@@ -7,8 +7,9 @@ import { FireStoreService } from '@app/services';
 import { IUser } from '@app/models';
 
 @Component({
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.scss'],
+    standalone: false
 })
 export class LoginComponent implements OnDestroy {
 

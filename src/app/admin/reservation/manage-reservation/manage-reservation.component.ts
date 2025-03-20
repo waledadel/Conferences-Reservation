@@ -8,9 +8,8 @@ import { ReservationComponent } from '../reservation.component';
 import { SharedModule } from 'app/shared/shared.module';
 
 @Component({
-  templateUrl: './manage-reservation.component.html',
-  standalone: true,
-  imports: [SharedModule, ReservationComponent]
+    templateUrl: './manage-reservation.component.html',
+    imports: [SharedModule, ReservationComponent]
 })
 export class ManageReservationComponent implements OnInit {
 

@@ -9,8 +9,9 @@ import { BookingStatus, Gender, IAddress, IBus, MemberRoom } from '@app/models';
 import { FireStoreService } from '@app/services';
 
 @Component({
-  templateUrl: './advanced-search.component.html',
-  styleUrls: ['./advanced-search.component.scss']
+    templateUrl: './advanced-search.component.html',
+    styleUrls: ['./advanced-search.component.scss'],
+    standalone: false
 })
 export class AdvancedSearchComponent implements OnInit {
 

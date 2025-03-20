@@ -9,7 +9,8 @@ import { BookingStatus, IAllSubscriptionDataSourceVm, RoomType } from 'app/share
 import { ReservationUtilityService } from 'app/utils/reservation-utility.service';
 
 @Component({
-  templateUrl: './statistics.component.html'
+    templateUrl: './statistics.component.html',
+    standalone: false
 })
 export class StatisticsComponent implements OnInit {
 

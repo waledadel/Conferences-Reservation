@@ -8,7 +8,8 @@ import { NotifyService, DialogService, FireStoreService } from '@app/services';
 import { AdminService } from '../admin.service';
 
 @Component({
-  templateUrl: './users.component.html'
+    templateUrl: './users.component.html',
+    standalone: false
 })
 export class UsersComponent implements OnInit, AfterViewInit {
 

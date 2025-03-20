@@ -4,9 +4,10 @@ import { Constants } from '@app/constants';
 import { WINDOW } from 'app/shared/services/window.service';
 
 @Component({
-  selector: 'app-social-media',
-  templateUrl: './social-media.component.html',
-  styleUrls: ['./social-media.component.scss']
+    selector: 'app-social-media',
+    templateUrl: './social-media.component.html',
+    styleUrls: ['./social-media.component.scss'],
+    standalone: false
 })
 export class SocialMediaComponent {
 

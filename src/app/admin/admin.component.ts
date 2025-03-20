@@ -8,8 +8,9 @@ import { WINDOW } from 'app/shared/services/window.service';
 import { AdminService } from './admin.service';
 
 @Component({
-  templateUrl: './admin.component.html',
-  styleUrls: ['./admin.component.scss']
+    templateUrl: './admin.component.html',
+    styleUrls: ['./admin.component.scss'],
+    standalone: false
 })
 export class AdminComponent implements OnInit {
 
