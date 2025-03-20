@@ -24,7 +24,7 @@
     "@angular/service-worker": "17.3.12",
     "@ngx-translate/core": "14.0.0",
     "@ngx-translate/http-loader": "7.0.0",
-    "bootstrap": "4.5.3",
+    "bootstrap": "5.3.3",
     "file-saver": "2.0.5",
     "ngx-editor": "15.3.0",
     "ngx-translate-messageformat-compiler": "7.1.0",
