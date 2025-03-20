@@ -4,9 +4,12 @@ import { MatTableDataSource } from '@angular/material/table';
 
 import { Constants } from '@app/constants';
 import { ICostDetailsDataSourceVm } from '@app/models';
+import { SharedModule } from 'app/shared/shared.module';
 
 @Component({
-  templateUrl: './cost-details.component.html'
+  templateUrl: './cost-details.component.html',
+  standalone: true,
+  imports: [SharedModule]
 })
 export class CostDetailsComponent implements OnInit {
 

@@ -4,11 +4,15 @@ import { ReservationModel } from './reservation.models';
 import { ITicket } from '@app/models';
 import { MatTabGroup } from '@angular/material/tabs';
 import { RoomType } from 'app/shared/models/ticket';
+import { SharedModule } from 'app/shared/shared.module';
+import { ManageReservationFormComponent } from './manage-reservation-form';
 
 
 @Component({
   selector: 'app-reservation',
-  templateUrl: './reservation.component.html'
+  templateUrl: './reservation.component.html',
+  standalone: true,
+  imports: [SharedModule, ManageReservationFormComponent]
 })
 export class ReservationComponent {
 

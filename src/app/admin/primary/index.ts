@@ -1,0 +1,1 @@
+export { PrimaryComponent } from './primary.component';

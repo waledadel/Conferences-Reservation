@@ -1,13 +1,16 @@
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { timer } from 'rxjs';
 
 import { IPrimaryDataSourceVm, ITicket } from '@app/models';
 import { FireStoreService } from '@app/services';
 import { ReservationComponent } from '../reservation.component';
-import { timer } from 'rxjs';
+import { SharedModule } from 'app/shared/shared.module';
 
 @Component({
-  templateUrl: './manage-reservation.component.html'
+  templateUrl: './manage-reservation.component.html',
+  standalone: true,
+  imports: [SharedModule, ReservationComponent]
 })
 export class ManageReservationComponent implements OnInit {
 

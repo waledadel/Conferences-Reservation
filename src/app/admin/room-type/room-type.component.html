@@ -1,6 +1,6 @@
 <div class="container-fluid table-container" [class.px-0]="isMobileView">
   <div *ngIf="!isMobileView" class="row mx-0 my-3">
-    <button color="primary" mat-raised-button (click)="add()">
+    <button color="primary" mat-raised-button (click)="add()" class="col-1">
       {{'roomType.add' | translate}}
     </button>
   </div>

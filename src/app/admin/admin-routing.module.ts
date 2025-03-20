@@ -18,7 +18,7 @@ const routes: Routes = [
       },
       {
         path: Constants.Routes.primary,
-        loadChildren: () => import('./primary/primary.module').then(mod => mod.PrimaryModule)
+        loadComponent: () => import('./primary').then(c => c.PrimaryComponent)
       },
       {
         path: Constants.Routes.all,

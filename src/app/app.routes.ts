@@ -1,13 +1,11 @@
-import { Constants } from '@app/constants';
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 
-import { AutoLoginGuard } from './shared/guard/auto-login.guard';
 import { PageNotFoundComponent } from './shared/components/page-not-found/page-not-found.component';
+import { Constants } from '@app/constants';
+import { AutoLoginGuard } from './shared/guard/auto-login.guard';
 import { AuthGuard } from './shared/guard/auth.guard';
 
-const routes: Routes = [
-
+export const routes: Routes = [
   {
     path: Constants.Routes.login,
     loadChildren: () => import('./login/login.module').then(mod => mod.LoginModule),
@@ -20,7 +18,7 @@ const routes: Routes = [
   },
   {
     path: Constants.Routes.home,
-    loadChildren: () => import('./home/home.module').then(mod => mod.HomeModule),
+    loadComponent: () => import('./home').then(c => c.HomeComponent),
   },
   {
     path: Constants.Routes.secure,
@@ -37,9 +35,3 @@ const routes: Routes = [
     component: PageNotFoundComponent
   }
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
-})
-export class AppRoutingModule { }

@@ -4,10 +4,15 @@ import { Component, OnInit } from '@angular/core';
 import { ISettings, BookingType } from '@app/models';
 import { FireStoreService } from '@app/services';
 import { Observable } from 'rxjs';
+import { SharedModule } from 'app/shared/shared.module';
+import { InfoComponent } from './info/info.component';
+import { ReservationComponent } from 'app/admin/reservation/reservation.component';
 
 @Component({
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss'],
+  standalone: true,
+  imports: [SharedModule, InfoComponent, ReservationComponent]
 })
 export class HomeComponent implements OnInit {
 

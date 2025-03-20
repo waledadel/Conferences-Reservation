@@ -14,9 +14,18 @@ import { ExportMembersComponent } from '../export-members/export-members.compone
 import { AdvancedSearchComponent } from '../advanced-search/advanced-search.component';
 import { ExportPages, IExportMembers } from '../export-members/export-members.model';
 import { ReservationUtilityService } from 'app/utils/reservation-utility.service';
+import { SharedModule } from 'app/shared/shared.module';
+import { AdvancedSearchModule } from '../advanced-search/advanced-search.module';
+import { ExportMembersModule } from '../export-members/export-members.module';
 
 @Component({
-  templateUrl: './primary.component.html'
+  templateUrl: './primary.component.html',
+  standalone: true,
+  imports: [
+    SharedModule,
+    AdvancedSearchModule,
+    ExportMembersModule
+  ]
 })
 export class PrimaryComponent implements OnInit {
 

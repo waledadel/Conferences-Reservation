@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, Inject, HostListener } from '@angular/core';
+import { Component, OnInit, Inject, HostListener, viewChild } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
 
 import { Constants } from '@app/constants';
@@ -13,8 +13,8 @@ import { AdminService } from './admin.service';
 })
 export class AdminComponent implements OnInit {
 
-  @ViewChild('drawer') drawer: MatDrawer;
-  model: AdminModel = {} as AdminModel;
+  model: AdminModel;
+  readonly drawer = viewChild.required<MatDrawer>('drawer');
 
   constructor(
     private authService: AuthService,
@@ -23,7 +23,6 @@ export class AdminComponent implements OnInit {
     private adminService: AdminService,
     @Inject(WINDOW) private window: Window
   ) {
-    this.drawer = {} as MatDrawer;
   }
 
   @HostListener('window:resize', ['$event']) onResize() {
@@ -32,6 +31,7 @@ export class AdminComponent implements OnInit {
 
   ngOnInit(): void {
     this.initModel();
+    this.detectMobileView();
     const role = this.storageService.getItem('role');
     if (role) {
       this.model.menuItems = menuItems.filter(m => m.roles.includes(+role));
@@ -42,7 +42,9 @@ export class AdminComponent implements OnInit {
   }
 
   onItemClick(): void {
-    this.drawer.opened = false;
+    if (this.model.isMobileView) {
+      this.drawer().opened = false;
+    }
   }
 
   changeLanguage(lang: string): void {

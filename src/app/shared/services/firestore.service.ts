@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, combineLatest, first, forkJoin, from, map, switchMap, take } from 'rxjs';
-import { DocumentReference, PartialWithFieldValue, Query, query, where, CollectionReference } from 'firebase/firestore';
+import { DocumentReference, PartialWithFieldValue, Query, query, where, CollectionReference, SnapshotOptions } from 'firebase/firestore';
 import { Firestore, collection, addDoc, collectionData, doc, updateDoc, docData, getCountFromServer } from '@angular/fire/firestore';
 import { AngularFirestore, AngularFirestoreCollection, DocumentData, QueryFn } from '@angular/fire/compat/firestore';
 import { Timestamp } from 'firebase/firestore';
@@ -454,7 +454,7 @@ export class FireStoreService {
     return from(batch.commit()).pipe(map(() => null));
   }
 
-  private collectionData<T = DocumentData>(query: Query<T>, options?: { idField?: string; }): Observable<T[]> {
+  private collectionData<T = DocumentData, U extends string = never>(query: Query<T>, options?: { idField?: ((U | keyof T) & keyof NonNullable<T>); } & SnapshotOptions): Observable<T[]> {
     return collectionData(query, options);
   }
 

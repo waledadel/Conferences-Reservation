@@ -10,11 +10,14 @@ import { Gender, SocialStatus, BookingStatus, BookingType, IAddress, IBus, ITick
 import { DialogService, FireStoreService, NotifyService, StorageService, TranslationService } from '@app/services';
 import { RoomType } from 'app/shared/models/ticket';
 import { ReservationUtilityService } from 'app/utils/reservation-utility.service';
+import { SharedModule } from 'app/shared/shared.module';
 
 @Component({
   selector: 'app-manage-reservation-form',
   templateUrl: './manage-reservation-form.component.html',
   styleUrls: ['./manage-reservation-form.component.scss'],
+  standalone: true,
+  imports: [SharedModule],
   providers: [
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,

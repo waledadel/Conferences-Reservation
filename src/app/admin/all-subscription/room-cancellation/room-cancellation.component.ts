@@ -1,8 +1,12 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
+import { SharedModule } from 'app/shared/shared.module';
+
 @Component({
-  templateUrl: './room-cancellation.component.html'
+  templateUrl: './room-cancellation.component.html',
+  standalone: true,
+  imports: [SharedModule]
 })
 export class RoomCancellationComponent {
 

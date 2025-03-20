@@ -1,5 +1,5 @@
 <div mat-dialog-title class="d-flex justify-content-between align-content-center">
-    <div class="font-weight-bold">تسكين الإعضاء</div>
+    <div class="fw-bold">تسكين الإعضاء</div>
     <button class="p-0 d-flex justify-content-cener align-items-center" (click)="close()">
         <mat-icon>close</mat-icon>
     </button>
@@ -9,13 +9,13 @@
         برجاء تحديد الأعضاء إذا أردت أن تسكن أكثر من عضو واحد
     </div>
     <div class="bg-white p-3 rounded mb-3">
-        <div class="font-weight-bold mb-2">
+        <div class="fw-bold mb-2">
             الأشتراك الرئيسي:
         </div>
         <div *ngIf="primary" class="d-flex justify-content-between align-items-lg-center align-items-start flex-md-row flex-column member-card py-2 px-2 rounded">
             <mat-checkbox color="primary" [disabled]="primary.hasRoom" [value]="primary.id" [(ngModel)]="primary.isChecked">
                 <div class="d-flex flex-column">
-                    <div class="text-dark font-weight-bold">{{primary.name}}</div>
+                    <div class="text-dark fw-bold">{{primary.name}}</div>
                     <small *ngIf="primary.hasRoom; else notHasRoom" class="text-success">
                         تم التسكين بنجاح
                     </small>
@@ -33,14 +33,14 @@
         </div>
     </div>
     <div class="bg-white p-3 rounded mb-3">
-        <div class="font-weight-bold mb-2">
+        <div class="fw-bold mb-2">
             باقي المشتركين:
         </div>
         <ng-container *ngIf="family.length > 0; else noFamily">
             <div *ngFor="let f of family; last as last" class="d-flex justify-content-between align-items-lg-center align-items-start flex-md-row flex-column member-card py-2 px-2 rounded" [class.mb-3]="!last">
                 <mat-checkbox color="primary" [disabled]="f.hasRoom || f.age < 4" [value]="f.id" [(ngModel)]="f.isChecked">
                     <div class="d-flex flex-column">
-                        <span class="text-dark font-weight-bold">{{f.name}}</span>
+                        <span class="text-dark fw-bold">{{f.name}}</span>
                         <div class="d-flex flex-column">
                             <small *ngIf="f.hasRoom; else notHasRoom" class="text-success">
                                 تم التسكين بنجاح
