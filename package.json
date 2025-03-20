@@ -27,7 +27,7 @@
     "bootstrap": "4.5.3",
     "file-saver": "2.0.5",
     "ngx-editor": "15.3.0",
-    "ngx-translate-messageformat-compiler": "6.2.0",
+    "ngx-translate-messageformat-compiler": "7.1.0",
     "rxjs": "7.5.7",
     "tslib": "2.4.1",
     "xlsx": "^0.18.5",
