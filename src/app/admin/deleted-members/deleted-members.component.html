@@ -1,5 +1,5 @@
 <div class="container-fluid table-container" [class.px-0]="model.isMobileView">
-  <div class="w-100" [ngClass]="model.isMobileView ? 'h-100' : 'mt-2'">
+  <div class="w-100 h-100" [ngClass]="model.isMobileView ? 'h-100' : 'mt-2'">
     <div class="w-100 d-flex h-100">
       <div *ngIf="model.dataSource && model.dataSource.data.length < 1" class="w-100">
         <app-empty-data></app-empty-data>
@@ -93,5 +93,5 @@
   </div>
 </div>
 <ng-template #sameMember>
-ذاته
+  ذاته
 </ng-template>

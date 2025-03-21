@@ -25,6 +25,8 @@ export interface ITicket {
   lastUpdateDate?: Timestamp;
   lastUpdateUserId: string;
   roomType: RoomType;
+  deletedBy: string;
+  mainMemberName: string;
 }
 
 export interface IUserInfo {
@@ -131,17 +133,6 @@ export interface IAllSubscriptionDataSourceVm {
   userNotes: string;
   bookingType: BookingType;
   bookingDate: Timestamp;
-}
-
-export interface IDeletedMembersDataSourceVm {
-  id: string;
-  isChild: boolean;
-  isMain: boolean;
-  mobile: string;
-  name: string;
-  mainMemberName: string;
-  primaryId: string;
-  deletedBy: string;
 }
 
 export interface ICostDetailsDataSourceVm {

@@ -1,12 +1,12 @@
 import { inject, Injectable } from '@angular/core';
-import { Observable, combineLatest, first, forkJoin, from, map, switchMap, take } from 'rxjs';
+import { Observable, combineLatest, first, from, map, take } from 'rxjs';
 import { DocumentReference, PartialWithFieldValue, query, SnapshotOptions, where } from 'firebase/firestore';
 import { Firestore, collection, addDoc, collectionData, doc, updateDoc, docData } from '@angular/fire/firestore';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Timestamp } from 'firebase/firestore';
 
 import { Constants } from '@app/constants';
-import { IRelatedMemberViewModel, IPrimaryDataSourceVm, ITicket, ITicketForm, IAllSubscriptionDataSourceVm, IUser, IRoomDataSource, IMemberRoomDataSource, BookingStatus, IDeletedMembersDataSourceVm } from '@app/models';
+import { IRelatedMemberViewModel, IPrimaryDataSourceVm, ITicket, ITicketForm, IAllSubscriptionDataSourceVm, IUser, IRoomDataSource, IMemberRoomDataSource, BookingStatus } from '@app/models';
 
 @Injectable({
   providedIn: 'root'
@@ -78,7 +78,9 @@ export class FireStoreService {
       primaryId: item.id,
       lastUpdateDate: Timestamp.fromDate(new Date()),
       lastUpdateUserId: currentLoggedInUser ?? '',
-      roomType: item.roomType
+      roomType: item.roomType,
+      deletedBy: '',
+      mainMemberName: ''
     };
     batch.set(primaryRef, primary);
     if (isParticipantsExists) {
@@ -162,7 +164,9 @@ export class FireStoreService {
       isMain: true,
       primaryId: primaryId,
       lastUpdateUserId: '',
-      roomType: item.roomType
+      roomType: item.roomType,
+      deletedBy: '',
+      mainMemberName: ''
     };
     const batch = this.angularFirestore.firestore.batch();
     const primaryRef = this.angularFirestore.doc(`/${Constants.RealtimeDatabase.tickets}/${primaryId}`).ref;
@@ -281,48 +285,23 @@ export class FireStoreService {
       );
   }
 
-  getDeletedMembers(takeCount = 1): Observable<Array<IDeletedMembersDataSourceVm>> {
-    const usersRef = this.angularFirestore.collection<IUser>(Constants.RealtimeDatabase.users).ref;
-    return this.angularFirestore
-      .collection<IDeletedMembersDataSourceVm>(Constants.RealtimeDatabase.tickets, ref =>
-        ref.where('bookingStatus', '==', BookingStatus.deleted)
-      ).valueChanges({ idField: 'id' })
-      .pipe(
-        switchMap((tickets: Array<IDeletedMembersDataSourceVm>) => {
-          return combineLatest(
-            tickets.map((ticket: IDeletedMembersDataSourceVm) => {
-              const userId = ticket.deletedBy;
-              const usersDoc = usersRef.doc(userId);
-              return forkJoin([
-                from(usersDoc.get()).pipe(
-                  map((doc) => ({
-                    ...doc.data(),
-                    id: doc.id,
-                  }) as IUser)
-                )
-              ]);
-            })
-          ).pipe(
-            map((results: Array<[IUser]>) =>
-              tickets.map((ticket: IDeletedMembersDataSourceVm, index: number) => {
-                const [user] = results[index];
-                return {
-                  id: ticket.id,
-                  name: ticket.name,
-                  mobile: ticket.mobile,
-                  isMain: ticket.isMain,
-                  isChild: ticket.isChild,
-                  mainMemberName: '',
-                  primaryId: ticket.primaryId,
-                  displayedRoomName: '',
-                  deletedBy: ticket.deletedBy ? user.fullName : '',
-                };
-              })
-            ),
-            take(takeCount)
-          );
-        })
-      );
+  getDeletedMembers(): Observable<ITicket[]> {
+    const ticketColl = collection(this.firestore, Constants.RealtimeDatabase.tickets);
+    const userColl = collection(this.firestore, Constants.RealtimeDatabase.users);
+    const documentQuery = query(ticketColl, where('bookingStatus', '==', BookingStatus.deleted));
+    const options = { idField: 'id' } as SnapshotOptions;
+    const ticketData$ = collectionData(documentQuery, options).pipe(first()) as Observable<ITicket[]>;
+    const userData$ = collectionData(userColl, options).pipe(first()) as Observable<IUser[]>;
+    return combineLatest([ticketData$, userData$]).pipe(
+      map(([tickets, users]) => {
+        const userMap = new Map(users.map(user => [user.id, user.fullName]));
+        return tickets.map(ticket => ({
+          ...ticket,
+          deletedBy: ticket.deletedBy ? userMap.get(ticket.deletedBy) ?? '' : '',
+          mainMemberName: ticket.isMain ? '' : tickets.find(m => m.id === ticket.primaryId)?.name ?? ''
+        }));
+      })
+    );
   }
 
   getPrimaryMembers(takeCount = 1): Observable<Array<IPrimaryDataSourceVm>> {

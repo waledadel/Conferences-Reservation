@@ -1,0 +1,1 @@
+export { DeletedMembersComponent } from './deleted-members.component';

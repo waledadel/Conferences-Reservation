@@ -26,7 +26,7 @@ const routes: Routes = [
       },
       {
         path: Constants.Routes.deletedMembers,
-        loadChildren: () => import('./deleted-members/deleted-members.module').then(mod => mod.DeletedMembersModule),
+        loadComponent: () => import('./deleted-members').then(c => c.DeletedMembersComponent),
       },
       {
         path: Constants.Routes.rooms,

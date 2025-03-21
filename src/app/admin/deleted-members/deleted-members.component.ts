@@ -1,16 +1,18 @@
-import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, inject, OnInit, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { Constants } from '@app/constants';
-import { IDeletedMembersDataSourceVm } from '@app/models';
 import { FireStoreService } from '@app/services';
 import { AdminService } from '../admin.service';
 import { DeletedMembersModel } from './deleted-members.models';
+import { SharedModule } from 'app/shared/shared.module';
+import { AdvancedSearchModule } from '../advanced-search/advanced-search.module';
+import { ExportMembersModule } from '../export-members/export-members.module';
 
 @Component({
-    templateUrl: './deleted-members.component.html',
-    standalone: false
+  templateUrl: './deleted-members.component.html',
+  imports: [ SharedModule, AdvancedSearchModule, ExportMembersModule]
 })
 export class DeletedMembersComponent implements OnInit {
 
@@ -24,28 +26,25 @@ export class DeletedMembersComponent implements OnInit {
     this.detectMobileView();
   }
 
-  constructor(
-    private fireStoreService: FireStoreService, 
-    private adminService: AdminService
-  ) {
-    this.model = new DeletedMembersModel();
-  }
+  private readonly fireStoreService = inject(FireStoreService);
+  private readonly adminService = inject(AdminService);
 
   ngOnInit(): void {
+    this.initModel();
     this.detectMobileView();
     this.adminService.updatePageTitle('المشتركين المحذوفين');
     this.getDeletedMembers();
   }
 
+  private initModel(): void {
+    this.model = new DeletedMembersModel();
+  }
+
   private getDeletedMembers(): void {
     this.fireStoreService.getDeletedMembers().subscribe(res => {
-      const data: Array<IDeletedMembersDataSourceVm> = res.map(item => ({
-        ...item,
-        mainMemberName: item.isMain ? '' : res.find(m => m.id === item.primaryId)?.name ?? ''
-      }));
-      this.model.dataSource = new MatTableDataSource(data);
+      this.model.dataSource = new MatTableDataSource(res);
       this.model.dataSource.sort = this.sort;
-      this.model.total = data.length;
+      this.model.total = res.length;
     });
   }
 
