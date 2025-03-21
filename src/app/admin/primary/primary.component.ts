@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, inject, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 
@@ -17,19 +17,18 @@ import { ReservationUtilityService } from 'app/utils/reservation-utility.service
 import { SharedModule } from 'app/shared/shared.module';
 import { AdvancedSearchModule } from '../advanced-search/advanced-search.module';
 import { ExportMembersModule } from '../export-members/export-members.module';
+import { MemberService } from './member.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
-    templateUrl: './primary.component.html',
-    imports: [
-        SharedModule,
-        AdvancedSearchModule,
-        ExportMembersModule
-    ]
+  templateUrl: './primary.component.html',
+  imports: [ SharedModule, AdvancedSearchModule, ExportMembersModule ]
 })
 export class PrimaryComponent implements OnInit {
 
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   model: PrimaryModel;
+   readonly memberService = inject(MemberService);
   get isMobile(): boolean {
     return window.innerWidth < Constants.Grid.large;
   }
@@ -51,10 +50,7 @@ export class PrimaryComponent implements OnInit {
 
   ngOnInit(): void {
     this.detectMobileView();
-    this.getAllUsers();
-    this.getBuses();
-    this.getAddress();
-    this.getNotPrimarySubscription();
+    this.getAllData();
     this.adminService.updatePageTitle('الإشتراكات الرئيسية');
   }
 
@@ -268,35 +264,6 @@ export class PrimaryComponent implements OnInit {
     return false;
   }
 
-  private getNotPrimarySubscription(takeCount = 1): void {
-    this.fireStoreService.getNotPrimarySubscription(takeCount).subscribe(res => {
-      this.model.notPrimaryMembers = res;
-      this.getPrimaryTickets();
-    });
-  }
-
-  private getPrimaryTickets(takeCount = 1): void {
-    this.fireStoreService.getPrimaryMembers(takeCount).subscribe(res => {
-      const data: Array<IPrimaryDataSourceVm> = res.map(item => {
-        const totalCost = this.getTotalCost(item, this.model.notPrimaryMembers);
-        const transportationName = this.getBusNameById(item.transportationId);
-        const lastUpdatedBy = this.getUserById(item.lastUpdateUserId);
-        const addressName = this.getAddressNameById(item.addressId);
-        const adults = this.model.notPrimaryMembers.filter(m => m.primaryId === item.primaryId && 
-          new Date().getFullYear() - m.birthDate.toDate().getFullYear() >= 8);
-        const children = this.model.notPrimaryMembers.filter(m => m.primaryId === item.primaryId &&
-          new Date().getFullYear() - m.birthDate.toDate().getFullYear() < 8);
-        const childrenCount = children ? children.length : 0;
-        const adultsCount = adults ? adults.length : 0;
-        return {...item, totalCost, transportationName, lastUpdatedBy, addressName, adultsCount, childrenCount};
-      });
-      this.model.dataSource = new MatTableDataSource(data);
-      this.model.total = data.length;
-      this.model.dataSource.sort = this.sort;
-      this.model.dataSource.filterPredicate = this.getFilterPredicate();
-    });
-  }
-
   private getBusNameById(id: string): string {
     if (id && this.model.buses.length > 0) {
       const bus = this.model.buses.find(b => b.id === id);
@@ -394,17 +361,17 @@ export class PrimaryComponent implements OnInit {
     return 0;
   }
 
-  private getBuses(): void {
-    this.fireStoreService.getAll<IBus>(Constants.RealtimeDatabase.buses).subscribe(data => {
-      this.model.buses = data;
-    });
-  }
+  // private getBuses(): void {
+  //   this.fireStoreService.getAll<IBus>(Constants.RealtimeDatabase.buses).subscribe(data => {
+  //     this.model.buses = data;
+  //   });
+  // }
 
-  private getAddress(): void {
-    this.fireStoreService.getAll<IAddress>(Constants.RealtimeDatabase.address).subscribe(data => {
-      this.model.addressList = data;
-    });
-  }
+  // private getAddress(): void {
+  //   this.fireStoreService.getAll<IAddress>(Constants.RealtimeDatabase.address).subscribe(data => {
+  //     this.model.addressList = data;
+  //   });
+  // }
 
   private getTransportPrice(transportId: string): number {
     if (transportId && this.model.buses.length > 0) {
@@ -415,12 +382,6 @@ export class PrimaryComponent implements OnInit {
       return 0;
     }
     return 0;
-  }
-
-  private getAllUsers(): void {
-    this.fireStoreService.getAll<IUser>(Constants.RealtimeDatabase.users).subscribe(data => {
-      this.model.users = data;
-    });
   }
 
   private detectMobileView(): void {
@@ -499,5 +460,28 @@ export class PrimaryComponent implements OnInit {
       // else return false
       return matchFilter.every(Boolean);
     };
+  }
+
+  private getAllData(): void {
+    forkJoin({
+      users: this.fireStoreService.getAll<IUser>(Constants.RealtimeDatabase.users),
+      members: this.fireStoreService.getAll<ITicket>(Constants.RealtimeDatabase.tickets),
+      buses: this.fireStoreService.getAll<IBus>(Constants.RealtimeDatabase.buses),
+      addresses: this.fireStoreService.getAll<IAddress>(Constants.RealtimeDatabase.address)
+    }).subscribe(({ users, members, buses, addresses }) => {
+      this.model.buses = buses;
+      this.model.addressList = addresses;
+      this.model.users = users;
+      this.model.notPrimaryMembers = members.filter(m => !m.isMain);
+      this.setDataSource(members, buses, users, addresses);
+    });
+  }
+
+  private setDataSource(members: ITicket[], buses: IBus[], users: IUser[], addresses: IAddress[]): void {
+    const data = this.memberService.getPrimaryMemberDataSources(members, buses, users, addresses);
+    this.model.dataSource = new MatTableDataSource(data);
+    this.model.total = data.length;
+    this.model.dataSource.sort = this.sort;
+    this.model.dataSource.filterPredicate = this.getFilterPredicate();
   }
 }

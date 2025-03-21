@@ -1,33 +1,31 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable, combineLatest, first, forkJoin, from, map, switchMap, take } from 'rxjs';
-import { DocumentReference, PartialWithFieldValue, Query, query, where, CollectionReference, SnapshotOptions } from 'firebase/firestore';
-import { Firestore, collection, addDoc, collectionData, doc, updateDoc, docData, getCountFromServer } from '@angular/fire/firestore';
-import { AngularFirestore, AngularFirestoreCollection, DocumentData, QueryFn } from '@angular/fire/compat/firestore';
+import { DocumentReference, PartialWithFieldValue, query, SnapshotOptions, where } from 'firebase/firestore';
+import { Firestore, collection, addDoc, collectionData, doc, updateDoc, docData } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Timestamp } from 'firebase/firestore';
 
 import { Constants } from '@app/constants';
-import { ICollectionData, IRelatedMemberViewModel, IPrimaryDataSourceVm, ITicket, ITicketForm, IAllSubscriptionDataSourceVm, IUser, IRoomDataSource, IMemberRoomDataSource, BookingStatus, IDeletedMembersDataSourceVm } from '@app/models';
-import { convertSnaps } from './db-utils';
+import { IRelatedMemberViewModel, IPrimaryDataSourceVm, ITicket, ITicketForm, IAllSubscriptionDataSourceVm, IUser, IRoomDataSource, IMemberRoomDataSource, BookingStatus, IDeletedMembersDataSourceVm } from '@app/models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FireStoreService {
 
-  constructor(
-    private firestore: Firestore,
-    private angularFirestore: AngularFirestore,
-  ) { }
+  private readonly firestore = inject(Firestore);
+  private readonly angularFirestore = inject(AngularFirestore);
 
   createId(): string {
     return this.angularFirestore.createId();
   }
 
-  getAll<T>(collectionName: string): Observable<Array<T>> {
-    return this.angularFirestore.collection(collectionName).snapshotChanges().pipe(
-      map(snaps => convertSnaps<T>(snaps)),
-      first()
-    );
+  getAll<T>(endPoint: string): Observable<T[]> {
+    const coll = collection(this.firestore, endPoint);
+    // orderBy('bookingDate', 'desc'), limit(10)
+    const documentQuery = query(coll);
+    const options = { idField: 'id' } as SnapshotOptions;
+    return collectionData(documentQuery, options).pipe(take(1)) as Observable<T[]>;
   }
 
   getById(path: string): Observable<any> {
@@ -46,7 +44,8 @@ export class FireStoreService {
   }
 
   addDoc<T>(collectionName: string, data: PartialWithFieldValue<any>): Observable<DocumentReference<T>> {
-    return from(addDoc(this.getCollection(collectionName), data));
+    const collectionRef = collection(this.firestore, collectionName);
+    return from(addDoc(collectionRef, data));
   }
 
   updateTicket(item: ITicketForm, removedIds: Array<string>): Observable<unknown> {
@@ -368,23 +367,11 @@ export class FireStoreService {
       );
   }
 
-  getNotPrimarySubscription(takeCount = 1): Observable<Array<IRelatedMemberViewModel>> {
-    return this.angularFirestore
-      .collection<IRelatedMemberViewModel>(Constants.RealtimeDatabase.tickets, ref =>
-        ref.where('isMain', '==', false)
-      ).valueChanges({ idField: 'id' })
-      .pipe(
-        map((tickets: Array<IRelatedMemberViewModel>) =>
-          tickets.map((ticket: IRelatedMemberViewModel) => ({
-            id: ticket.id,
-            primaryId: ticket.primaryId,
-            name: ticket.name,
-            birthDate: ticket.birthDate,
-            transportationId: ticket.transportationId
-          }))
-        ),
-        take(takeCount)
-      );
+  getNotPrimaryMembers(): Observable<IRelatedMemberViewModel[]> {
+    const coll = collection(this.firestore, Constants.RealtimeDatabase.tickets);
+    const documentQuery = query(coll, where('isMain', '==', false));
+    const options = { idField: 'id' } as SnapshotOptions;
+    return collectionData(documentQuery, options) as Observable<IRelatedMemberViewModel[]>;
   }
 
   getRelatedMembersByPrimaryId(primaryId: string, takeCount = 1): Observable<Array<IRelatedMemberViewModel>> {
@@ -426,24 +413,19 @@ export class FireStoreService {
       );
   }
 
-  async getTicketCount(): Promise<number> {
-    const coll = collection(this.firestore, Constants.RealtimeDatabase.tickets);
-    const snapshot = await getCountFromServer(coll);
-    return snapshot.data().count;
-  }
+  // async getTicketCount(): Promise<number> {
+  //   const coll = collection(this.firestore, Constants.RealtimeDatabase.tickets);
+  //   const snapshot = await getCountFromServer(coll);
+  //   return snapshot.data().count;
+  // }
 
   getAge(birthDate: Timestamp): number {
     return new Date().getFullYear() - birthDate.toDate().getFullYear();
   }
 
-  collection<T>(path: string, queryFn?: QueryFn): AngularFirestoreCollection<T> {
-    return this.angularFirestore.collection(path, queryFn);
-  }
-
-  getCollectionData(options: ICollectionData): Observable<Array<DocumentData>> {
-    const documentQuery = query(this.getCollection(options.collectionName), where(options.fieldPath, options.opStr, options.value));
-    return this.collectionData(documentQuery, { idField: options.idField }) as Observable<Array<DocumentData>>;
-  }
+  // collection<T>(path: string, queryFn?: QueryFn): AngularFirestoreCollection<T> {
+  //   return this.angularFirestore.collection(path, queryFn);
+  // }
 
   uploadRooms(data: Array<IRoomDataSource>): Observable<unknown> {
     const batch = this.angularFirestore.firestore.batch();
@@ -452,14 +434,6 @@ export class FireStoreService {
       batch.set(docRef, doc);
     });
     return from(batch.commit()).pipe(map(() => null));
-  }
-
-  private collectionData<T = DocumentData, U extends string = never>(query: Query<T>, options?: { idField?: ((U | keyof T) & keyof NonNullable<T>); } & SnapshotOptions): Observable<T[]> {
-    return collectionData(query, options);
-  }
-
-  private getCollection(collectionName: string): CollectionReference<DocumentData> {
-    return collection(this.firestore, collectionName);
   }
 
   deleteAllRooms(data: Array<IRoomDataSource>): Observable<unknown> {

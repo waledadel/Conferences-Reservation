@@ -241,7 +241,9 @@
 
                     <ng-container matColumnDef="bookingDate">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.bookingDate' | translate}}</th>
-                        <td mat-cell *matCellDef="let element" class="width-135">{{ element.bookingDate.toMillis() | date:'medium' }}</td>
+                        <td mat-cell *matCellDef="let element" class="width-135">
+                            {{element.bookingDate.toMillis() | date:'medium'}}
+                        </td>
                         <td mat-footer-cell *matFooterCellDef></td>
                     </ng-container>
 
@@ -294,7 +296,7 @@
                     <ng-container matColumnDef="bookingStatus">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'table.bookingStatus' | translate}}</th>
                         <td mat-cell *matCellDef="let element">
-                            <app-ticket-status [status]="element.bookingStatus"></app-ticket-status>
+                            <app-ticket-status [status]="element.bookingStatus" />
                         </td>
                         <td mat-footer-cell *matFooterCellDef></td>
                     </ng-container>

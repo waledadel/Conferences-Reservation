@@ -1,8 +1,8 @@
 import { ApplicationConfig, importProvidersFrom, isDevMode } from '@angular/core';
-import {} from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { provideHttpClient } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
@@ -23,8 +23,8 @@ export const appConfig: ApplicationConfig = {
     provideFirestore(() => getFirestore()),
     importProvidersFrom(AngularFireModule.initializeApp(environment.firebaseConfig)),
     provideAnimationsAsync(),
+    provideHttpClient(),
     importProvidersFrom(
-      HttpClientModule,
       TranslationModule.forRoot(),
       ServiceWorkerModule.register('ngsw-worker.js', {
         enabled: !isDevMode(),
