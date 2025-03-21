@@ -1,3 +1,6 @@
+@use '@angular/material' as mat;
+@use './app/shared/styles/theme-colors.scss' as m3;
+
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 @import url('https://fonts.googleapis.com/css2?family=Cairo&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Cairo&family=Jomhuria&family=Sansita&display=swap');
@@ -25,8 +28,8 @@ html, body {
 body {
   background-color: #ECEFEF !important;
   width: 100%;
-  // overflow: hidden;
   user-select: none;
+  @include mat.all-component-themes(m3.$light-theme);
 }
 
 [lang="ar"]body {
