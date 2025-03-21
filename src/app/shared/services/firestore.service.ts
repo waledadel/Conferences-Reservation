@@ -237,12 +237,11 @@ export class FireStoreService {
   }
 
 
-  getPrimaryWithRelatedParticipants(primaryId: string): Observable<Array<ITicket>> {
-    return this.angularFirestore
-      .collection<ITicket>(Constants.RealtimeDatabase.tickets, ref =>
-        ref.where('primaryId', '==', primaryId)
-      )
-      .valueChanges({ idField: 'id' }).pipe(first());
+  getPrimaryWithRelatedParticipants(primaryId: string): Observable<ITicket[]> {
+    const coll = collection(this.firestore, Constants.RealtimeDatabase.tickets);
+    const documentQuery = query(coll, where('primaryId', '==', primaryId));
+    const options = { idField: 'id' } as SnapshotOptions;
+    return collectionData(documentQuery, options).pipe(first()) as Observable<ITicket[]>;
   }
 
   getAllMembers(): Observable<Array<IAllSubscriptionDataSourceVm>> {

@@ -1,9 +1,10 @@
-import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, inject, OnInit, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { forkJoin } from 'rxjs';
 
 import { Constants } from '@app/constants';
-import { BookingStatus, Gender, IAddress, IAllSubscriptionDataSourceVm, IBus, IRoom, IRoomDataSource, MemberRoom } from '@app/models';
+import { BookingStatus, Gender, IAddress, IAllSubscriptionDataSourceVm, IBus, IRoom, IRoomDataSource, ITicket, MemberRoom } from '@app/models';
 import { DialogService, FireStoreService } from '@app/services';
 import { AdminService } from '../admin.service';
 import { IAdvancedFilterForm } from '../advanced-search/advanced-search.models';
@@ -12,11 +13,11 @@ import { AllSubscriptionModel } from './all-subscription.models';
 import { AdvancedSearchComponent } from '../advanced-search/advanced-search.component';
 import { AddRoomToMemberComponent } from './add-room-to-member/add-room-to-member.component';
 import { ExportPages, IExportMembers } from '../export-members/export-members.model';
-import { ReservationUtilityService } from 'app/utils/reservation-utility.service';
+import { MemberService } from '../primary/member.service';
 
 @Component({
-    templateUrl: './all-subscription.component.html',
-    standalone: false
+  templateUrl: './all-subscription.component.html',
+  standalone: false
 })
 export class AllSubscriptionComponent implements OnInit {
 
@@ -26,6 +27,8 @@ export class AllSubscriptionComponent implements OnInit {
     return window.innerWidth < Constants.Grid.large;
   }
 
+  private readonly memberService = inject(MemberService);
+
   @HostListener('window:resize', ['$event']) onWindowResize(): void {
     this.detectMobileView();
   }
@@ -33,17 +36,14 @@ export class AllSubscriptionComponent implements OnInit {
   constructor(
     private fireStoreService: FireStoreService,
     private adminService: AdminService,
-    private dialogService: DialogService,
-    private reservationUtilityService: ReservationUtilityService
+    private dialogService: DialogService
   ) {
     this.model = new AllSubscriptionModel();
   }
 
   ngOnInit(): void {
     this.detectMobileView();
-    this.getBuses();
-    this.getRooms();
-    this.getAddress();
+    this.getAllData();
     this.adminService.updatePageTitle('كل المشتركين');
   }
 
@@ -173,41 +173,6 @@ export class AllSubscriptionComponent implements OnInit {
     });
   }
 
-  private getAddress(): void {
-    this.fireStoreService.getAll<IAddress>(Constants.RealtimeDatabase.address).subscribe(data => {
-      this.model.addressList = data;
-      this.getAllMembers();
-    });
-  }
-
-  private getAllMembers(): void {
-    this.fireStoreService.getAllMembers().subscribe(res => {
-      const data: Array<IAllSubscriptionDataSourceVm> = res.map(item => ({
-        ...item,
-        address: this.getAddressById(item.addressId),
-        transportationName: this.getBusNameById(item.transportationId),
-        displayedRoomName: this.getRoomNameById(item.roomId),
-        mainMemberName: item.isMain ? 'ذاته' : res.find(m => m.id === item.primaryId)?.name ?? '',
-        totalCost: this.getTotalCost(item, res)
-      }));
-      this.model.dataSource = new MatTableDataSource(data);
-      this.model.dataSource.sort = this.sort;
-      this.model.total = data.length;
-      this.model.dataSource.filterPredicate = this.getFilterPredicate();
-    });
-  }
-
-  private getAddressById(addressId: string): string {
-    if (addressId && this.model.addressList.length > 0) {
-      const address = this.model.addressList.find(a => a.id === addressId);
-      if (address) {
-        return address.name;
-      }
-      return '';
-    }
-    return '';
-  }
-
   private detectMobileView(): void {
     this.model.isMobileView = this.isMobile;
     if (this.model.isMobileView) {
@@ -215,23 +180,6 @@ export class AllSubscriptionComponent implements OnInit {
     } else {
       this.model.displayedColumns = this.model.desktopColumns;
     }
-  }
-
-  private getBuses(): void {
-    this.fireStoreService.getAll<IBus>(Constants.RealtimeDatabase.buses).subscribe(data => {
-      this.model.buses = data;
-    });
-  }
-
-  private getBusNameById(id: string): string {
-    if (id && this.model.buses.length > 0) {
-      const bus = this.model.buses.find(b => b.id === id);
-      if (bus) {
-        return bus.name;
-      }
-      return '';
-    }
-    return '';
   }
 
   private getRoomNameById(id: string): string {
@@ -243,18 +191,6 @@ export class AllSubscriptionComponent implements OnInit {
       return '';
     }
     return '';
-  }
-
-  private getRooms(): void {
-    this.fireStoreService.getAll<IRoom>(Constants.RealtimeDatabase.rooms).subscribe(data => {
-      if (data && data.length > 0) {
-        this.model.rooms = data.sort((a,b) => a.room - b.room).map(r => ({
-          ...r,
-          displayedName: `R:${r.room}_S:(${r.sizeName})_B:${r.building}_F:${r.floor}_A:${r.available}`,
-          size: this.getRoomCountSize(r.sizeName),
-        }));
-      }
-    });
   }
 
   private getRoomCountSize(sizeName: string): number {
@@ -345,47 +281,34 @@ export class AllSubscriptionComponent implements OnInit {
     };
   }
 
-  private getTotalCost(ticket: IAllSubscriptionDataSourceVm, list: Array<IAllSubscriptionDataSourceVm>): number {
-    if (ticket.isMain) {
-      if (ticket && list && list.length > 0) {
-        let adultCost = 0;
-        let childrenCost = 0;
-        let primaryCost = 0;
-        const price = this.reservationUtilityService.getReservationPrice(ticket.roomType);
-        const primaryMember = list.find(m => m.id === ticket.primaryId && m.isMain);
-        if (primaryMember) {
-          primaryCost = this.getTransportPrice(primaryMember.transportationId) + price;
-          const adults = list.filter(m => m.primaryId === primaryMember.id && (new Date().getFullYear() - m.birthDate.toDate().getFullYear() >= 8) && !m.isMain);
-          const childrenMoreThenFour = list.filter(c => !c.isMain && c.primaryId === primaryMember.id && new Date().getFullYear() - c.birthDate.toDate().getFullYear() > 4 &&  
-            new Date().getFullYear() - c.birthDate.toDate().getFullYear() < 8);
-          if (adults && adults.length > 0) {
-            adults.forEach(ad => {
-              const transportPrice = this.getTransportPrice(ad.transportationId);
-              adultCost += (transportPrice + price);
-            });
-          }
-          if (childrenMoreThenFour && childrenMoreThenFour.length > 0) {
-            adults.forEach(ch => {
-              const transportPrice = this.getTransportPrice(ch.transportationId);
-              childrenCost += (transportPrice + (0.5 * price));
-            });
-          }
-          return primaryCost + adultCost + childrenCost;
-        }
-      }
-      return 0;
-    }
-    return 0;
+  private getAllData(): void {
+    forkJoin({
+      rooms: this.fireStoreService.getAll<IRoom>(Constants.RealtimeDatabase.rooms),
+      members: this.fireStoreService.getAll<ITicket>(Constants.RealtimeDatabase.tickets),
+      buses: this.fireStoreService.getAll<IBus>(Constants.RealtimeDatabase.buses),
+      addresses: this.fireStoreService.getAll<IAddress>(Constants.RealtimeDatabase.address)
+    }).subscribe(({ rooms, members, buses, addresses }) => {
+      this.model.buses = buses;
+      this.model.addressList = addresses;
+      this.model.rooms = rooms.sort((a,b) => a.room - b.room).map(r => ({
+        ...r,
+        displayedName: `R:${r.room}_S:(${r.sizeName})_B:${r.building}_F:${r.floor}_A:${r.available}`,
+        size: this.getRoomCountSize(r.sizeName),
+      }));
+      this.setDataSource(members, buses)
+    });
   }
 
-  private getTransportPrice(transportId: string): number {
-    if (transportId && this.model.buses.length > 0) {
-      const bus = this.model.buses.find(b => b.id === transportId);
-      if (bus) {
-        return +bus.price;
-      }
-      return 0;
-    }
-    return 0;
+  private setDataSource(members: ITicket[], buses: IBus[]): void {
+    const data = this.memberService.getAllMembersDataSource(members, buses);
+    const mappedData = data.map(m => ({
+      ...m,
+      displayedRoomName: this.getRoomNameById(m.roomId),
+      address: this.memberService.getAddressNameById(m.addressId, this.model.addressList),
+    }));
+    this.model.dataSource = new MatTableDataSource(mappedData);
+    this.model.dataSource.sort = this.sort;
+    this.model.total = data.length;
+    this.model.dataSource.filterPredicate = this.getFilterPredicate();
   }
 }

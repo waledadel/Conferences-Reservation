@@ -56,9 +56,6 @@ button:focus {
     max-height: 80vh !important;
   }
 }
-.mat-mdc-dialog-container {
-  padding-top: 8px !important;
-}
 
 .mdc-dialog__title::before {
   content: unset !important;
@@ -83,7 +80,9 @@ button:focus {
   }
 
   .customDialogPanelClass-xlg {
-    width: 1000px !important;
+    &.cdk-overlay-pane.mat-mdc-dialog-panel {
+      --mat-dialog-container-max-width: 900px;
+    }
   }
 }
 

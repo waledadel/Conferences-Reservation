@@ -50,7 +50,7 @@ export class MemberService {
       id: member.id,
       isMain: member.isMain,
       name: member.name,
-      mainMemberName: '',
+      mainMemberName: member.isMain ? 'ذاته' : members.find(m => m.id === member.primaryId)?.name ?? '',
       roomId: member.roomId,
       bookingStatus: member.bookingStatus,
       totalCost: this.getTotalCost(member, notPrimaryMembers, buses),
@@ -73,6 +73,17 @@ export class MemberService {
       bookingType: member.bookingType,
       bookingDate: member.bookingDate
     }));
+  }
+
+  getAddressNameById(id: string, addresses: IAddress[]): string {
+    if (id && addresses.length > 0) {
+      const address = addresses.find(b => b.id === id);
+      if (address) {
+        return address.name;
+      }
+      return '';
+    }
+    return '';
   }
 
   private getAge(birthDate: Timestamp): number {
@@ -138,17 +149,6 @@ export class MemberService {
       const bus = buses.find(b => b.id === id);
       if (bus) {
         return bus.name;
-      }
-      return '';
-    }
-    return '';
-  }
-
-  private getAddressNameById(id: string, addresses: IAddress[]): string {
-    if (id && addresses.length > 0) {
-      const address = addresses.find(b => b.id === id);
-      if (address) {
-        return address.name;
       }
       return '';
     }
