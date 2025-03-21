@@ -292,8 +292,10 @@ mat-mdc-fab.mat-primary, .mat-mdc-mini-fab.mat-primary {
   min-width: 175px;
 }
 
-.mdc-data-table__cell, .mdc-data-table__header-cell {
-  padding: 0 16px 0 14px !important;
+@media(min-width: 769px) {
+  .mdc-data-table__cell, .mdc-data-table__header-cell {
+    padding: 0 16px 0 14px !important;
+  }
 }
 
 .mobile-fab-button {

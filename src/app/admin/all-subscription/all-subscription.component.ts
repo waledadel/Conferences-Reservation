@@ -14,10 +14,13 @@ import { AdvancedSearchComponent } from '../advanced-search/advanced-search.comp
 import { AddRoomToMemberComponent } from './add-room-to-member/add-room-to-member.component';
 import { ExportPages, IExportMembers } from '../export-members/export-members.model';
 import { MemberService } from '../primary/member.service';
+import { SharedModule } from 'app/shared/shared.module';
+import { AdvancedSearchModule } from '../advanced-search/advanced-search.module';
+import { ExportMembersModule } from '../export-members/export-members.module';
 
 @Component({
   templateUrl: './all-subscription.component.html',
-  standalone: false
+  imports: [ SharedModule, AdvancedSearchModule, ExportMembersModule ]
 })
 export class AllSubscriptionComponent implements OnInit {
 

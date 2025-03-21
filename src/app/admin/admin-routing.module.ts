@@ -22,7 +22,7 @@ const routes: Routes = [
       },
       {
         path: Constants.Routes.all,
-        loadChildren: () => import('./all-subscription/all-subscription.module').then(mod => mod.AllSubscriptionModule),
+        loadComponent: () => import('./all-subscription').then(c => c.AllSubscriptionComponent),
       },
       {
         path: Constants.Routes.deletedMembers,

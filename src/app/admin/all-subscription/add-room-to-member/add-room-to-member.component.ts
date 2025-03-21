@@ -6,11 +6,12 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Constants } from '@app/constants';
 import { IAddRoomToMemberDialogConfig, IMemberRoomViewModel, IRoom, RoomErrorsModal } from '@app/models';
 import { NotifyService, FireStoreService, DialogService } from '@app/services';
+import { SharedModule } from 'app/shared/shared.module';
 
 @Component({
-    templateUrl: './add-room-to-member.component.html',
-    styleUrls: ['./add-room-to-member.component.scss'],
-    standalone: false
+  templateUrl: './add-room-to-member.component.html',
+  styleUrls: ['./add-room-to-member.component.scss'],
+  imports: [SharedModule]
 })
 export class AddRoomToMemberComponent implements OnInit {
   form: FormGroup;
