@@ -132,7 +132,7 @@ export class PrimaryComponent implements OnInit {
     });
   }
 
-  delete(item: Partial<ITicket>): void {
+  remove(item: Partial<ITicket>): void {
     if (item.name) {
       this.dialogService.openConfirmDeleteDialog(item.name).afterClosed().subscribe((res: {confirmDelete: boolean}) => {
         if (res && res.confirmDelete && item.id) {
@@ -479,7 +479,8 @@ export class PrimaryComponent implements OnInit {
 
   private setDataSource(members: ITicket[], buses: IBus[], users: IUser[], addresses: IAddress[]): void {
     const data = this.memberService.getPrimaryMemberDataSources(members, buses, users, addresses);
-    this.model.dataSource = new MatTableDataSource(data);
+    const notDeletedMembers = data.filter(m => m.bookingStatus !== BookingStatus.deleted && m.bookingStatus !== BookingStatus.canceled);
+    this.model.dataSource = new MatTableDataSource(notDeletedMembers);
     this.model.total = data.length;
     this.model.dataSource.sort = this.sort;
     this.model.dataSource.filterPredicate = this.getFilterPredicate();

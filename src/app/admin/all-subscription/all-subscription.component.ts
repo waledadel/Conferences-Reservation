@@ -309,7 +309,8 @@ export class AllSubscriptionComponent implements OnInit {
       displayedRoomName: this.getRoomNameById(m.roomId),
       address: this.memberService.getAddressNameById(m.addressId, this.model.addressList),
     }));
-    this.model.dataSource = new MatTableDataSource(mappedData);
+    const notDeletedMembers = mappedData.filter(m => m.bookingStatus !== BookingStatus.deleted && m.bookingStatus !== BookingStatus.canceled);
+    this.model.dataSource = new MatTableDataSource(notDeletedMembers);
     this.model.dataSource.sort = this.sort;
     this.model.total = data.length;
     this.model.dataSource.filterPredicate = this.getFilterPredicate();
