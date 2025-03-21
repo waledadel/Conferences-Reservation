@@ -274,7 +274,8 @@ export class FireStoreService {
             roomType: ticket.roomType,
             adminNotes: ticket.adminNotes,
             userNotes: ticket.userNotes,
-            bookingType: ticket.bookingType
+            bookingType: ticket.bookingType,
+            bookingDate: ticket.bookingDate
           }))
         ),
         take(1)

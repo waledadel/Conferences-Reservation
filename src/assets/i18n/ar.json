@@ -215,6 +215,8 @@
     "totalWomenCount": "عدد المشتركين البالغين سيدات",
     "totalMenAboveFifty": "عدد المشتركين الرجال فوق ال ٥٠ سنة",
     "totalWomenAboveFifty": "عدد المشتدكين السيدات فوق ال ٥٠ سنة",
-    "cancelledMembers": "المشتركين الملغيين"
+    "cancelledMembers": "المشتركين الملغيين",
+    "waitingListMembers": "المشتركين في قائمة الانتظار",
+    "notPaidMembers": "اشتراك غير مدفوع"
   }
 }

@@ -1,8 +1,6 @@
-import { IBus } from '@app/models';
 import { RoomType } from 'app/shared/models/ticket';
 
 export class StatisticsModel {
-    buses: IBus[] = [];
     items: Itatistics[] = [];
     readonly roomType = RoomType;
     costList: ICost[] = [];

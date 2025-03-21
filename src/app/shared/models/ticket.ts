@@ -130,6 +130,7 @@ export interface IAllSubscriptionDataSourceVm {
   adminNotes: string;
   userNotes: string;
   bookingType: BookingType;
+  bookingDate: Timestamp;
 }
 
 export interface IDeletedMembersDataSourceVm {

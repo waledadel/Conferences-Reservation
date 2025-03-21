@@ -28,7 +28,7 @@ export class PrimaryComponent implements OnInit {
 
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
   model: PrimaryModel;
-   readonly memberService = inject(MemberService);
+  private readonly memberService = inject(MemberService);
   get isMobile(): boolean {
     return window.innerWidth < Constants.Grid.large;
   }

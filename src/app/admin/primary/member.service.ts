@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Timestamp } from 'firebase/firestore';
 
 import { BookingStatus, IAddress, IBus, IPrimaryDataSourceVm, ITicket, IUser } from '@app/models';
-import { RoomType } from 'app/shared/models/ticket';
+import { IAllSubscriptionDataSourceVm, RoomType } from 'app/shared/models/ticket';
 
 @Injectable({
   providedIn: 'root'
@@ -41,6 +41,37 @@ export class MemberService {
       mainMemberName: '',
       remaining: 0,
       roomType: member.roomType
+    }));
+  }
+
+  getAllMembersDataSource(members: ITicket[], buses: IBus[]): IAllSubscriptionDataSourceVm[] {
+    const notPrimaryMembers = members.filter(m => !m.isMain);
+    return members.map(member => ({
+      id: member.id,
+      isMain: member.isMain,
+      name: member.name,
+      mainMemberName: '',
+      roomId: member.roomId,
+      bookingStatus: member.bookingStatus,
+      totalCost: this.getTotalCost(member, notPrimaryMembers, buses),
+      paid: member.paid,
+      transportationId: member.transportationId,
+      primaryId: member.primaryId,
+      mobile: member.mobile,
+      transportationName: this.getBusNameById(member.transportationId, buses),
+      gender: member.gender,
+      birthDate: member.birthDate,
+      age: this.getAge(member.birthDate),
+      address: '',
+      birthDateMonth: member.birthDate.toDate().getMonth() + 1,
+      addressId: member.addressId,
+      displayedRoomName: '',
+      remaining: 0,
+      roomType: member.roomType,
+      adminNotes: member.adminNotes,
+      userNotes: member.userNotes,
+      bookingType: member.bookingType,
+      bookingDate: member.bookingDate
     }));
   }
 
