@@ -18,7 +18,7 @@
                     </mat-expansion-panel-header>
                     <ol *ngIf="item.count > 0; else noData">
                         @for (member of item.members; track member) {
-                            <li class="d-flex justify-content-between align-items-center py-2" [class.border-bottom]="!$last">
+                            <li class="py-2" [class.border-bottom]="!$last">
                                 {{member}}
                             </li>
                         }
@@ -41,9 +41,11 @@
                     </mat-expansion-panel-header>
                     <ol *ngIf="costItem.members.length > 0; else noData">
                         @for (member of costItem.members; track member.key) {
-                            <li class="d-flex justify-content-between align-items-center py-2" [class.border-bottom]="!$last">
-                                <span>{{member.key}}</span>
-                                <small class="badge bg-dark">{{member.value}}</small>
+                            <li [class.border-bottom]="!$last">
+                                <div class="d-flex justify-content-between align-items-center py-2" >
+                                    <span>{{member.key}}</span>
+                                    <small class="badge bg-dark">{{member.value}}</small>
+                                </div>
                             </li>
                         }
                     </ol>

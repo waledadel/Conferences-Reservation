@@ -4,7 +4,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { Constants } from '@app/constants';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AdminComponent } from './admin.component';
-import { StatisticsComponent } from './statistics/statistics.component';
 import { UsersComponent } from './users/users.component';
 
 const routes: Routes = [
@@ -50,7 +49,7 @@ const routes: Routes = [
       },
       {
         path: Constants.Routes.statistics,
-        component: StatisticsComponent
+        loadComponent: () => import('./statistics').then(c => c.StatisticsComponent),
       },
       {
         path: Constants.Routes.users,

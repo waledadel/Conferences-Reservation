@@ -9,10 +9,11 @@ import { Constants } from '@app/constants';
 import { ICost, StatisticsModel } from './statistics.models';
 import { BookingStatus, IAllSubscriptionDataSourceVm, ITicket, RoomType } from 'app/shared/models/ticket';
 import { MemberService } from '../primary/member.service';
+import { SharedModule } from 'app/shared/shared.module';
 
 @Component({
-    templateUrl: './statistics.component.html',
-    standalone: false
+  templateUrl: './statistics.component.html',
+  imports: [SharedModule]
 })
 export class StatisticsComponent implements OnInit {
 
