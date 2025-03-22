@@ -1,4 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { KeyValue } from '@angular/common';
 import { forkJoin } from 'rxjs';
 
 import { AdminService } from '../admin.service';
@@ -163,15 +164,15 @@ export class StatisticsComponent implements OnInit {
     this.model.costList.push(cost);
   }
 
-  private formatMembers(members: IAllSubscriptionDataSourceVm[], field: keyof IAllSubscriptionDataSourceVm): string[] {
+  private formatMembers(members: IAllSubscriptionDataSourceVm[], field: keyof IAllSubscriptionDataSourceVm): KeyValue<string, string>[] {
     return members.sort((a, b) => a.name.localeCompare(b.name, 'ar')).map(m => {
-      let value;
+      let amount;
       if (field === 'remaining') {
-        value = m.totalCost - m.paid;
+        amount = m.totalCost - m.paid;
       } else {
-        value = m[field] || 0;
+        amount = m[field] || 0;
       }
-      return `${m.name} - ${value} جنيه`;
+      return { key: m.name, value: `${amount} جنيه`};
     });
   }
 }

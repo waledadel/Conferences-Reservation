@@ -1,3 +1,5 @@
+import { KeyValue } from '@angular/common';
+
 import { RoomType } from 'app/shared/models/ticket';
 
 export class StatisticsModel {
@@ -17,5 +19,5 @@ export interface Itatistics {
 export interface ICost {
     key: string;
     amount: number;
-    members: string[];
+    members: KeyValue<string, string>[];
 }
