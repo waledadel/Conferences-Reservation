@@ -1,23 +1,23 @@
 <div class="h-100">
-    <ng-container *ngFor="let item of settings">
-        <div *ngIf="item.imageUrl" class="col-12 px-0 text-center">
-            <img [src]="item.imageUrl" alt="img" loading="lazy" class="img-fluid img" />
+    @if (settings) {
+        <div *ngIf="settings.imageUrl" class="col-12 px-0 text-center">
+            <img [src]="settings.imageUrl" alt="img" loading="lazy" class="img-fluid img" />
         </div>
         <div class="row mx-0 pt-4 conference-info">
-            <div *ngIf="item.generalAlerts" class="col-md-4 col-12 px-md-3 px-0">
+            <div *ngIf="settings.generalAlerts" class="col-md-4 col-12 px-md-3 px-0">
                 <div class="text-center fw-bold">{{'settings.generalAlerts' | translate}}</div>
-                <div [innerHTML]="item.generalAlerts"></div>
+                <div [innerHTML]="settings.generalAlerts"></div>
             </div>
-            <div *ngIf="item.priceDetails" class="col-md-4 col-12 px-md-3 px-0">
+            <div *ngIf="settings.priceDetails" class="col-md-4 col-12 px-md-3 px-0">
                 <div class="text-center fw-bold">{{'settings.priceDetails' | translate}}</div>
-                <div [innerHTML]="item.priceDetails"></div>
+                <div [innerHTML]="settings.priceDetails"></div>
             </div>
-            <div *ngIf="item.importantDates" class="col-md-4 col-12 px-md-3 px-0">
+            <div *ngIf="settings.importantDates" class="col-md-4 col-12 px-md-3 px-0">
                 <div class="text-center fw-bold">{{'settings.importantDates' | translate}}</div>
-                <div  [innerHTML]="item.importantDates"></div>
+                <div  [innerHTML]="settings.importantDates"></div>
             </div>
         </div>
-    </ng-container>
+    }
     <div class="d-flex justify-content-center mt-3">
         <button mat-flat-button color="primary" type="button" (click)="showTicketForm()">{{'settings.agreeTerms' | translate}}</button>
     </div>

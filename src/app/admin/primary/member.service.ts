@@ -34,7 +34,7 @@ export class MemberService {
       birthDateMonth: member.birthDate.toDate().getMonth() + 1,
       adminNotes: member.adminNotes,
       lastUpdateUserId: member.lastUpdateUserId ?? '',
-      lastUpdateDate: member.lastUpdateDate ?? new Timestamp(0, 0),
+      lastUpdateDate: member.lastUpdateDate,
       lastUpdatedBy: this.getUserById(member.lastUpdateUserId, users),
       addressId: member.addressId,
       addressName: this.getAddressNameById(member.addressId, addresses),

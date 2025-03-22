@@ -1,16 +1,15 @@
-<ng-container *ngIf="(settings | async) as setting">
-
+@if (settings) {
   <div *ngIf="isReservationAllowed" class="container-fluid px-0">
     <mat-toolbar color="primary" class="col-12 px-0">
-      <div *ngIf="setting && setting[0].title != ''" class="w-100 d-flex justify-content-center"
-        [innerText]="setting[0].title"></div>
+      <div *ngIf="settings && settings.title != ''" class="w-100 d-flex justify-content-center"
+        [innerText]="settings.title"></div>
     </mat-toolbar>
   </div>
 
   <ng-container *ngIf="(isReservationAllowed && isReservationCompleted)">
     <mat-toolbar color="primary" class="col-12 px-0">
-      <div *ngIf="setting && setting[0].title != ''" class="w-100 d-flex justify-content-center"
-        [innerText]="setting[0].title"></div>
+      <div *ngIf="settings && settings.title != ''" class="w-100 d-flex justify-content-center"
+        [innerText]="settings.title"></div>
     </mat-toolbar>
 
     <div class="p-5 m-5">
@@ -35,15 +34,15 @@
 
   <div *ngIf="isWaitingEnabled">
     <div class="alert alert-warning text-center p-3 fw-bold">
-      {{setting[0].waitingListMessage}}
+      {{settings.waitingListMessage}}
     </div>
   </div>
 
   <div *ngIf="isReservationAllowed && showInfo"
     class="container my-md-4 p-md-3 p-0 container-border overflow-auto info-section">
-    <app-info [settings]="setting" (showForm)="showTicketForm($event)"></app-info>
+    <app-info [settings]="settings" (showForm)="showTicketForm($event)"></app-info>
   </div>
-</ng-container>
+}
 
 
 <div *ngIf="isReservationAllowed && showForm" class="container h-100 mt-lg-3 mt-0 px-0">

@@ -42,7 +42,7 @@ export class LoginComponent implements OnDestroy {
     if (this.form.valid) {
       const formValue = this.form.value;
       this.isLoading = true;
-      this.fireStoreService.getUserByEmail(formValue.email).pipe(takeUntil(this.destroyed)).subscribe((user: IUser) => {
+      this.fireStoreService.getUserByEmail(formValue.email).pipe(takeUntil(this.destroyed)).subscribe((user: IUser | null) => {
         if (user) {
           this.authService.login(formValue.email, formValue.password, user.role).then(() => {
             this.isLoading = false;

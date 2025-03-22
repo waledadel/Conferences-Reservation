@@ -4,14 +4,14 @@ import { ISettings } from '@app/models';
 import { SharedModule } from 'app/shared/shared.module';
 
 @Component({
-    selector: 'app-info',
-    templateUrl: './info.component.html',
-    styleUrls: ['./info.component.scss'],
-    imports: [SharedModule]
+  selector: 'app-info',
+  templateUrl: './info.component.html',
+  styleUrls: ['./info.component.scss'],
+  imports: [SharedModule]
 })
 export class InfoComponent {
 
-  @Input() settings: Array<ISettings> = [] as Array<ISettings>;
+  @Input() settings: ISettings;
   @Output() showForm: EventEmitter<boolean> = new EventEmitter<boolean>(false);
 
   showTicketForm(): void {

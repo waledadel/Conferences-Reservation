@@ -124,7 +124,7 @@ export class PrimaryComponent implements OnInit {
   }
 
   add(): void {
-    this.dialogService.openAddEditDialog(ManageReservationComponent, 'lg', true, null).afterClosed()
+    this.dialogService.openAddEditDialog(ManageReservationComponent, 'xlg', true, null).afterClosed()
     .subscribe((res: {fireRefresh: boolean}) => {
       if (res.fireRefresh) {
         // this.updateTableRow(item);
