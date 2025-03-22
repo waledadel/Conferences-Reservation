@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { KeyValue } from '@angular/common';
+import { DatePipe, KeyValue } from '@angular/common';
 import { forkJoin } from 'rxjs';
 
 import { AdminService } from '../admin.service';
@@ -13,13 +13,15 @@ import { SharedModule } from 'app/shared/shared.module';
 
 @Component({
   templateUrl: './statistics.component.html',
-  imports: [SharedModule]
+  imports: [SharedModule],
+  providers: [DatePipe]
 })
 export class StatisticsComponent implements OnInit {
 
   model: StatisticsModel;
 
- readonly memberService = inject(MemberService);
+private readonly memberService = inject(MemberService);
+private readonly datePipe = inject(DatePipe);
 
   constructor(private adminService: AdminService, private fireStoreService: FireStoreService) { }
 
@@ -121,7 +123,10 @@ export class StatisticsComponent implements OnInit {
     this.model.items.push({
       key: 'statistics.waitingListMembers',
       count: waitingMembersGroup.length,
-      members: waitingMembersGroup.map(m => `${m.name} - ${m.bookingDate.toDate().toLocaleString()}`),
+      members: waitingMembersGroup.map(m => {
+        const formattedDate = this.datePipe.transform(m.bookingDate.toDate(), 'medium');
+        return `${m.name} - ${formattedDate}`;
+      })
     });
     const primaryMembers = allMembers.filter(m => m.isMain);
     const totalCost = primaryMembers.reduce((sum, m) => sum + m.totalCost, 0);
