@@ -6,7 +6,7 @@ import { AdminService } from '../admin.service';
 import { FireStoreService } from '@app/services';
 import { Gender, IBus } from '@app/models';
 import { Constants } from '@app/constants';
-import { ICost, StatisticsModel } from './statistics.models';
+import { BusStatistics, ICost, StatisticsModel } from './statistics.models';
 import { BookingStatus, IAllSubscriptionDataSourceVm, ITicket, RoomType } from 'app/shared/models/ticket';
 import { MemberService } from '../primary/member.service';
 import { SharedModule } from 'app/shared/shared.module';
@@ -51,17 +51,7 @@ private readonly datePipe = inject(DatePipe);
     const allMembers = membersData.filter(m => allowedBookingStatus.includes(m.bookingStatus) || !m.bookingStatus);
     const cancelledMembers = membersData.filter(m => cancelledBookingStatus.includes(m.bookingStatus) && m.isMain);
     const waitingMembers = membersData.filter(m => m.bookingStatus === BookingStatus.waiting);
-    const busStatistics = [
-      { key: 'statistics.shoubraBusCount', busName: 'شبرا' },
-      { key: 'statistics.misrBusCount', busName: 'مصر' }
-    ];
-    busStatistics.forEach(({ key, busName }) => {
-      const bus = buses.find(m => m.name.includes(busName));
-      if (bus) {
-        const members = allMembers.filter(m => m.transportationId === bus.id);
-        this.addStatistics(key, this.sortedAllMembers(members));
-      }
-    });
+    this.setBusStatistics(allMembers, buses);
     const ageGenderStatistics = [
       { key: 'statistics.childrenBoysCountFromFourToEight', minAge: 4, maxAge: 8, gender: Gender.male},
       { key: 'statistics.childrenGirlsCountFromFourToEight', minAge: 4, maxAge: 8, gender: Gender.female},
@@ -180,5 +170,22 @@ private readonly datePipe = inject(DatePipe);
       }
       return { key: m.name, value: `${amount} جنيه`};
     });
+  }
+
+  private setBusStatistics(allMembers: IAllSubscriptionDataSourceVm[], buses: IBus[]): void {
+    const busStatistics = [
+      { key: 'statistics.shoubraBusCount', busName: 'شبرا' },
+      { key: 'statistics.misrBusCount', busName: 'مصر' }
+    ];
+    this.model.busStatistics.set(
+      busStatistics.map(({ key, busName }) => {
+        const bus = buses.find(b => b.name.includes(busName));
+        if (!bus) return null;
+        const members = allMembers.filter(member => member.transportationId === bus.id).map(member => ({
+          name: member.name, mobile: member.mobile, remaining: member.totalCost - member.paid })
+        );
+        return { key, count: members.length, members };
+      }).filter((data): data is BusStatistics => data !== null)
+    );
   }
 }
