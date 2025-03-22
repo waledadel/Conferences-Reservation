@@ -1,5 +1,5 @@
-import { KeyValue } from '@angular/common';
 import { signal } from '@angular/core';
+import { KeyValue } from '@angular/common';
 
 import { RoomType } from 'app/shared/models/ticket';
 
