@@ -35,7 +35,7 @@
                 </mat-expansion-panel>
             </mat-accordion>
         }
-        <ng-container *ngFor="let item of model.items; let last = last">
+        @for (item of model.items; track item) {
             <mat-accordion class="col-lg-4 col-md-6 col-12 px-md-3 px-1 mb-2">
                 <mat-expansion-panel>
                     <mat-expansion-panel-header>
@@ -44,9 +44,13 @@
                                 {{item.key | translate}}:
                                 <div class="fontweight-bold px-2">
                                     {{item.count}} فرد
-                                    <span *ngIf="item.room">
-                                        <span *ngIf="item.roomType !== model.roomType.single">- {{item.room}} غرفة</span>
-                                    </span>
+                                    @if (item.room) {
+                                        <span>
+                                            @if(item.roomType !== model.roomType.single) {
+                                                <span>- {{item.room}} غرفة</span>
+                                            }
+                                        </span>
+                                    }
                                 </div>
                             </div>
                         </mat-panel-title>
@@ -60,7 +64,50 @@
                     </ol>
                 </mat-expansion-panel>
             </mat-accordion>
-        </ng-container>
+        }
+        @for (item of model.roomStatistics(); track item) {
+            <mat-accordion class="col-lg-4 col-md-6 col-12 px-md-3 px-1 mb-2">
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            <div class="d-flex">
+                                {{item.key | translate}}:
+                                <div class="fontweight-bold px-2">
+                                    {{item.membersCount}} فرد
+                                    @if (item.roomCount) {
+                                        <span>
+                                            @if(item.roomType !== model.roomType.single) {
+                                                <span>- {{item.roomCount}} غرفة</span>
+                                            }
+                                        </span>
+                                    }
+                                </div>
+                            </div>
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <ol *ngIf="item.membersCount > 0; else noData">
+                        @for (group of item.groups; track group; let lastGroup = $last) {
+                            <li class="py-2" [class.border-bottom]="!lastGroup">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>{{group.primaryName}}</span>
+                                    <small class="badge bg-dark">{{'common.primaryMember' | translate}}</small>
+                                </div>
+                                @if (group.members.length > 0) {
+                                    @for (member of group.members; track member) {
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            {{member.name}}
+                                            @if (member.isChild) {
+                                                <small class="badge bg-info">{{'common.withoutBed' | translate}}</small>
+                                            }
+                                        </div>
+                                     }
+                                }
+                            </li>
+                        }
+                    </ol>
+                </mat-expansion-panel>
+            </mat-accordion>
+        }
         <ng-container *ngFor="let costItem of model.costList; let last = last">
             <mat-accordion class="col-lg-4 col-md-6 col-12 px-md-3 px-1" [class.mb-2]="!last">
                 <mat-expansion-panel>

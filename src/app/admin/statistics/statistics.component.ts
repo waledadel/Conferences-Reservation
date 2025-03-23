@@ -6,7 +6,7 @@ import { AdminService } from '../admin.service';
 import { FireStoreService } from '@app/services';
 import { Gender, IBus } from '@app/models';
 import { Constants } from '@app/constants';
-import { BusStatistics, ICost, StatisticsModel } from './statistics.models';
+import { BusStatistics, ICost, RoomGroupStatistics, StatisticsModel } from './statistics.models';
 import { BookingStatus, IAllSubscriptionDataSourceVm, ITicket, RoomType } from 'app/shared/models/ticket';
 import { MemberService } from '../primary/member.service';
 import { SharedModule } from 'app/shared/shared.module';
@@ -93,10 +93,7 @@ private readonly datePipe = inject(DatePipe);
       this.addStatistics(key, this.sortedAllMembers(members), members.length, roomType);
     });
     const roomTypeStatistics = [
-      { key: 'room.single', roomType: RoomType.single },
-      { key: 'common.double', roomType: RoomType.double },
-      { key: 'common.triple', roomType: RoomType.triple },
-      { key: 'common.quad', roomType: RoomType.quad }
+      { key: 'room.single', roomType: RoomType.single }
     ];
     roomTypeStatistics.forEach(({ key, roomType }) => {
       const primaryMembers = allMembers.filter(m => m.roomType === roomType && m.isMain && m.age > 4);
@@ -106,6 +103,7 @@ private readonly datePipe = inject(DatePipe);
       );
       this.addStatistics(key, this.sortedAllMembers(members), primaryMembers.length, roomType);
     });
+    this.setRoomStatistics(allMembers);
     this.addStatistics('statistics.cancelledMembers', this.sortedAllMembers(cancelledMembers));
     const notPaidMembers = allMembers.filter(m => m.paid === 0);
     this.addStatistics('statistics.notPaidMembers', this.sortedAllMembers(notPaidMembers));
@@ -187,5 +185,32 @@ private readonly datePipe = inject(DatePipe);
         return { key, count: members.length, members };
       }).filter((data): data is BusStatistics => data !== null)
     );
+  }
+  
+  private setRoomStatistics(allMembers: IAllSubscriptionDataSourceVm[]): void {
+    const roomTypeStatistics = [
+      { key: 'common.double', roomType: RoomType.double },
+      { key: 'common.triple', roomType: RoomType.triple },
+      { key: 'common.quad', roomType: RoomType.quad }
+    ];
+    this.model.roomStatistics.set(
+      roomTypeStatistics.map(({ key, roomType }) => {
+      const primaryMembers = allMembers.filter(m => m.roomType === roomType && m.isMain);
+      const members = allMembers.filter(m =>
+        (m.roomType === roomType && m.isMain) ||
+        (m.primaryId && primaryMembers.some(pm => pm.id === m.primaryId))
+      );
+      return {key, membersCount: members.length, roomCount: primaryMembers.length, roomType, groups: this.groupMembersByPrimary(allMembers, primaryMembers)};
+    }));
+  }
+
+  groupMembersByPrimary(allMembers: IAllSubscriptionDataSourceVm[], primaryMembers: IAllSubscriptionDataSourceVm[]): RoomGroupStatistics[] {
+    return primaryMembers.map(primary => {
+      const groupMembers = allMembers.filter(m => m.primaryId === primary.id && !m.isMain);
+      return {
+        primaryName: primary.name,
+        members: this.sortedAllMembers(groupMembers).map(m => ({ name: m.name, isChild: m.age <= 4 }))
+      };
+    });
   }
 }

@@ -8,6 +8,7 @@ export class StatisticsModel {
     readonly roomType = RoomType;
     costList: ICost[] = [];
     busStatistics = signal<BusStatistics[]>([]);
+    roomStatistics = signal<RoomStatistics[]>([]);
 }
 
 export interface IStatistics {
@@ -34,4 +35,17 @@ export interface BusMemberStatistics {
     readonly name: string;
     readonly mobile: string;
     readonly remaining: number;
+}
+
+export interface RoomStatistics {
+    readonly key: string;
+    readonly membersCount: number;
+    readonly roomCount: number;
+    readonly roomType: RoomType;
+    readonly groups: RoomGroupStatistics[];
+}
+
+export interface RoomGroupStatistics {
+    readonly primaryName: string;
+    readonly members: {name: string; isChild: boolean}[];
 }

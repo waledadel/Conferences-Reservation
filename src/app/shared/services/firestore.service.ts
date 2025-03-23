@@ -270,7 +270,7 @@ export class FireStoreService {
   getDeletedMembers(): Observable<ITicket[]> {
     const ticketColl = collection(this.firestore, Constants.RealtimeDatabase.tickets);
     const userColl = collection(this.firestore, Constants.RealtimeDatabase.users);
-    const documentQuery = query(ticketColl, where('bookingStatus', '==', BookingStatus.deleted));
+    const documentQuery = query(ticketColl, where('bookingStatus', 'in', [BookingStatus.canceled, BookingStatus.deleted]));
     const options = { idField: 'id' } as SnapshotOptions;
     const ticketData$ = collectionData(documentQuery, options).pipe(first()) as Observable<ITicket[]>;
     const userData$ = collectionData(userColl, options).pipe(first()) as Observable<IUser[]>;

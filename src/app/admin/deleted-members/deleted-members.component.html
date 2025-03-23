@@ -17,6 +17,7 @@
                     <i *ngIf="element.isMain" class="fa-solid fa-star primary"></i>
                   </span>
                 </div>
+                <app-ticket-status [status]="element.bookingStatus" />
                 <div><b>{{'common.name' | translate}}: </b> {{element.name}}</div>
                 <div class="d-flex"><b>المشترك الرئيسي التابع له: </b>&nbsp;
                   <div *ngIf="!element.isMain; else sameMember" class="text-success">{{element.mainMemberName}}</div>
@@ -63,9 +64,17 @@
             <td mat-footer-cell *matFooterCellDef></td>
           </ng-container>
 
+          <ng-container matColumnDef="bookingStatus">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'table.bookingStatus' | translate}}</th>
+            <td mat-cell *matCellDef="let element" class="col-2">
+              <app-ticket-status [status]="element.bookingStatus" />
+            </td>
+            <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+
           <ng-container matColumnDef="mobile">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.mobile' | translate}}</th>
-            <td mat-cell *matCellDef="let element" class="col-3">
+            <td mat-cell *matCellDef="let element" class="col-2">
               <div class="d-flex">
                 <div class="px-2">{{ element.mobile}}</div>
                 <div class="col-6">

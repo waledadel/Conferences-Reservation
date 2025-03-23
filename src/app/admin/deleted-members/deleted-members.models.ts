@@ -3,7 +3,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { BookingStatus, ITicket } from '@app/models';
 
 export class DeletedMembersModel {
-  readonly desktopColumns = ['name', 'primaryMemberName', 'mobile', 'deletedBy'];
+  readonly desktopColumns = ['name', 'primaryMemberName', 'bookingStatus', 'mobile', 'deletedBy'];
   displayedColumns: string[] = [];
   dataSource = new MatTableDataSource<ITicket>([]);
   isMobileView = false;
