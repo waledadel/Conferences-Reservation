@@ -49,7 +49,7 @@ private readonly datePipe = inject(DatePipe);
     const allowedBookingStatus = [BookingStatus.new, BookingStatus.confirmed];
     const cancelledBookingStatus = [BookingStatus.canceled, BookingStatus.deleted];
     const allMembers = membersData.filter(m => allowedBookingStatus.includes(m.bookingStatus) || !m.bookingStatus);
-    const cancelledMembers = membersData.filter(m => cancelledBookingStatus.includes(m.bookingStatus) && m.isMain);
+    const cancelledMembers = membersData.filter(m => cancelledBookingStatus.includes(m.bookingStatus));
     const waitingMembers = membersData.filter(m => m.bookingStatus === BookingStatus.waiting);
     this.setBusStatistics(allMembers, buses);
     const ageGenderStatistics = [

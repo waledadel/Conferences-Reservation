@@ -52,7 +52,7 @@ export class MemberService {
       name: member.name,
       mainMemberName: member.isMain ? 'ذاته' : members.find(m => m.id === member.primaryId)?.name ?? '',
       roomId: member.roomId,
-      bookingStatus: member.bookingStatus,
+      bookingStatus: this.getBookingStatus(member, members), // member.bookingStatus,
       totalCost: this.getTotalCost(member, notPrimaryMembers, buses),
       paid: member.paid,
       transportationId: member.transportationId,
@@ -179,5 +179,13 @@ export class MemberService {
       return '';
     }
     return '';
+  }
+
+  private getBookingStatus(member: ITicket, members: ITicket[]): BookingStatus {
+    if (member.isMain) {
+      return member.bookingStatus;
+    }
+    const mainMembersMap = new Map(members.filter(m => m.isMain).map(m => [m.id, m.bookingStatus]));
+    return mainMembersMap.get(member.primaryId) ?? BookingStatus.all;
   }
 }

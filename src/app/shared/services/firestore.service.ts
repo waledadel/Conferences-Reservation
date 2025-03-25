@@ -270,18 +270,28 @@ export class FireStoreService {
   getDeletedMembers(): Observable<ITicket[]> {
     const ticketColl = collection(this.firestore, Constants.RealtimeDatabase.tickets);
     const userColl = collection(this.firestore, Constants.RealtimeDatabase.users);
-    const documentQuery = query(ticketColl, where('bookingStatus', 'in', [BookingStatus.canceled, BookingStatus.deleted]));
+    // , where('bookingStatus', 'in', [BookingStatus.canceled, BookingStatus.deleted])
+    const documentQuery = query(ticketColl);
     const options = { idField: 'id' } as SnapshotOptions;
     const ticketData$ = collectionData(documentQuery, options).pipe(first()) as Observable<ITicket[]>;
     const userData$ = collectionData(userColl, options).pipe(first()) as Observable<IUser[]>;
     return combineLatest([ticketData$, userData$]).pipe(
       map(([tickets, users]) => {
         const userMap = new Map(users.map(user => [user.id, user.fullName]));
-        return tickets.map(ticket => ({
-          ...ticket,
-          deletedBy: ticket.deletedBy ? userMap.get(ticket.deletedBy) ?? '' : '',
-          mainMemberName: ticket.isMain ? '' : tickets.find(m => m.id === ticket.primaryId)?.name ?? ''
-        }));
+        const ticketMap = new Map(tickets.map(ticket => [ticket.id, ticket])); 
+        return tickets.filter(ticket => {
+          const primaryTicket = ticket.primaryId ? ticketMap.get(ticket.primaryId) : null;
+          return ticket.isMain ? [BookingStatus.canceled, BookingStatus.deleted].includes(ticket.bookingStatus): 
+            Boolean(primaryTicket) && [BookingStatus.canceled, BookingStatus.deleted].includes(primaryTicket!.bookingStatus);
+        }).map(ticket => {
+          const primaryTicket = ticket.primaryId ? ticketMap.get(ticket.primaryId) : null;
+          return {
+            ...ticket,
+            deletedBy: userMap.get(ticket.deletedBy!) ?? '',
+            mainMemberName: ticket.isMain ? '' : primaryTicket?.name ?? '',
+            bookingStatus: ticket.isMain ? ticket.bookingStatus : primaryTicket?.bookingStatus ?? BookingStatus.all
+          };
+        });
       })
     );
   }
