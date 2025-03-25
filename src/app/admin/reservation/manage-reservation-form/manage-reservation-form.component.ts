@@ -227,7 +227,7 @@ export class ManageReservationFormComponent implements OnInit {
     if (this.reservationData && this.reservationData.length > 0) {
       const primary = this.reservationData.find(m => m.isMain);
       const allParticipants = this.reservationData.filter(p => !p.isMain && new Date().getFullYear() - p.birthDate.toDate().getFullYear() >= 8);
-      const allChildren = this.reservationData.filter(p => !p.isMain && new Date().getFullYear() - p.birthDate.toDate().getFullYear() <= 4);
+      const allChildren = this.reservationData.filter(p => !p.isMain && new Date().getFullYear() - p.birthDate.toDate().getFullYear() < 8);
       if (primary && primary != null) {
         const totalCost = this.getTotalCost();
         this.model.form.patchValue({
