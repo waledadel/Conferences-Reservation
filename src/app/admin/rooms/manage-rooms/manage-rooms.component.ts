@@ -74,7 +74,7 @@ export class ManageRoomsComponent implements OnInit {
       available: roomSize,
       notUsed: 0,
       current: 0,
-      building: +formValue.building,
+      building: formValue.building,
       floor: +formValue.floor,
       room: +formValue.room,
     };

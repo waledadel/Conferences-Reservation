@@ -1,7 +1,7 @@
 export interface IRoom {
     id: string;
     room: number;
-    building: number;
+    building: string;
     floor: number;
     sizeName: string;
     size: number;
@@ -15,7 +15,7 @@ export interface IRoom {
 export interface IRoomDataSource {
     id: string;
     room: number;
-    building: number;
+    building: string;
     floor: number;
     sizeName: string;
     current: number;

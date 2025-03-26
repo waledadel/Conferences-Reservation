@@ -73,9 +73,9 @@ export class RoomsComponent implements OnInit {
               }
               dataSource.push({
                 id: '',
-                room: +(row[0]),
-                building: +(row[1]),
-                floor: +(row[2]),
+                room: Number(row[0]),
+                building: (row[1]),
+                floor: Number(row[2]),
                 sizeName: row[3],
                 size: roomSize,
                 displayedName: `R:${row[0]}_S:(${row[3]})_B:${row[1]}_F:${row[2]}_A:${roomSize}`,
