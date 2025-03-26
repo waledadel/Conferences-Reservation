@@ -57,7 +57,7 @@ export class AllSubscriptionComponent implements OnInit {
         let exportData: Array<any> = [];
         const selectedColumns = res.options.filter(op => op.isChecked);
         const dataSource = this.model.filteredData.length > 0 ? this.model.filteredData : this.model.dataSource.data;
-        dataSource.forEach(item => {
+        dataSource.sort((a,b) => b.age - a.age).forEach(item => {
           let keyField: keyof IAllSubscriptionDataSourceVm;
           let exportObj = {} as any;
           for (const key in item) {
