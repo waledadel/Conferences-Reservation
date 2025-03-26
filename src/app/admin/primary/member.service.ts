@@ -21,7 +21,7 @@ export class MemberService {
       bookingType: member.bookingType,
       bookingStatus: member.bookingStatus,
       bookingDate: member.bookingDate,
-      totalCost: this.getTotalCost(member, notPrimaryMembers, buses),
+      totalCost: this.getTotalCost(notPrimaryMembers, buses, member),
       paid: member.paid,
       userNotes: member.userNotes,
       transportationId: member.transportationId,
@@ -46,33 +46,38 @@ export class MemberService {
 
   getAllMembersDataSource(members: ITicket[], buses: IBus[]): IAllSubscriptionDataSourceVm[] {
     const notPrimaryMembers = members.filter(m => !m.isMain);
-    return members.map(member => ({
-      id: member.id,
-      isMain: member.isMain,
-      name: member.name,
-      mainMemberName: member.isMain ? 'ذاته' : members.find(m => m.id === member.primaryId)?.name ?? '',
-      roomId: member.roomId,
-      bookingStatus: this.getBookingStatus(member, members), // member.bookingStatus,
-      totalCost: this.getTotalCost(member, notPrimaryMembers, buses),
-      paid: member.paid,
-      transportationId: member.transportationId,
-      primaryId: member.primaryId,
-      mobile: member.mobile,
-      transportationName: this.getBusNameById(member.transportationId, buses),
-      gender: member.gender,
-      birthDate: member.birthDate,
-      age: this.getAge(member.birthDate),
-      address: '',
-      birthDateMonth: member.birthDate.toDate().getMonth() + 1,
-      addressId: member.addressId,
-      displayedRoomName: '',
-      remaining: 0,
-      roomType: member.roomType,
-      adminNotes: member.adminNotes,
-      userNotes: member.userNotes,
-      bookingType: member.bookingType,
-      bookingDate: member.bookingDate
-    }));
+    const membersMap = new Map(members.map(member => [member.id, member]));
+    return members.map(member => {
+      const primaryMember = membersMap.get(member.primaryId);
+      return {
+        id: member.id,
+        isMain: member.isMain,
+        name: member.name,
+        mainMemberName: member.isMain ? 'ذاته' : primaryMember?.name ?? '',
+        roomId: member.roomId,
+        bookingStatus: this.getBookingStatus(member, members),
+        totalCost:  member.isMain ? this.getTotalCost(notPrimaryMembers, buses, member) : this.getTotalCost(notPrimaryMembers, buses, members.find(m => m.id === member.primaryId)),
+        paid: member.isMain ? member.paid : primaryMember?.paid ?? 0,
+        transportationId: member.transportationId,
+        primaryId: member.primaryId,
+        mobile: member.mobile,
+        transportationName: member.isMain ? this.getBusNameById(member.transportationId, buses) : 
+          this.getBusNameById(primaryMember?.transportationId ?? '', buses),
+        gender: member.gender,
+        birthDate: member.birthDate,
+        age: this.getAge(member.birthDate),
+        address: '',
+        birthDateMonth: member.birthDate.toDate().getMonth() + 1,
+        addressId: member.addressId,
+        displayedRoomName: '',
+        remaining: 0,
+        roomType: this.getRoomType(member, members),
+        adminNotes: member.adminNotes,
+        userNotes: member.userNotes,
+        bookingType: member.bookingType,
+        bookingDate: member.bookingDate
+      };
+    });
   }
 
   getAddressNameById(id: string, addresses: IAddress[]): string {
@@ -90,7 +95,7 @@ export class MemberService {
     return new Date().getFullYear() - birthDate.toDate().getFullYear();
   }
 
-  private getTotalCost(ticket: ITicket, list: ITicket[], buses: IBus[]): number {
+  private getTotalCost(list: ITicket[], buses: IBus[], ticket?: ITicket): number {
     if (ticket && (ticket.bookingStatus === BookingStatus.new || ticket.bookingStatus === BookingStatus.confirmed || ticket.bookingStatus === BookingStatus.waiting)) {
       let adultCost = 0;
       let primaryCost = 0;
@@ -187,5 +192,13 @@ export class MemberService {
     }
     const mainMembersMap = new Map(members.filter(m => m.isMain).map(m => [m.id, m.bookingStatus]));
     return mainMembersMap.get(member.primaryId) ?? BookingStatus.all;
+  }
+
+  private getRoomType(member: ITicket, members: ITicket[]): RoomType {
+    if (member.isMain) {
+      return member.roomType;
+    }
+    const mainMembersMap = new Map(members.filter(m => m.isMain).map(m => [m.id, m.roomType]));
+    return mainMembersMap.get(member.primaryId) ?? RoomType.single;
   }
 }

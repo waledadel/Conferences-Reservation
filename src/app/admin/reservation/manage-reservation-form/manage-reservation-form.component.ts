@@ -35,7 +35,7 @@ export class ManageReservationFormComponent implements OnInit {
     const canUpdate = this.isEditMode && this.isAdmin && this.reservationData.length > 0;
     let max = maximum;
     if (canUpdate) {
-      const adults = this.reservationData.filter(c => new Date().getFullYear() - c.birthDate.toDate().getFullYear() >= 8 );
+      const adults = this.reservationData.filter(c => new Date().getFullYear() - c.birthDate.toDate().getFullYear() > 4 );
       max = adults.length - 1;
     }
     this.model.showEditMessage = max !== maximum;
@@ -226,8 +226,8 @@ export class ManageReservationFormComponent implements OnInit {
   private patchFormValue(): void {
     if (this.reservationData && this.reservationData.length > 0) {
       const primary = this.reservationData.find(m => m.isMain);
-      const allParticipants = this.reservationData.filter(p => !p.isMain && new Date().getFullYear() - p.birthDate.toDate().getFullYear() >= 8);
-      const allChildren = this.reservationData.filter(p => !p.isMain && new Date().getFullYear() - p.birthDate.toDate().getFullYear() < 8);
+      const allParticipants = this.reservationData.filter(p => !p.isMain && new Date().getFullYear() - p.birthDate.toDate().getFullYear() > 4);
+      const allChildren = this.reservationData.filter(p => !p.isMain && new Date().getFullYear() - p.birthDate.toDate().getFullYear() <= 4);
       if (primary && primary != null) {
         const totalCost = this.getTotalCost();
         this.model.form.patchValue({
