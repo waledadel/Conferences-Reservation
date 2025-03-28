@@ -17,6 +17,7 @@ import { MemberService } from '../primary/member.service';
 import { SharedModule } from 'app/shared/shared.module';
 import { AdvancedSearchModule } from '../advanced-search/advanced-search.module';
 import { ExportMembersModule } from '../export-members/export-members.module';
+import { IConferenceProgram } from '../conference-program/conference-program.models';
 
 @Component({
   templateUrl: './all-subscription.component.html',
@@ -289,9 +290,11 @@ export class AllSubscriptionComponent implements OnInit {
       rooms: this.fireStoreService.getAll<IRoom>(Constants.RealtimeDatabase.rooms),
       members: this.fireStoreService.getAll<ITicket>(Constants.RealtimeDatabase.tickets),
       buses: this.fireStoreService.getAll<IBus>(Constants.RealtimeDatabase.buses),
-      addresses: this.fireStoreService.getAll<IAddress>(Constants.RealtimeDatabase.address)
-    }).subscribe(({ rooms, members, buses, addresses }) => {
+      addresses: this.fireStoreService.getAll<IAddress>(Constants.RealtimeDatabase.address),
+      conferenceProgram: this.fireStoreService.getSingletonDocument<IConferenceProgram>(Constants.RealtimeDatabase.conferenceProgram)
+    }).subscribe(({ rooms, members, buses, addresses, conferenceProgram }) => {
       this.model.buses = buses;
+      this.model.conferenceProgram.set(conferenceProgram);
       this.model.addressList = addresses;
       this.model.rooms = rooms.sort((a,b) => a.room - b.room).map(r => ({
         ...r,

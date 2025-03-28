@@ -97,7 +97,8 @@
     "editMessage": "برجاء مراعاة أن عدد المشتركين يعتمد على نوع الحجز. قد تحتاج إلى إضافة أو حذف البعض منهم بناءً على اختيارك",
     "emptyData": "لا توجد بيانات",
     "primaryMember": "المشترك الرئيسي",
-    "withoutBed": "بدون سرير"
+    "withoutBed": "بدون سرير",
+    "locationUrl": "رابط الموقع"
   },
   "languages": {
     "arabic": "العربية",
@@ -112,7 +113,8 @@
     "settings": "إعدادات",
     "address": "العنوان",
     "deletedMembers": "المشتركين المحذوفين",
-    "room-type": "أنواع الغرف"
+    "room-type": "أنواع الغرف",
+    "conferenceProgram": "برنامج المؤتمر"
   },
   "room": {
     "add": "إضافة غرفة",
@@ -142,7 +144,8 @@
     "bookedSuccessfully": "تم الحجز بنجاح",
     "bookedWaitingSuccessfully": "تم الحجز بنجاح وتم وضعك في قائمة الانتظار",
     "bookedUpdatedSuccessfully": "تم تعديل الحجز بنجاح",
-    "settingsSavedSuccessfully": "تم حفظ التغييرات بنجاح"
+    "settingsSavedSuccessfully": "تم حفظ التغييرات بنجاح",
+    "savedSuccessfully": "تم الحفظ بنجاح"
   },
   "validations": {
     "requiredField": "هذا الحقل مطلوب",

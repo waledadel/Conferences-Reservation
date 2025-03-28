@@ -11,4 +11,9 @@
     <a href="javascript:void(0)" (click)="openViber()" class="viber-app-icon pt-lg-0 pt-3">
         <i class="fa-brands fa-viber"></i>
     </a>
+    @if (conferenceProgram()) {
+        <a href="javascript:void(0)" (click)="sendConferenceProgram()" class="house-app-icon pt-lg-0 pt-3">
+            <i class="fa-solid fa-house"></i>
+        </a>
+    }
 </div>

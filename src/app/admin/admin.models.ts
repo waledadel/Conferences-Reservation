@@ -76,6 +76,12 @@ export const menuItems: Array<IMenu> = [
     roles: [Roles.admin]
   },
   {
+    icon: 'home_pin',
+    text: 'menu.conferenceProgram',
+    url:  Constants.Routes.conferenceProgram,
+    roles: [Roles.admin]
+  },
+  {
     icon: 'groups',
     text: 'common.servants',
     url:  Constants.Routes.users,

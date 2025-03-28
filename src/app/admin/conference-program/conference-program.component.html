@@ -1,0 +1,35 @@
+<div class="container-fluid d-flex justify-content-center py-4">
+    <form [formGroup]="model.form" novalidate class="row mx-0 py-4 px-md-3 px-0 container-border" (ngSubmit)="save()">
+        <div class="col-12 px-md-3 mb-3 px-0">
+            <div class="image-section rounded pb-3">
+                <div class="d-flex px-3 pt-1 pb-2 justify-content-end">
+                    <button mat-icon-button type="button" color="primary" (click)="imageInput.click()">
+                        <mat-icon>photo</mat-icon>
+                    </button>
+                    <button mat-icon-button type="button" color="warn" (click)="deleteImage()">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                    <input type="file" #imageInput class="d-none" accept="image/*" (change)="onSelectedImage(imageInput)">
+                </div>
+                <div class="col-12 d-flex justify-content-center align-items-center">
+                    <img [src]="model.selectedImage()" alt="image" class="img-fluid program-image" loading="lazy" />
+                </div>
+            </div>
+        </div>
+        <mat-form-field class="col-12 px-md-3 px-0">
+            <mat-label>{{'common.locationUrl' | translate}}</mat-label>
+            <input type="text" matInput formControlName="locationUrl" inputmode="url">
+            @if (model.form.get('locationUrl')!.hasError('required')) {
+                <mat-error>{{'validations.requiredField' | translate}}</mat-error>
+            }
+        </mat-form-field>
+        <div class="col-12 pt-3 px-md-3 px-0 d-flex justify-content-end">
+            <button mat-flat-button type="submit" color="primary" [disabled]="model.isLoading()">
+                @if (model.isLoading()) {
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                }
+                {{'common.save' | translate}}
+            </button>
+        </div>
+    </form>
+</div>

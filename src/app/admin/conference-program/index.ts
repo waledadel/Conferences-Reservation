@@ -1,0 +1,1 @@
+export { ConferenceProgramComponent } from './conference-program.component';

@@ -52,6 +52,10 @@ const routes: Routes = [
         loadComponent: () => import('./statistics').then(c => c.StatisticsComponent),
       },
       {
+        path: Constants.Routes.conferenceProgram,
+        loadComponent: () => import('./conference-program').then(c => c.ConferenceProgramComponent),
+      },
+      {
         path: Constants.Routes.users,
         component: UsersComponent
       },
