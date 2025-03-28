@@ -8,7 +8,8 @@ export class ConferenceProgramModel {
   program = signal<IConferenceProgram>({
     id: '',
     locationUrl: '',
-    imageUrl: ''
+    imageUrl: '',
+    message: ''
   });
   selectedImage = signal(Constants.Images.defaultSettingImg);
   isLoading = signal(false);
@@ -18,4 +19,5 @@ export interface IConferenceProgram {
   id: string;
   locationUrl: string;
   imageUrl: string;
+  message: string;
 }

@@ -1,6 +1,6 @@
-<div class="container-fluid d-flex justify-content-center py-4">
+<div class="container-fluid bg-white d-flex justify-content-center py-4">
     <form [formGroup]="model.form" novalidate class="row mx-0 py-4 px-md-3 px-0 container-border" (ngSubmit)="save()">
-        <div class="col-12 px-md-3 mb-3 px-0">
+        <div class="col-12">
             <div class="image-section rounded pb-3">
                 <div class="d-flex px-3 pt-1 pb-2 justify-content-end">
                     <button mat-icon-button type="button" color="primary" (click)="imageInput.click()">
@@ -16,14 +16,21 @@
                 </div>
             </div>
         </div>
-        <mat-form-field class="col-12 px-md-3 px-0">
+        <mat-form-field class="col-12">
             <mat-label>{{'common.locationUrl' | translate}}</mat-label>
             <input type="text" matInput formControlName="locationUrl" inputmode="url">
             @if (model.form.get('locationUrl')!.hasError('required')) {
                 <mat-error>{{'validations.requiredField' | translate}}</mat-error>
             }
         </mat-form-field>
-        <div class="col-12 pt-3 px-md-3 px-0 d-flex justify-content-end">
+        <mat-form-field class="col-12">
+            <mat-label>{{'common.message' | translate}}</mat-label>
+            <textarea type="text" matInput formControlName="message" rows="3"></textarea>
+            @if (model.form.get('message')!.hasError('required')) {
+                <mat-error>{{'validations.requiredField' | translate}}</mat-error>
+            }
+        </mat-form-field>
+        <div class="col-12 pt-3 d-flex justify-content-end">
             <button mat-flat-button type="submit" color="primary" [disabled]="model.isLoading()">
                 @if (model.isLoading()) {
                     <i class="fa-solid fa-spinner fa-spin"></i>

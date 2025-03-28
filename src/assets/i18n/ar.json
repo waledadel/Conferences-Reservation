@@ -98,7 +98,9 @@
     "emptyData": "لا توجد بيانات",
     "primaryMember": "المشترك الرئيسي",
     "withoutBed": "بدون سرير",
-    "locationUrl": "رابط الموقع"
+    "locationUrl": "رابط الموقع",
+    "message": "الرسالة",
+    "appName": "إجتماع يوحنا ذهبي الفم - السامري الصالح"
   },
   "languages": {
     "arabic": "العربية",
@@ -120,7 +122,7 @@
     "add": "إضافة غرفة",
     "building": "المبني",
     "floor": "رقم دور الغرفة",
-    "name": "اسم الغرفة",
+    "name": "الغرفة",
     "type": "نوع الغرفة",
     "rest": "الباقي",
     "single": "حجز فرد",
@@ -223,5 +225,12 @@
     "cancelledMembers": "المشتركين الملغيين",
     "waitingListMembers": "المشتركين في قائمة الانتظار",
     "notPaidMembers": "اشتراك غير مدفوع"
+  },
+  "rooms": {
+    "occupiedRooms": "الغرف المسكنة",
+    "availableRooms": "الغرف المتاحة",
+    "available": "المتاح",
+    "building": "مبني",
+    "floor": "دور"
   }
 }

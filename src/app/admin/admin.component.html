@@ -2,7 +2,7 @@
     <button mat-icon-button (click)="drawer.toggle()">
         <mat-icon>menu</mat-icon>
     </button>
-    <span *ngIf="model.pageTitle">{{model.pageTitle}}</span>
+    <span class="font-size">{{'common.appName' | translate}}</span>
 </mat-toolbar>
 
 <mat-drawer-container class="app-container">
@@ -22,7 +22,9 @@
             </mat-list-item>
         </mat-nav-list>
     </mat-drawer>
-    <router-outlet>
-        <w-loading [detectRoutingOngoing]="true"></w-loading>
-    </router-outlet>
+    <div class="h-100 w-100 page-container">
+        <router-outlet>
+            <w-loading [detectRoutingOngoing]="true" />
+        </router-outlet>
+    </div>
 </mat-drawer-container>

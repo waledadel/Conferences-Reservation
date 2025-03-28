@@ -2,6 +2,7 @@ import { signal } from '@angular/core';
 import { KeyValue } from '@angular/common';
 
 import { RoomType } from 'app/shared/models/ticket';
+import { IRoom } from '@app/models';
 
 export class StatisticsModel {
     items: IStatistics[] = [];
@@ -9,6 +10,8 @@ export class StatisticsModel {
     costList: ICost[] = [];
     busStatistics = signal<BusStatistics[]>([]);
     roomStatistics = signal<RoomStatistics[]>([]);
+    roomsList = signal<IRoomList[]>([]);
+    buildingList = signal<IBuilding[]>([]);
 }
 
 export interface IStatistics {
@@ -47,5 +50,25 @@ export interface RoomStatistics {
 
 export interface RoomGroupStatistics {
     readonly primaryName: string;
+    readonly floor?: number;
+    readonly building?: string;
+    readonly room?: number;
     readonly members: {name: string; isChild: boolean}[];
+}
+
+export interface IRoomList {
+    key: string;
+    rooms: IRoom[];
+    isComplete: boolean;
+}
+
+export interface IBuilding {
+    name: string;
+    members: IBuildingMembers[];
+}
+
+export interface IBuildingMembers {
+    memberId: string;
+    name: string;
+    room: string;
 }

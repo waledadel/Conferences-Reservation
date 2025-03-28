@@ -47,9 +47,7 @@ export class SocialMediaComponent {
       const building = match ? match[2] : '';
       const floor = match ? match[3] : '';
       const message = encodeURIComponent(`
-        مساء الخير ${user.name}
-        
-        نود ارسال برنامج المؤتمر لك
+        ${program.message}
         
         الموقع: ${program.locationUrl}
         

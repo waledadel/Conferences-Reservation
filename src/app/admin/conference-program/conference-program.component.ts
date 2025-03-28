@@ -5,7 +5,6 @@ import { finalize } from 'rxjs';
 
 import { ConferenceProgramModel, IConferenceProgram } from './conference-program.models';
 import { FireStoreService, NotifyService, TranslationService } from '@app/services';
-import { AdminService } from '../admin.service';
 import { Constants } from '@app/constants';
 import { SharedModule } from 'app/shared/shared.module';
 
@@ -24,13 +23,11 @@ export class ConferenceProgramComponent {
   private readonly notifyService = inject(NotifyService);
   private readonly translationService = inject(TranslationService);
   private readonly angularFireStorage = inject(AngularFireStorage);
-  private readonly adminService = inject(AdminService);
 
   ngOnInit(): void {
     this.initModel();
     this.initFormModel();
     this.getProgramData();
-    this.adminService.updatePageTitle(this.instant('menu.conferenceProgram'));
   }
 
   onSelectedImage(selectedFile: any): void {
@@ -85,7 +82,8 @@ export class ConferenceProgramComponent {
   private initFormModel(): void {
     this.model.form = this.formBuilder.group({
       locationUrl: ['', Validators.required],
-      imageUrl: ['', Validators.required]
+      imageUrl: ['', Validators.required],
+      message: ['', Validators.required]
     });
   }
 
@@ -119,7 +117,8 @@ export class ConferenceProgramComponent {
   private patchFormValue(item: IConferenceProgram): void {
     this.model.form.patchValue({
       locationUrl: item.locationUrl,
-      imageUrl: item.imageUrl
+      imageUrl: item.imageUrl,
+      message: item.message
     });
     if (item.imageUrl != '') {
       this.model.selectedImage.set(item.imageUrl);

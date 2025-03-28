@@ -25,6 +25,7 @@ export class AllSubscriptionModel {
   conferenceProgram = signal<IConferenceProgram>({
     id: '',
     locationUrl: '',
-    imageUrl: ''
+    imageUrl: '',
+    message: ''
   });
 }

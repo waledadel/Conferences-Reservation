@@ -4,9 +4,9 @@ import { forkJoin } from 'rxjs';
 
 import { AdminService } from '../admin.service';
 import { FireStoreService } from '@app/services';
-import { Gender, IBus } from '@app/models';
+import { Gender, IBus, IRoom } from '@app/models';
 import { Constants } from '@app/constants';
-import { BusStatistics, ICost, RoomGroupStatistics, StatisticsModel } from './statistics.models';
+import { BusStatistics, ICost, IRoomList, RoomGroupStatistics, StatisticsModel } from './statistics.models';
 import { BookingStatus, IAllSubscriptionDataSourceVm, ITicket, RoomType } from 'app/shared/models/ticket';
 import { MemberService } from '../primary/member.service';
 import { SharedModule } from 'app/shared/shared.module';
@@ -39,18 +39,56 @@ private readonly datePipe = inject(DatePipe);
     forkJoin({
       members: this.fireStoreService.getAll<ITicket>(Constants.RealtimeDatabase.tickets),
       buses: this.fireStoreService.getAll<IBus>(Constants.RealtimeDatabase.buses),
-    }).subscribe(({ members, buses }) => {
-      this.setStatistics(members, buses);
+      rooms: this.fireStoreService.getAll<IRoom>(Constants.RealtimeDatabase.rooms),
+    }).subscribe(({ members, buses, rooms }) => {
+      this.setStatistics(members, buses, rooms);
     });
   }
 
-  private setStatistics(allMembersData: ITicket[], buses: IBus[]): void {
+  private setStatistics(allMembersData: ITicket[], buses: IBus[], rooms: IRoom[]): void {
+
+    const roomsList = [
+      { key: 'rooms.occupiedRooms', isComplete: true},
+      { key: 'rooms.availableRooms', isComplete: false }
+    ];
+    const roomsData: IRoomList[] = roomsList.map(({ key, isComplete }) => ({
+      key,
+      isComplete,
+      rooms: rooms.filter(r => isComplete ? r.available === 0 : r.available <= 4 && r.available > 0)
+    }));
+    this.model.roomsList.set(roomsData);
     const membersData = this.memberService.getAllMembersDataSource(allMembersData, buses);
+    console.log('membersData', membersData);
+
     const allowedBookingStatus = [BookingStatus.new, BookingStatus.confirmed];
     const cancelledBookingStatus = [BookingStatus.canceled, BookingStatus.deleted];
     const allMembers = membersData.filter(m => allowedBookingStatus.includes(m.bookingStatus) || !m.bookingStatus);
     const cancelledMembers = membersData.filter(m => cancelledBookingStatus.includes(m.bookingStatus));
     const waitingMembers = membersData.filter(m => m.bookingStatus === BookingStatus.waiting);
+
+
+    const groupedRooms = rooms.reduce((acc, room) => {
+      (acc[room.building] ||= []).push(room);
+      return acc;
+    }, {} as Record<string, typeof rooms>);
+    
+    this.model.buildingList.set(
+      Object.keys(groupedRooms).map(building => ({
+        name: building,
+        members: membersData
+          .filter(m => groupedRooms[building].some(room => room.id === m.roomId))
+          .map(m => {
+            const room = groupedRooms[building].find(r => r.id === m.roomId);
+            return {
+              memberId: m.id,
+              name: m.name,
+              room: `الغرفة: ${room?.room} - رقم الدور: ${room?.floor}`
+            };
+          })
+          .sort((a, b) => a.name.localeCompare(b.name, 'ar'))
+      }))
+    );
+
     this.setBusStatistics(allMembers, buses);
     const ageGenderStatistics = [
       { key: 'statistics.childrenBoysCountFromFourToEight', minAge: 4, maxAge: 8, gender: Gender.male},
@@ -103,7 +141,7 @@ private readonly datePipe = inject(DatePipe);
       );
       this.addStatistics(key, this.sortedAllMembers(members), primaryMembers.length, roomType);
     });
-    this.setRoomStatistics(allMembers);
+    this.setRoomStatistics(allMembers, rooms);
     this.addStatistics('statistics.cancelledMembers', this.sortedAllMembers(cancelledMembers));
     const notPaidMembers = allMembers.filter(m => m.paid === 0);
     this.addStatistics('statistics.notPaidMembers', this.sortedAllMembers(notPaidMembers));
@@ -187,7 +225,7 @@ private readonly datePipe = inject(DatePipe);
     );
   }
   
-  private setRoomStatistics(allMembers: IAllSubscriptionDataSourceVm[]): void {
+  private setRoomStatistics(allMembers: IAllSubscriptionDataSourceVm[], rooms: IRoom[]): void {
     const roomTypeStatistics = [
       { key: 'common.double', roomType: RoomType.double },
       { key: 'common.triple', roomType: RoomType.triple },
@@ -200,16 +238,26 @@ private readonly datePipe = inject(DatePipe);
         (m.roomType === roomType && m.isMain) ||
         (m.primaryId && primaryMembers.some(pm => pm.id === m.primaryId))
       );
-      return {key, membersCount: members.length, roomCount: primaryMembers.length, roomType, groups: this.groupMembersByPrimary(allMembers, primaryMembers)};
+      return {
+        key,
+        membersCount: members.length,
+        roomCount: primaryMembers.length,
+        roomType,
+        groups: this.groupMembersByPrimary(allMembers, primaryMembers, rooms),
+      };
     }));
   }
 
-  groupMembersByPrimary(allMembers: IAllSubscriptionDataSourceVm[], primaryMembers: IAllSubscriptionDataSourceVm[]): RoomGroupStatistics[] {
+  private groupMembersByPrimary(allMembers: IAllSubscriptionDataSourceVm[], primaryMembers: IAllSubscriptionDataSourceVm[], rooms: IRoom[]): RoomGroupStatistics[] {
     return primaryMembers.map(primary => {
       const groupMembers = allMembers.filter(m => m.primaryId === primary.id && !m.isMain);
+      const existingRoom = rooms.find(r => r.id === primary.roomId);
       return {
         primaryName: primary.name,
-        members: this.sortedAllMembers(groupMembers).map(m => ({ name: m.name, isChild: m.age <= 4 }))
+        members: this.sortedAllMembers(groupMembers).map(m => ({ name: m.name, isChild: m.age <= 4 })),
+        room: existingRoom?.room,
+        floor: existingRoom?.floor,
+        building: existingRoom?.building
       };
     });
   }
