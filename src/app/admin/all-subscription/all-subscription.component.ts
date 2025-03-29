@@ -4,7 +4,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { forkJoin } from 'rxjs';
 
 import { Constants } from '@app/constants';
-import { BookingStatus, Gender, IAddress, IAllSubscriptionDataSourceVm, IBus, IRoom, IRoomDataSource, ITicket, MemberRoom } from '@app/models';
+import { BookingStatus, Gender, IAddress, IAllSubscriptionDataSourceVm, IBus, IRoomDataSource, ITicket, MemberRoom } from '@app/models';
 import { DialogService, FireStoreService } from '@app/services';
 import { AdminService } from '../admin.service';
 import { IAdvancedFilterForm } from '../advanced-search/advanced-search.models';
@@ -287,7 +287,7 @@ export class AllSubscriptionComponent implements OnInit {
 
   private getAllData(): void {
     forkJoin({
-      rooms: this.fireStoreService.getAll<IRoom>(Constants.RealtimeDatabase.rooms),
+      rooms: this.fireStoreService.getAll<IRoomDataSource>(Constants.RealtimeDatabase.rooms),
       members: this.fireStoreService.getAll<ITicket>(Constants.RealtimeDatabase.tickets),
       buses: this.fireStoreService.getAll<IBus>(Constants.RealtimeDatabase.buses),
       addresses: this.fireStoreService.getAll<IAddress>(Constants.RealtimeDatabase.address),
@@ -315,7 +315,7 @@ export class AllSubscriptionComponent implements OnInit {
     const notDeletedMembers = mappedData.filter(m => m.bookingStatus !== BookingStatus.deleted && m.bookingStatus !== BookingStatus.canceled);
     this.model.dataSource = new MatTableDataSource(notDeletedMembers);
     this.model.dataSource.sort = this.sort;
-    this.model.total = data.length;
+    this.model.total = notDeletedMembers.length;
     this.model.dataSource.filterPredicate = this.getFilterPredicate();
   }
 }

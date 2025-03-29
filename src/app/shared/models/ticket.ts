@@ -197,8 +197,9 @@ export enum Gender {
 }
 
 export enum RoomType {
-  single = 1,
-  double = 2,
-  triple = 3,
-  quad = 4
+  unknown = 0,
+  single,
+  double,
+  triple,
+  quad 
 }

@@ -1,3 +1,5 @@
+import { RoomType } from "./ticket";
+
 export interface IRoom {
     id: string;
     room: number;
@@ -18,9 +20,11 @@ export interface IRoomDataSource {
     building: string;
     floor: number;
     sizeName: string;
-    current: number;
     available: number;
-    notUsed: number;
+    members: {name: string; isMain: boolean}[];
+    size: number;
+    displayedName: string;
+    roomType: RoomType;
 }
 
 export enum RoomErrorsModal {

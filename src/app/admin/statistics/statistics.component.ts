@@ -2,7 +2,6 @@ import { Component, inject, OnInit } from '@angular/core';
 import { DatePipe, KeyValue } from '@angular/common';
 import { forkJoin } from 'rxjs';
 
-import { AdminService } from '../admin.service';
 import { FireStoreService } from '@app/services';
 import { Gender, IBus, IRoom } from '@app/models';
 import { Constants } from '@app/constants';
@@ -20,13 +19,12 @@ export class StatisticsComponent implements OnInit {
 
   model: StatisticsModel;
 
-private readonly memberService = inject(MemberService);
-private readonly datePipe = inject(DatePipe);
+  private readonly memberService = inject(MemberService);
+  private readonly datePipe = inject(DatePipe);
 
-  constructor(private adminService: AdminService, private fireStoreService: FireStoreService) { }
+  constructor(private fireStoreService: FireStoreService) { }
 
   ngOnInit(): void {
-    this.adminService.updatePageTitle('الإحصائيات');
     this.initModel();
     this.getAllData();
   }

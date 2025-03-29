@@ -1,7 +1,7 @@
 import { MatTableDataSource } from '@angular/material/table';
 import { SelectionModel } from '@angular/cdk/collections';
 
-import { IAddress, IAllSubscriptionDataSourceVm, IBus, BookingStatus, IRoom } from '@app/models';
+import { IAddress, IAllSubscriptionDataSourceVm, IBus, BookingStatus, IRoomDataSource } from '@app/models';
 import { IAdvancedFilterForm } from '../advanced-search/advanced-search.models';
 import { RoomType } from 'app/shared/models/ticket';
 import { signal } from '@angular/core';
@@ -21,7 +21,7 @@ export class AllSubscriptionModel {
   previousFilter!: IAdvancedFilterForm;
   bookingStatus = BookingStatus;
   selection = new SelectionModel<IAllSubscriptionDataSourceVm>(true, []);
-  rooms: Array<IRoom> = [];
+  rooms: Array<IRoomDataSource> = [];
   conferenceProgram = signal<IConferenceProgram>({
     id: '',
     locationUrl: '',

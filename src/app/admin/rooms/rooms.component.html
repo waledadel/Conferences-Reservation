@@ -39,11 +39,42 @@
                   <div> <b>الحجرة</b>: {{element.room}} </div>
                   <div> <b>المبني</b>: {{element.building}} </div>
                   <div> <b>الطابق</b>: {{element.floor}} </div>
-                  <div> <b>سعة الغرفة</b>: {{element.sizeName}} </div>
-                  <div> <b>السعة</b>: {{element.size}} </div>
-                  <div> <b>الحالي</b>: {{element.size}} </div>
-                  <div> <b>المتاح</b>: {{element.available}} </div>
-                  <div> <b>الغير مستخدم</b>: {{element.notUsed}} </div>
+                  <div> <b>{{'common.roomType' | translate}}</b>: 
+                    @if (element.roomType) {
+                      <ng-container [ngSwitch]="element.roomType">
+                        <span *ngSwitchCase="model.roomType.double">
+                          {{ 'common.double' | translate }}
+                        </span>
+                        <span *ngSwitchCase="model.roomType.triple">
+                          {{ 'common.triple' | translate }}
+                        </span>
+                        <span *ngSwitchCase="model.roomType.quad">
+                          {{ 'common.quad' | translate }}
+                        </span>
+                        <span *ngSwitchDefault>
+                          {{ 'room.single' | translate }}
+                        </span>
+                      </ng-container>
+                    } @else {
+                      <span>غير معروف</span>
+                    }
+                  </div>
+                  <div> <b>الافراد</b>: 
+                    @if (element.members && element.members.length > 0) {
+                      <ol class="pe-4 m-0">
+                        @for (member of element.members; track member) {
+                          <li>
+                            {{member.name}}
+                            @if (member.isMain) {
+                              <i class="fa-solid fa-star primary pe-2"></i>
+                            }
+                          </li>
+                        }
+                      </ol>
+                    } @else {
+                      <span>غير مسكن</span>
+                    }
+                  </div>
                 </div>
                 <div class="d-flex flex-column">
                   <button mat-icon-button color="primary" [matMenuTriggerFor]="menu">
@@ -74,6 +105,52 @@
               {{'common.total' | translate}}: <b>{{model.dataSource.data.length}}</b> 
             </td>
           </ng-container>
+
+          <ng-container matColumnDef="members">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>الافراد</th>
+            <td mat-cell *matCellDef="let element">
+              @if (element.members && element.members.length > 0) {
+                <ol class="px-0 py-2 m-0">
+                  @for (member of element.members; track member) {
+                    <li>
+                      {{member.name}}
+                      @if (member.isMain) {
+                        <i class="fa-solid fa-star primary pe-2"></i>
+                      }
+                    </li>
+                  }
+                </ol>
+              } @else {
+                <span>غير مسكن</span>
+              }
+            </td>
+            <td mat-footer-cell *matFooterCellDef></td>
+          </ng-container>
+
+          <ng-container matColumnDef="roomType">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'common.roomType' | translate}}</th>
+            <td mat-cell *matCellDef="let element" class="col-1">
+              @if (element.roomType) {
+                <ng-container [ngSwitch]="element.roomType">
+                  <div *ngSwitchCase="model.roomType.double">
+                    {{ 'common.double' | translate }}
+                  </div>
+                  <div *ngSwitchCase="model.roomType.triple">
+                    {{ 'common.triple' | translate }}
+                  </div>
+                  <div *ngSwitchCase="model.roomType.quad">
+                    {{ 'common.quad' | translate }}
+                  </div>
+                  <div *ngSwitchDefault>
+                    {{ 'room.single' | translate }}
+                  </div>
+                </ng-container>
+              } @else {
+                <span>غير معروف</span>
+              }
+            </td>
+            <td mat-footer-cell *matFooterCellDef></td>
+          </ng-container>
           
           <ng-container matColumnDef="room">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>الحجرة</th>
@@ -98,18 +175,18 @@
             <td mat-cell *matCellDef="let element">{{ element.sizeName }}</td>
             <td mat-footer-cell *matFooterCellDef></td>
           </ng-container>
-
+<!-- 
           <ng-container matColumnDef="size">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>السعة</th>
             <td mat-cell *matCellDef="let element">{{ element.size }}</td>
             <td mat-footer-cell *matFooterCellDef></td>
-          </ng-container>
+          </ng-container> -->
 
-          <ng-container matColumnDef="current">
+          <!-- <ng-container matColumnDef="current">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>الحالي</th>
             <td mat-cell *matCellDef="let element">{{element.current}}</td>
             <td mat-footer-cell *matFooterCellDef></td>
-          </ng-container>
+          </ng-container> -->
 
           <ng-container matColumnDef="available">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>المتاح</th>
@@ -117,11 +194,11 @@
             <td mat-footer-cell *matFooterCellDef></td>
           </ng-container>
 
-          <ng-container matColumnDef="notUsed">
+          <!-- <ng-container matColumnDef="notUsed">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>الغير مستخدم</th>
             <td mat-cell *matCellDef="let element">{{element.notUsed}}</td>
             <td mat-footer-cell *matFooterCellDef></td>
-          </ng-container>
+          </ng-container> -->
 
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef></th>

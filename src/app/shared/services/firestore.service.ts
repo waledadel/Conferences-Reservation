@@ -4,7 +4,8 @@ import { DocumentReference, PartialWithFieldValue, query, SnapshotOptions, where
 import { Firestore, collection, addDoc, collectionData, doc, updateDoc, docData } from '@angular/fire/firestore';
 
 import { Constants } from '@app/constants';
-import { IRelatedMemberViewModel, ITicket, ITicketForm, IUser, IRoomDataSource, IMemberRoomDataSource, BookingStatus } from '@app/models';
+import { IRelatedMemberViewModel, ITicket, ITicketForm, IUser, IRoomDataSource, IMemberRoomDataSource, BookingStatus, IRoom } from '@app/models';
+import { RoomType } from '../models/ticket';
 
 @Injectable({
   providedIn: 'root'
@@ -291,6 +292,27 @@ export class FireStoreService {
             mainMemberName: ticket.isMain ? '' : primaryTicket?.name ?? '',
             bookingStatus: ticket.isMain ? ticket.bookingStatus : primaryTicket?.bookingStatus ?? BookingStatus.all
           };
+        });
+      })
+    );
+  }
+
+  getRoomsWithMembers(): Observable<IRoomDataSource[]> {
+    const ticketColl = collection(this.firestore, Constants.RealtimeDatabase.tickets);
+    const roomsColl = collection(this.firestore, Constants.RealtimeDatabase.rooms);
+    const documentQuery = query(ticketColl);
+    const options = { idField: 'id' } as SnapshotOptions;
+    const ticketData$ = collectionData(documentQuery, options).pipe(first()) as Observable<ITicket[]>;
+    const roomsData$ = collectionData(roomsColl, options).pipe(first()) as Observable<IRoom[]>;
+    return combineLatest([ticketData$, roomsData$]).pipe(
+      map(([tickets, rooms]) => {
+        return rooms.map(room => {
+          const members = tickets.filter(ticket => ticket.roomId === room.id).map(ticket => ({
+            name: ticket.name,
+            isMain: ticket.isMain
+          })).sort((a, b) => a.name.localeCompare(b.name));
+          const roomType = tickets.find(ticket => ticket.isMain && ticket.roomId === room.id)?.roomType ?? RoomType.unknown;
+          return { ...room, members, roomType };
         });
       })
     );

@@ -4,11 +4,12 @@ import { MatSort } from '@angular/material/sort';
 import * as XLSX from 'xlsx';
 
 import { Constants } from '@app/constants';
-import { IRoom, IRoomDataSource } from '@app/models';
+import { IRoomDataSource } from '@app/models';
 import { NotifyService, DialogService, TranslationService, FireStoreService } from '@app/services';
 import { ManageRoomsComponent } from './manage-rooms/manage-rooms.component';
 import { AdminService } from '../admin.service';
 import { RoomsModel } from './rooms.model';
+import { RoomType } from 'app/shared/models/ticket';
 
 @Component({
     templateUrl: './rooms.component.html',
@@ -48,7 +49,7 @@ export class RoomsComponent implements OnInit {
   readExcelFile(event: Event): void {
     this.model.showLoading = true;
     this.model.showErrorMessage = false;
-    this.model.dataSource = new MatTableDataSource<IRoom>([]);
+    this.model.dataSource = new MatTableDataSource<IRoomDataSource>([]);
     const fileInput = event.target as HTMLInputElement;
     const selectedFile = fileInput.files?.[0];
     if (selectedFile && selectedFile.name.includes('.xlsx')) {
@@ -59,7 +60,7 @@ export class RoomsComponent implements OnInit {
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
         const data = XLSX.utils.sheet_to_json<Array<string>>(sheet, { header: 1 });
-        const dataSource: Array<IRoom> = [];
+        const dataSource: IRoomDataSource[] = [];
         data.forEach((row, index) => {
           const header = data[0];
           if (header[0] === 'room' && header[1] === 'building' && header[2] === 'floor' && header[3] === 'sizeName') {
@@ -79,9 +80,11 @@ export class RoomsComponent implements OnInit {
                 sizeName: row[3],
                 size: roomSize,
                 displayedName: `R:${row[0]}_S:(${row[3]})_B:${row[1]}_F:${row[2]}_A:${roomSize}`,
-                current: 0,
+                // current: 0,
                 available: roomSize,
-                notUsed: 0 
+                // notUsed: 0,
+                members: [],
+                roomType: RoomType.unknown
               });
             }
           } else {
@@ -112,7 +115,7 @@ export class RoomsComponent implements OnInit {
     });
   }
 
-  update(item: IRoom): void {
+  update(item: IRoomDataSource): void {
     this.dialogService.openAddEditDialog(ManageRoomsComponent, 'lg', true, item).afterClosed()
     .subscribe((res: {fireRefresh: boolean}) => {
       if (res && res.fireRefresh) {
@@ -121,7 +124,7 @@ export class RoomsComponent implements OnInit {
     });
   }
 
-  delete(item: IRoom): void {
+  delete(item: IRoomDataSource): void {
     this.dialogService.openConfirmDeleteDialog(item.displayedName).afterClosed().subscribe((res: {confirmDelete: boolean}) => {
       if (res && res.confirmDelete) {
         if (this.model.isDataLocal) {
@@ -151,11 +154,15 @@ export class RoomsComponent implements OnInit {
       id: this.fireStoreService.createId(),
       available: r.available,
       building: r.building,
-      current: r.current,
+      // current: r.current,
       floor: r.floor,
-      notUsed: r.notUsed,
+      // notUsed: r.notUsed,
       room: r.room,
-      sizeName: r.sizeName
+      sizeName: r.sizeName,
+      members: [],
+      size: r.size,
+      displayedName: '',
+      roomType: RoomType.unknown
     }));
     this.fireStoreService.uploadRooms(rooms).subscribe(() => {
       this.model.isDataLocal = false;
@@ -183,7 +190,7 @@ export class RoomsComponent implements OnInit {
   }
 
   private getRooms(): void {
-    this.fireStoreService.getAll<IRoom>(Constants.RealtimeDatabase.rooms).subscribe(data => {
+    this.fireStoreService.getRoomsWithMembers().subscribe(data => {
       if (data && data.length > 0) {
         this.model.dataSource.data = data.map(r => ({
           ...r,
@@ -191,6 +198,7 @@ export class RoomsComponent implements OnInit {
           size: this.getRoomCountSize(r.sizeName),
         }));
         this.model.dataSource.sort = this.sort;
+        console.log(this.model.dataSource.data);
       }
     });
   }
@@ -215,7 +223,7 @@ export class RoomsComponent implements OnInit {
     return roomSize;
   }
 
-  private updateTableRow(item: Partial<IRoom>): void {
+  private updateTableRow(item: Partial<IRoomDataSource>): void {
     this.fireStoreService.getById(`${Constants.RealtimeDatabase.rooms}/${item.id}`).subscribe((res: IRoomDataSource) => {
       if (res) {
         const index = this.model.dataSource.data.findIndex(t => t.id === item.id);
